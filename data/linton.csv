@@ -1,0 +1,43 @@
+﻿type,dosage,drymass,nitrogen
+Control,2,0.524,3620
+Control,2,0.535,4030
+Control,2,1.094,6530
+Control,2,0.525,3938
+Control,2,0.707,4312
+Control,2,0.551,3740
+Control,2,0.489,3860
+Control,4,0.461,4329
+Control,4,0.584,5108
+Control,4,0.715,5877
+Control,4,0.206,1231
+Control,4,0.885,6583
+Control,4,0.835,6342
+Control,4,2.475,11933
+Control,ad lib,0.619,4232
+Control,ad lib,1.171,7443
+Control,ad lib,0.662,5345
+Control,ad lib,0.483,3808
+Control,ad lib,0.886,6519
+Control,ad lib,0.713,4871
+Control,ad lib,0.547,4308
+Experimental,2,1.602,10061
+Experimental,2,0.868,7928
+Experimental,2,0.623,3940
+Experimental,2,0.56,4315
+Experimental,2,0.962,7629
+Experimental,2,0.771,5896
+Experimental,2,2.667,17232
+Experimental,4,0.695,5410
+Experimental,4,0.33,3136
+Experimental,4,0.868,5571
+Experimental,4,0.858,6192
+Experimental,4,1.113,8002
+Experimental,4,1.706,9942
+Experimental,4,1.165,7502
+Experimental,ad lib,0.859,5918
+Experimental,ad lib,1.844,11001
+Experimental,ad lib,0.555,3455
+Experimental,ad lib,1.873,11620
+Experimental,ad lib,0.948,7484
+Experimental,ad lib,2.744,15971
+Experimental,ad lib,2.518,13463

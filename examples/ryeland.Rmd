@@ -1,0 +1,223 @@
+---
+title: "Q & K Box 13.8"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ryeland et al (2017) studied the roosting behaviour of several species of shorebirds. They recorded the proportion of time (number of minutes as a proportion of total minutes in a video bout) individuals of various species spent in the backrest position while roosting. They used a binomial model with a logit link for proportions with four fixed predictors recorded for each video bout: ambient temperature, wind speed, size of group focal bird was in, and distance focal bird was from the observer. We will analyze the data for a single species, the sharp-tailed sandpiper (*Calidris acuminata*). This would be a standard binomial GLM except that more than one bird was sometimes recorded in each bout so bout was included as a random effect since birds closer together may be correlated in their behaviour. The resulting model is a binomial GLMM.
+
+[![](images/Sharp-tailed_Sandiper_(Calidris_acuminata)_(40733587174).jpg)](https://commons.wikimedia.org/wiki/File:Sharp-tailed_Sandiper_(Calidris_acuminata)_(40733587174).jpg)
+
+Sharp-tailed sandpiper. patrickkavanagh, [![](images/by-01.png){width="57"}](https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons
+
+The paper is [here](https://doi.org/10.1111/1365-2435.12814)
+
+Ryeland, J., Weston, M. A., Symonds, M. R. E. & Overgaard, J. (2017). Bill size mediates behavioural thermoregulation in birds. *Functional Ecology*, 31, 885-93.
+
+### Preliminaries
+
+First, load the required packages (car, performance, MuMIn, lme4, glmmTMB, lmtest, ggplot2)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(performance)
+library(glmmTMB)
+```
+
+Import ryeland data file ([ryeland.csv](../data/ryeland.csv))
+
+```{r}
+ryeland <- read.csv("../data/ryeland.csv")
+head(ryeland)
+```
+
+Create proportion of time facing back
+
+```{r }
+ryeland$prophb<-ryeland$timehb/ryeland$filmp
+```
+
+Create success and fail columns
+
+```{r }
+ryeland$success<-as.integer(ryeland$timehb)
+ryeland$fail<-as.integer(ryeland$filmp-ryeland$timehb)
+```
+
+Create response variable
+
+```{r }
+ryeland.prop<-cbind(ryeland$success,ryeland$fail)
+```
+
+### Preliminary checks
+
+Scatterplots
+
+```{r }
+plot(prophb~wind, data=ryeland)
+plot(prophb~dist, data=ryeland)
+plot(prophb~groupsize, data=ryeland)
+plot(prophb~temp, data=ryeland)
+```
+
+Boxplots
+
+```{r }
+boxplot(ryeland$dist)
+boxplot(log10(ryeland$dist))
+boxplot(ryeland$groupsize)
+boxplot(ryeland$temp)
+boxplot(ryeland$wind)
+boxplot(log10(ryeland$wind))
+```
+
+Check collinearity
+
+```{r }
+vif(lm(ryeland$prophb ~ dist+groupsize+temp+wind,data=ryeland))
+cor(ryeland[,c('dist','groupsize','temp','wind')])
+```
+
+### Fit GLMM with binomial distribution and test predictor effects
+
+```{r }
+ryeland1.glmer<-glmer(ryeland.prop~dist+groupsize+temp+wind+(1|vbout),data=ryeland,family=binomial)
+summary(ryeland1.glmer)
+AIC(ryeland1.glmer)
+AICc(ryeland1.glmer)
+anova(ryeland1.glmer, type="lrtest")
+```
+
+Test wind
+
+```{r }
+ryeland2.glmer<-glmer(ryeland.prop~dist+groupsize+temp+(1|vbout),data=ryeland,family=binomial)
+lrtest(ryeland1.glmer, ryeland2.glmer)
+```
+
+Test temp
+
+```{r }
+ryeland3.glmer<-glmer(ryeland.prop~dist+groupsize+wind+(1|vbout),data=ryeland,family=binomial)
+lrtest(ryeland1.glmer, ryeland3.glmer)
+```
+
+Test groupsize
+
+```{r }
+ryeland4.glmer<-glmer(ryeland.prop~dist+temp+wind+(1|vbout),data=ryeland,family=binomial)
+lrtest(ryeland1.glmer, ryeland4.glmer)
+```
+
+Test dist
+
+```{r }
+ryeland5.glmer<-glmer(ryeland.prop~groupsize+wind+temp+wind+(1|vbout),data=ryeland,family=binomial)
+lrtest(ryeland1.glmer, ryeland5.glmer)
+```
+
+Check residuals
+
+```{r }
+plot(ryeland1.glmer, resid(., type = "deviance") ~ fitted(.))
+residuals(ryeland1.glmer, type="deviance")
+```
+
+### Check overdispersion
+
+(code from Zuur et al 2013)
+
+```{r }
+presid1 <- resid(ryeland1.glmer, type="pearson")
+ssize1 <- nrow(ryeland)
+params1 <- length(fixef(ryeland1.glmer)+1)
+disp1 <- sum(presid1^2)/(ssize1-params1)
+disp1
+```
+
+### Add Observation Level Random Effect into model and retest the predictors
+
+```{r }
+ryeland6.glmer<-glmer(ryeland.prop~dist+groupsize+temp+wind+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+summary(ryeland6.glmer)
+AIC(ryeland6.glmer)
+AICc(ryeland6.glmer)
+```
+
+Test wind
+
+```{r }
+ryeland7.glmer<-glmer(ryeland.prop~dist+groupsize+temp+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+lrtest(ryeland6.glmer, ryeland7.glmer)
+```
+
+Test temp
+
+```{r }
+ryeland8.glmer<-glmer(ryeland.prop~dist+groupsize+wind+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+lrtest(ryeland6.glmer, ryeland8.glmer)
+```
+
+Test groupsize
+
+```{r }
+ryeland9.glmer<-glmer(ryeland.prop~dist+temp+wind+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+lrtest(ryeland6.glmer, ryeland9.glmer)
+```
+
+Test dist
+
+```{r }
+ryeland10.glmer<-glmer(ryeland.prop~groupsize+wind+temp+wind+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+lrtest(ryeland6.glmer, ryeland10.glmer)
+```
+
+Check residuals
+
+```{r }
+residuals(ryeland6.glmer, type="deviance")
+plot(ryeland6.glmer, resid(., type = "deviance") ~ fitted(.))
+```
+
+### Fit model with only temp to match paper
+
+```{r }
+ryeland11.glmer<-glmer(ryeland.prop~temp+(1|vbout)+(1|olre),data=ryeland,family=binomial)
+summary(ryeland11.glmer)
+AIC(ryeland11.glmer)
+AICc(ryeland11.glmer)
+```
+
+Plot temp to match paper **Need to add fit logistic curve?**
+
+```{r }
+ggplot(ryeland, aes(temp, prophb)) + geom_point() +
+  geom_smooth(method = "loess", span = 0.5, se = FALSE) 
+```
+
+### Rerun original GLMM with glmmTMB
+
+```{r}
+ryeland.glmmb <- glmmTMB(ryeland.prop~groupsize+wind+temp+wind+(1|vbout), family=binomial, data=ryeland)
+summary(ryeland.glmmb)
+```
+
+### Now fit betabinomial to compare to OLRE
+
+```{r}
+ryeland.glmmbb <- glmmTMB(ryeland.prop~dist+groupsize+temp+wind+(1|vbout),data=ryeland,family=betabinomial(link="logit"))
+summary(ryeland.glmmbb)
+AICc(ryeland.glmmbb)
+```
+
+Test temperature
+
+```{r}
+ryeland1.glmmbb <- glmmTMB(ryeland.prop~dist+groupsize+wind+(1|vbout),data=ryeland,family=betabinomial(link="logit"))
+lrtest(ryeland.glmmbb, ryeland1.glmmbb)
+```

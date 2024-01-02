@@ -1,0 +1,304 @@
+---
+title: "QK Box 16.2"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Worked example of NMDS, ANOSIM, PERMANOVA, MV-ABUND, BIO-ENV: invertebrates in artificial ponds
+
+We continue with the pond invertebrate example from [Box 16.1](lemmpcoa.nb.html). We will now use these data to produce an NMDS ordination plot showing the relationship among ponds based on invertebrate family abundances. We will compare this analysis to one where the abundances are converted to proportions of pond totals and where abundances are converted to presence-absence data. We will also compare the four management groups using ANOSIM, PERMANOVA, and MV-ABUND and examine relationships between the patterns among ponds based on invertebrate families and patterns based on environmental variables.
+
+### Preliminaries 
+
+Load graphics tweaks and core set of packages
+
+```{r results='hide', echo=FALSE}
+#Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+source("../R/appearance.R")
+source("../R/libraries.R")
+```
+
+Load additional packages: vegan, mvabund
+
+```{r results='hide', echo=FALSE}
+library(vegan)
+library(mvabund)
+```
+
+Load lemminvert data and remove labels
+
+```{r results='hide'}
+lemminvert <- read_csv("../data/lemminvert.csv")
+lemminvert1 <- lemminvert[,-(1:3)]
+```
+
+### MDS on original invert abundances
+
+```{r}
+lemminvert.bc <- vegdist(lemminvert1,'bray')    #Create Bray-Curtis matrix
+lemminvert.mds <- metaMDS(lemminvert.bc,k=2,autotransform=FALSE)
+stressplot(lemminvert.mds, main="Shepard plot")
+lemminvert.mds
+plot(lemminvert.mds$points,type="n")
+text(lemminvert.mds$points,lab=lemminvert$manag,col="black")
+points(lemminvert.mds$points,pch=16,col=as.numeric(lemminvert$managsymb))
+```
+
+### Standardize abundance to proportional abundance for each pond
+
+```{r}
+lemminvert1s <- decostand(lemminvert1, method = "total")
+lemminvert1s.bc <- vegdist(lemminvert1s,'bray')
+lemminvert1s.mds <- metaMDS(lemminvert1s.bc,k=2,try=20,trymax=40,maxit=200,autotransform=FALSE)
+stressplot(lemminvert1s.mds, main="Shepard plot")
+lemminvert1s.mds
+plot(lemminvert1s.mds$points,type="n")
+text(lemminvert1s.mds$points,lab=lemminvert$manag,col="black")
+points(lemminvert1s.mds$points,pch=16,col=as.numeric(lemminvert$managsymb))
+```
+
+### MDS on presence-absence using Jaccard transformed data
+
+```{r}
+lemminvert.jac <- vegdist(lemminvert1,binary=TRUE,method='jaccard')
+lemminvert.jac.mds <- metaMDS(lemminvert.jac,k=2,autotransform=FALSE)
+stressplot(lemminvert.jac.mds, main="Shepard plot")
+lemminvert.jac.mds
+plot(lemminvert.jac.mds$points,type="n")
+text(lemminvert.jac.mds$points,lab=lemminvert$manag,col="black")
+points(lemminvert.jac.mds$points,pch=16,col=as.numeric(lemminvert$managsymb))
+```
+
+### Plot env variables on ordinations
+
+Select 11 variables (same as ch15)
+
+```{r error=TRUE}
+lemmenv <- read_csv("../data/lemmenv.csv")
+lemmenv1 <- lemmenv[,c(3:5,7:8,10:13,16:17)]
+# standardize predictors
+lemmenv1$lchla <- log10(lemmenv1$chla)
+lemmenv1$depth <- scale(lemmenv1$depth)
+lemmenv1$silt <- scale(lemmenv1$silt)
+lemmenv1$ph <- scale(lemmenv1$ph)
+lemmenv1$temp <- scale(lemmenv1$temp)
+lemmenv1$surface <- scale(lemmenv1$surface)
+lemmenv1$cond <- scale(lemmenv1$cond)
+lemmenv1$lchla <- scale(lemmenv1$lchla)
+lemmenv1$tn <- scale(lemmenv1$tn)
+lemmenv1$tp <- scale(lemmenv1$tp)
+lemmenv1$reed <- scale(lemmenv1$reed)
+lemmenv1$emerg <- scale(lemmenv1$emerg)
+# plot using original abundances
+fit1 <- envfit(lemminvert.mds, lemmenv1)
+fit1
+plot(fit1)
+# plot using proportional abundances
+fit2 <- envfit(lemminvert1s.mds, lemmenv1)
+fit2
+plot(fit2)
+# plot using pa
+fit3 <- envfit(lemminvert.jac.mds, lemmenv1)
+fit3
+plot(fit3)
+```
+
+### Model/test management types
+
+Check homogeneity of dispersions on original abundances; if OK, for comparison run anosim, permanova and mvabund
+
+```{r}
+lemminvert.disp <- betadisper(lemminvert.bc,lemminvert$manag)
+anova(lemminvert.disp)
+# anosim on original abundances
+lemminvert.ano <- anosim(lemminvert.bc, lemminvert$manag,permutations=999)
+summary(lemminvert.ano)
+# permanova on original abundances
+lemminvert.ado <- adonis2(lemminvert.bc~manag,data=lemminvert,permutations=999)
+print(lemminvert.ado)
+# mv-abund on original abundances
+lemminvertmv <- mvabund(lemminvert1)
+lemminvertmv.mv <- manyglm(lemminvertmv~lemmenv$manag,family="negative_binomial")
+plot(lemminvertmv.mv)
+anova(lemminvertmv.mv)
+```
+
+Repeat process for proportional abundance data
+
+```{r error=TRUE}
+# check homog of dispersions on prop abundances
+lemminvert1s.disp <- betadisper(lemminvert1s.bc,lemminvert$manag)
+anova(lemminvert1s.disp)
+# anosim on proportional abundances
+lemminvert1s.ano <- anosim(lemminvert1s.bc, lemminvert$manag,permutations=999)
+summary(lemminvert1s.ano)
+# permanova on proportional abundances
+lemminvert1s.ado <- adonis2(lemminvert1s.bc~manag,data=lemminvert,permutations=999)
+print(lemminvert1s.ado)
+```
+
+mv-abund on proportional abundances using composition=TRUE (this either doesnt work or is very slow!!!) Note: when composition=TRUE, gives error message; runs with composition=FALSE, but that isn't relative abundance
+
+```{r error=TRUE}
+lemminvert1smv.mv <- manyglm(lemminvertmv~lemmenv$manag,composition=TRUE,family="negative_binomial")
+plot(lemminvert1smv.mv)
+anova(lemminvert1smv.mv)
+```
+
+try mv-abund on standardized abunds from earlier
+
+```{r}
+lemminvert1smv <- mvabund(lemminvert1s)
+lemminvert1smv.mv <- manyglm(lemminvert1smv~lemmenv$manag,family="negative_binomial")
+plot(lemminvert1smv.mv)
+anova(lemminvert1smv.mv)
+```
+
+Finally, run analysis on presence-absence data
+
+```{r}
+# check homog of dispersions on pa
+lemminvert.jac.disp <- betadisper(lemminvert.jac,lemminvert$manag)
+anova(lemminvert.jac.disp)
+# anosim on pa
+lemminvert.jac.ano <- anosim(lemminvert.jac, lemminvert$manag,permutations=999)
+summary(lemminvert.jac.ano)
+# permanova on pa
+lemminvert.jac.ado <- adonis2(lemminvert.jac~manag,data=lemminvert,permutations=999)
+print(lemminvert.jac.ado)
+```
+
+mv-abund on pa
+
+```{r}
+lemminvert1pa <- decostand(lemminvert1, method = "pa")
+lemminvert1pamv <- mvabund(lemminvert1pa)
+lemminvert1pamv.mv <- manyglm(lemminvert1pamv~lemmenv$manag,family="binomial")
+plot(lemminvert1pamv.mv)
+anova(lemminvert1pamv.mv)
+```
+
+### Use bio-env to explore relationships with environmental variables
+
+```{r}
+# bio-env raw data
+bioenv(lemminvert.bc, lemmenv1, method="spearman", metric="euclidean")
+# bio-env prop data
+bioenv(lemminvert1s.bc, lemmenv1,method="spearman", metric="euclidean")
+# bio-env on pa data
+bioenv(lemminvert.jac, lemmenv1,method="spearman", metric="euclidean")
+# mantel test
+lemmenv.euc <- vegdist(lemmenv1,"euclidean")
+mantel(lemminvert.bc,lemmenv.euc,method="spearman")
+mantel(lemminvert.bc,lemmenv.euc,method="pearson")
+```
+
+### model/test continuous variables with permanova and mv-abund
+
+```{r}
+# raw abundances
+lemminvert2.ado <- adonis2(lemminvert.bc~depth+silt+ph+temp+surface+cond+lchla+tn+tp+reed+emerg,data=lemmenv1,permutations=999)
+print(lemminvert2.ado)
+lemminvert3.ado <- adonis2(lemminvert.bc~depth+silt+ph+temp+surface+cond+lchla+tn+tp+reed+emerg,data=lemmenv1,by="margin",permutations=999)
+print(lemminvert3.ado)
+lemminvertmv <- mvabund(lemminvert1)
+lemminvertmv.mv <- manyglm(lemminvertmv~lemmenv1$depth+lemmenv1$silt+lemmenv1$ph+lemmenv1$temp+lemmenv1$surface+lemmenv1$cond+lemmenv1$lchla+lemmenv1$tn+lemmenv1$tp+lemmenv1$reed+lemmenv1$emerg,family="negative_binomial")
+# use summary to get Wald tests (at least vaguely comparable to Type III Permanova results)
+summary(lemminvertmv.mv)
+plot(lemminvertmv.mv)
+```
+
+### Generate graphs
+
+```{r}
+br=c("nm","li","nf","yf")
+la=c("None", "Light", "No fish", "Young fish")
+a<-as.data.frame(lemminvert.mds$points)
+a<-cbind(lemminvert[c(1:3)],a)   #Add site names & symbols from original data file
+p1<-ggplot(data=a, aes(x=MDS1, y=MDS2, shape=manag, ) )+
+  geom_point()+
+  labs(y="MDS2", x="MDS1", title="Raw")+
+  scale_shape_manual(values=sym4,
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+as<-as.data.frame(lemminvert1s.mds$points)
+as<-cbind(lemminvert[c(1:3)],as)   #Add site names & symbols from original data file
+p2<-ggplot(data=as, aes(x=MDS1, y=MDS2, shape=manag, ) )+
+  geom_point()+
+  labs(y=NULL, x="MDS1", title="Standardized")+
+  scale_shape_manual(values=sym4,
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+aj<-as.data.frame(lemminvert.jac.mds$points)
+aj<-cbind(lemminvert[c(1:3)],aj)   #Add site names & symbols from original data file
+p3<-ggplot(data=aj, aes(x=MDS1, y=MDS2, shape=manag, ) )+
+  geom_point()+
+  labs(y=NULL, x="MDS1", title="Jaccard")+
+  scale_shape_manual(values=sym4,
+                      breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+p4<-p1+p2+p3+plot_layout(guides='collect')
+p4
+```
+
+Colour version
+
+```{r}
+p1a<-ggplot(data=a, aes(x=MDS1, y=MDS2, color=manag, ) )+
+  geom_point()+
+  labs(y="MDS2", x="MDS1", title="Raw")+
+  scale_color_uchicago(
+                      breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+p2a<-ggplot(data=as, aes(x=MDS1, y=MDS2, color=manag, ) )+
+  geom_point()+
+  labs(y=NULL, x="MDS1", title="Standardized")+
+  scale_color_uchicago(
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+p3a<-ggplot(data=aj, aes(x=MDS1, y=MDS2, color=manag, ) )+
+  geom_point()+
+  labs(y=NULL, x="MDS1", title="Jacard")+
+  scale_color_uchicago(
+                      breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()
+p4a<-p1a+p2a+p3a+plot_layout(guides='collect')&theme(axis.text=element_blank())
+p4a
+
+```

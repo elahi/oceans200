@@ -1,0 +1,283 @@
+---
+title: "Q & K Box 15.3"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We described the study by Lemmens et al. (2015) who sampled various biotic communities in artificial ponds in Belgium that were classified into one of four management types in Box 15.2. In addition to the biotic sampling, they recorded 15 environmental variables (e.g. depth, salinity, pH etc.) for each pond and covers of submerged, floating, and emergent vegetation. They used RDA to comprehensively examine the patterns in the various biotic communities (ordination) constrained by either management variables, drainage strategy, environmental variables, or the fish community. We will focus on the macroinvertebrate community (abundances of families) and do two RDAs, one constrained by the four management categories and a second constrained by the continuous environmental variables; we did not include management type with the environmental variables in one analysis as some of the predictors varied with management type (i.e. collinearity). We will use a covariance matrix for the invertebrate data and a Hellinger transformation that converts raw abundances to proportional abundances. This provides a comparison to the CCA we will do as a second analysis below.
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0139371) and the pond subset for this example is [lemminvert2.csv](../data/lemminvert2.csv) and we also use the environmental variables [lemmenv.csv](../data/lemmenv.csv)
+
+Lemmens, P., Mergeay, J., Van Wichelen, J., De Meester, L. & Declerck, S. A. (2015). The impact of conservation management on the community composition of multiple organism groups in eutrophic interconnected man-made ponds. *PLoS One*, 10, e0139371.
+
+### Preliminaries
+
+Load required packages (vegan) plus tidyverse, etc
+
+```{r results='hide'}
+# packages: vegan, car
+source("../R/libraries.R")
+library(vegan)
+```
+
+Read in data files
+
+```{r}
+lemminvert <- read_csv("../data/lemminvert2.csv")
+lemmenv <- read_csv("../data/lemmenv.csv")
+```
+
+## Do RDA on management first
+
+Set no management as reference Do Hellinger transformation
+
+```{r}
+lemmenv$manag <- factor(lemmenv$manag,levels=c("nm","nf","yf","li"))
+lemminvert1 <- lemminvert[,-(1:3)]
+lemminvert1h <- decostand(lemminvert1, method = "hellinger")
+lemmens1.rda <- rda(lemminvert1h~manag, scale=FALSE, data=lemmenv)
+summary(lemmens1.rda)
+RsquareAdj(lemmens1.rda)
+coef(lemmens1.rda)
+anova.cca(lemmens1.rda, permutations=1000)
+anova.cca(lemmens1.rda, permutations=1000, by="margin")
+anova.cca(lemmens1.rda, permutations=1000, by="axis")
+```
+
+Do triplot; category scaling type = 2 probably the best plots to display
+
+```{r}
+ordiplot(lemmens1.rda,scaling=1,type="text")
+ordiplot(lemmens1.rda,scaling=2,type="text")
+```
+
+## Do RDA on env variables
+
+Preliminary look at scatterplot; look for variables with unusual distributions and check for correlations
+
+```{r}
+scatterplotMatrix(~depth+silt+ph+temp+surface+cond+chla+tn+tp+susps+subm+reed+emerg,data=lemmenv,diagonal=list(method='boxplot'))
+cor(lemmenv[,c('depth','silt','ph','o2','temp','surface','trans','cond','chla','tn','tp','susps','subm','reed','emerg')])
+# transform chla and susps
+lemmenv$lchla <- log10(lemmenv$chla)
+lemmenv$lsusps <- log10(lemmenv$susps)
+scatterplotMatrix(~depth+silt+ph+o2+temp+surface+trans+cond+lchla+tn+tp+lsusps+subm+reed+emerg,data=lemmenv,diagonal=list(method='boxplot'))
+cor(lemmenv[,c('depth','silt','ph','o2','temp','surface','trans','cond','lchla','tn','tp','lsusps','subm','reed','emerg')])
+# exclude o2, trans, susps and subm
+# standardize remaining env variables
+lemmenv$depth <- scale(lemmenv$depth)
+lemmenv$silt <- scale(lemmenv$silt)
+lemmenv$ph <- scale(lemmenv$ph)
+lemmenv$temp <- scale(lemmenv$temp)
+lemmenv$surface <- scale(lemmenv$surface)
+lemmenv$cond <- scale(lemmenv$cond)
+lemmenv$clhla <- scale(lemmenv$lchla)
+lemmenv$tn <- scale(lemmenv$tn)
+lemmenv$tp <- scale(lemmenv$tp)
+lemmenv$reed <- scale(lemmenv$reed)
+lemmenv$emerg <- scale(lemmenv$emerg)
+```
+
+### Now do RDA
+
+```{r}
+lemmens2.rda <- rda(lemminvert1h~depth+silt+ph+temp+surface+cond+lchla+tn+tp+reed+emerg, scale=FALSE, data=lemmenv)
+summary(lemmens2.rda)
+RsquareAdj(lemmens2.rda)
+coef(lemmens2.rda)
+anova.cca(lemmens2.rda, permutations=1000)
+anova.cca(lemmens2.rda, permutations=1000, by="margin")
+anova.cca(lemmens2.rda, permutations=1000, by="axis")
+# ideally would like ponds represented by symbols, a different one for each management category
+ordiplot(lemmens2.rda,scaling=1,type="text")
+ordiplot(lemmens2.rda,scaling=2,type="text")
+```
+
+## Do CCA without hellinger transform for comparison
+
+## Management first
+
+```{r}
+lemmens1.cca <- cca(lemminvert1~manag, scale=FALSE, data=lemmenv)
+summary(lemmens1.cca)
+RsquareAdj(lemmens1.cca)
+coef(lemmens1.cca)
+anova.cca(lemmens1.cca, permutations=1000)
+anova.cca(lemmens1.cca, permutations=1000, by="margin")
+anova.cca(lemmens1.cca, permutations=1000, by="axis")
+ordiplot(lemmens1.cca,scaling=1,type="text")
+ordiplot(lemmens1.cca,scaling=2,type="text")
+```
+
+### Now env variables
+
+```{r}
+lemmens2.cca <- cca(lemminvert1~depth+silt+ph+temp+surface+cond+lchla+tn+tp+reed+emerg, scale=FALSE, data=lemmenv)
+summary(lemmens2.cca)
+RsquareAdj(lemmens2.cca)
+coef(lemmens2.cca)
+anova.cca(lemmens2.cca, permutations=1000)
+anova.cca(lemmens2.cca, permutations=1000, by="margin")
+anova.cca(lemmens2.cca, permutations=1000, by="axis")
+# ideally would like ponds represented by symbols, a different one for each management category
+ordiplot(lemmens2.cca,scaling=1,type="text")
+ordiplot(lemmens2.cca,scaling=2,type="text")
+```
+
+## Nice graphics
+
+Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+
+```{r}
+source("../R/appearance.R")
+```
+
+```{r}
+library(ggvegan)
+p1<-autoplot(lemmens1.rda)
+p2<-autoplot(lemmens2.rda)
+p3<-autoplot(lemmens1.cca)
+p4<-autoplot(lemmens2.cca)
+l1rt<-fortify(lemmens1.rda)
+l1rt$Label <- l1rt$Label %>%
+  str_replace_all("managnm", "nm") %>%
+str_replace_all("managli", "li") %>%
+str_replace_all("managnf", "nf") %>%
+str_replace_all("managyf", "yf")
+l2rt<-fortify(lemmens2.rda)
+l1ct<-fortify(lemmens1.cca)
+l1ct$Label <- l1ct$Label %>%
+  str_replace_all("managnm", "nm") %>%
+str_replace_all("managli", "li") %>%
+str_replace_all("managnf", "nf") %>%
+str_replace_all("managyf", "yf")
+l2ct<-fortify(lemmens2.cca)
+p5<-p1+p2+p3+p4
+p5
+
+```
+
+```{r}
+library(ggrepel)
+br=c("nm","li","nf","yf")  #Set order of groups; define as object to avoid repeated code
+la=c("None", "Light", "No fish", "Young fish")  #Set legend text
+p1a<-ggplot()+
+  geom_point(aes(x=RDA1,y=RDA2, shape=lemminvert$manag), color=sc, data=filter(l1rt, Score=="sites"), 
+             alpha=0.7, size=1)+
+  scale_shape_manual(values=c(21,22,23,25),
+                     name="Management",
+                     breaks=br,
+                     labels=la
+                     )+
+  geom_text(aes(x=RDA1,y=RDA2, label=Label), size=2, data=filter(l1rt, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=RDA1,yend=RDA2), arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l1rt, Score=="centroids"))+
+  geom_text_repel(aes(x=RDA1,y=RDA2, label=Label), size=3, data=filter(l1rt, Score=="centroids"), 
+                  max.overlaps=Inf)+
+                 coord_fixed()+
+  theme(legend.position="none")
+p1a
+```
+
+```{r}
+p2a<-ggplot()+
+  geom_point(aes(x=RDA1,y=RDA2, ), data=filter(l2rt, Score=="sites"), alpha=0.7, color=sc, size=0.5)+
+  geom_text(aes(x=RDA1,y=RDA2, label=Label), size=2, data=filter(l2rt, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=RDA1,yend=RDA2), alpha=0.5, arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l2rt, Score=="biplot"))+
+  geom_text(aes(x=RDA1,y=RDA2, label=Label), nudge_y=-0.05,color=lc, size=3.5, data=filter(l2rt, Score=="biplot"), 
+                  )+
+  labs(y=NULL)+
+                 coord_fixed()
+p2a
+```
+
+```{r}
+p3a<-ggplot()+
+  geom_point(aes(x=CCA1,y=CCA2, shape=lemminvert$manag), color= sc, data=filter(l1ct, Score=="sites"), alpha=0.7, size=1)+
+  scale_shape_manual(values=c(21,22,23,25),
+                     name="Management",
+                     breaks=br,
+                     labels=la
+                     )+
+  geom_text(aes(x=CCA1,y=CCA2, label=Label), size=2, data=filter(l1ct, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=CCA1,yend=CCA2), arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l1ct, Score=="centroids"))+
+  geom_text_repel(aes(x=CCA1,y=CCA2, label=Label), size=3, data=filter(l1ct, Score=="centroids"), 
+                  max.overlaps=Inf)+
+                 coord_fixed()+
+  theme(legend.position="none")
+p3a
+```
+
+```{r}
+p4a<-ggplot()+
+  geom_point(aes(x=CCA1,y=CCA2, ), data=filter(l2ct, Score=="sites"), alpha=0.7, color=sc, size=0.5)+
+  geom_text(aes(x=CCA1,y=CCA2, label=Label), size=2, data=filter(l2ct, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=CCA1,yend=CCA2), alpha=0.5, arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l2ct, Score=="biplot"))+
+  geom_text(aes(x=CCA1,y=CCA2, label=Label), color=lc, size=3, data=filter(l2ct, Score=="biplot"), 
+                  )+
+  labs(y=NULL)+
+                 coord_fixed()
+p4a
+```
+
+Combine panels
+
+```{r}
+p5<-p1a+p2a+p3a+p4a
+p5<-p5&theme_qk()+theme(legend.position="none")
+p5
+#ggsave("../Illustrator/QK F15_05.pdf",plot = p5, height = phh,width = pww, units='cm')
+```
+
+Colour version of LH panels
+
+```{r}
+p1b<-ggplot()+
+  geom_point(aes(x=RDA1,y=RDA2, color=lemminvert$manag), data=filter(l1rt, Score=="sites"), 
+             alpha=0.7, size=1)+
+  scale_color_viridis_d(
+                     name="Management",
+                     breaks=br,
+                     labels=la
+                     )+
+  geom_text(aes(x=RDA1,y=RDA2, label=Label), size=2, data=filter(l1rt, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=RDA1,yend=RDA2), arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l1rt, Score=="centroids"))+
+  geom_text_repel(aes(x=RDA1,y=RDA2, label=Label), size=3, data=filter(l1rt, Score=="centroids"), 
+                  max.overlaps=Inf)+
+                 coord_fixed()+
+  theme(legend.position="none")
+p3b<-ggplot()+
+  geom_point(aes(x=CCA1,y=CCA2, color=lemminvert$manag), data=filter(l1ct, Score=="sites"), alpha=0.7, size=1)+
+  scale_color_viridis_d(
+                     breaks=br,
+                     labels=la
+                     )+
+  geom_text(aes(x=CCA1,y=CCA2, label=Label), size=2, data=filter(l1ct, Score=="species"), 
+                  )+
+  geom_segment(aes(x=0,y=0,xend=CCA1,yend=CCA2), arrow=arrow(length=unit(0.2,"cm")),
+               data=filter(l1ct, Score=="centroids"))+
+  geom_text_repel(aes(x=CCA1,y=CCA2, label=Label), size=3, data=filter(l1ct, Score=="centroids"), 
+                  max.overlaps=Inf)+
+                 coord_fixed()+
+  theme(legend.position="none")
+```
+
+```{r}
+p5a<-p1b+p2a+p3b+p4a
+p5a
+p5a<-p5a&theme_qk()+theme(legend.position="none")
+#ggsave("QK F15_05c.pdf",plot = p5a, height = phh,width = pww, units='cm')
+```

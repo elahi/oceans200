@@ -1,0 +1,142 @@
+---
+title: "Q & K Box 10.2"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here we use the Medley and Clements (1998) data differently from the original analysis in Chapter 6. Now we are comparing diatom species diversity across streams. Streams are treated as a random factor, assuming these streams represent a random sample of all possible streams in this part of the Rocky Mountains. The design is unbalanced with between four and seven stations (level 1 units) on each stream (level 2 clusters). In addition to diatom diversity, zinc concentration was also recorded at each station (a level 1 covariate). We will do two analyses on these data. First, we will fit models that focus just on estimating the diatom diversity variance components for streams and for stations within streams, i.e. fit a null or random effects model. Second, we will include the covariate zinc concentration in our models and aim to estimate the variance associated with random intercepts and random slopes.
+
+The data were used in the first edition, and the data file is [here](../data/medley_rand.csv)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import the data file (medley_rand.csv)
+
+```{r}
+medley_rand <- read.csv("../data/medley_rand.csv")
+head(medley_rand,10)
+```
+
+Set contrasts from afex
+
+```{r echo=FALSE}
+set_sum_contrasts()
+```
+
+### Fit null/empty or random effects model without covariate
+
+First fit OLS anova model with stream as random factor
+
+```{r }
+medley_rand.aov <- aov(diversity~stream, medley_rand)
+```
+
+Check residuals (no pattern, all OK)
+
+```{r }
+plot(medley_rand.aov)
+```
+
+Get anova results
+
+```{r }
+summary(medley_rand.aov)
+```
+
+### Using VCA package to get anova variance component
+
+Note: With OLS estimation, CIs can be negative)
+
+```{r }
+medley_rand.vca <- anovaMM(diversity~(stream), medley_rand)
+medley_rand.vca
+VCAinference(medley_rand.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+### Fit mixed model using lme4
+
+```{r }
+medley_rand.reml <- lmer(diversity~(1|stream), medley_rand)
+summary(medley_rand.reml)
+medley_rand.ml <- lmer(diversity~(1|stream), medley_rand, REML=F)
+summary(medley_rand.ml)
+```
+
+CI on variance components
+
+We need to square CIs from *lmer*, which are in SD units
+
+```{r }
+medley_rand.ci <- confint.merMod(medley_rand.reml)
+medley_rand.vc <- (medley_rand.ci)^2
+print(medley_rand.vc)
+```
+
+### Now fit random intercept and/or slope models including covariate zinc.
+
+First plot the regressions for each stream
+
+```{r }
+panel.smoother <- function(x, y) {
+  panel.xyplot(x, y) 
+  panel.lmline(x, y)
+  }
+xyplot(diversity~zn|stream,main="Scatterplots by Stream", ylab="diversity", xlab="zinc concentration", panel=panel.smoother, medley_rand)
+```
+
+**Note**: most slopes negative although sample size is very small
+
+### Fit random slope and intercept model using lme4
+
+```{r }
+medley_randz.lmer1 <- lmer(diversity~zn +(zn|stream), REML=TRUE, medley_rand)
+summary(medley_randz.lmer1)
+```
+
+No convergence presumably due to small and unequal sample sizes - try random intercept model
+
+```{r }
+medley_randz.lmer2 <- lmer(diversity~zn + (1|stream), REML=TRUE, medley_rand)
+summary(medley_randz.lmer2, ddf="Kenward-Roger")
+anova(medley_randz.lmer2, ddf="Kenward-Roger")
+```
+
+Get CIs on varcomps from medley_rand.lmer2
+
+```{r }
+medley_randz.ci <- confint.merMod(medley_randz.lmer2)
+medley_randz.vc <- (medley_randz.ci)^2
+print(medley_randz.vc)
+```
+
+### Compare random intercept with random effects (null) model using ML (as zinc is fixed effect)
+
+```{r }
+medley_randz.lmer3 <- lmer(diversity~zn + (1|stream), REML=FALSE, medley_rand)
+summary(medley_randz.lmer3)
+anova(medley_randz.lmer3, medley_rand.reml)
+```
+
+Try same model with nlme
+
+```{r }
+medley_rand_zinc.lme2 <- lme(fixed=diversity~zn, random=~1|stream/zn, method="REML", data=medley_rand)
+summary(medley_rand_zinc.lme2)
+```
+
+Fit random intercept-only model using nlme (matches lme4 model above)
+
+```{r }
+medley_rand_zinc.lme1 <- lme(fixed=diversity~zn, random=~1|stream, method="REML", data=medley_rand)
+summary(medley_rand_zinc.lme1)
+```

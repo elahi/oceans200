@@ -1,0 +1,25 @@
+﻿Complexity,Parsitism,Time,Proportion alive,std error
+Simple,Uninfected,0,1.00,0.00
+Simple,Uninfected,24,0.50,0.06
+Simple,Uninfected,48,0.27,0.13
+Simple,Uninfected,72,0.20,0.10
+Simple,Uninfected,96,0.07,0.07
+Simple,Uninfected,120,0.07,0.07
+Simple,Infected,0,1.00,0.00
+Simple,Infected,24,0.04,0.04
+Simple,Infected,48,0.00,0.00
+Simple,Infected,72,0.00,0.00
+Simple,Infected,96,0.00,0.00
+Simple,Infected,120,0.00,0.00
+Complex,Uninfected,0,1.00,0.00
+Complex,Uninfected,24,0.44,0.17
+Complex,Uninfected,48,0.17,0.03
+Complex,Uninfected,72,0.17,0.07
+Complex,Uninfected,96,0.08,0.04
+Complex,Uninfected,120,0.04,0.03
+Complex,Infected,0,1.00,0.00
+Complex,Infected,24,0.38,0.08
+Complex,Infected,48,0.21,0.05
+Complex,Infected,72,0.07,0.06
+Complex,Infected,96,0.04,0.03
+Complex,Infected,120,0.03,0.03

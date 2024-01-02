@@ -1,0 +1,37 @@
+---
+title: "QK Box 8.7"
+
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This Box uses a simulated data set. Create file with 20 observations for 4 variables (Y, X1 and X2) with specific correlation matrix. This step was done once for the example in Box 8.7. If you run it, you'll get different answers. To reproduce the example, use the data file [collin](../data/collin.csv)[.csv](collin.csv)
+
+```{r }
+library(mvtnorm)
+sigma <- matrix (c(1,0.7,0.1,0.7,1,0.2,0.1,0.2,1), nrow=3)
+qk <-rmvnorm(20, mean=c(0,0,0), sigma=sigma, method="chol")
+var(qk)
+qk
+```
+
+Create new variable, X2a in excel by rearranging values in x2 to be highly correlated with x1
+
+Read in data (collin.csv) and check correlations and VIFs and fit linear models
+
+```{r}
+library(car)
+collin <- read.csv("../data/collin.csv")
+cor(collin[,c('y','x1','x2','x2a')])
+collin1.lm <- lm(y~x1+x2, data=collin)
+vif(collin1.lm)
+summary(collin1.lm)
+collin2.lm <- lm(y~x1+x2a, data=collin)
+vif(collin2.lm)
+summary(collin2.lm)
+```

@@ -1,0 +1,77 @@
+---
+title: "QK 2nd Ed Ch 17"
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+This brief example shows the importance of careful colour selection. It uses the goby example from Chapter 10, which compared gonad mass for fish from five rivers, while adjusting for fish size (as total length).
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load standard package set for examples
+
+```{r echo=FALSE, include=FALSE, results='hide'}
+source("../R/libraries.R")
+source("../R/appearance.R")
+```
+
+Load colorBlindness package
+```{r}
+library(colorBlindness)
+```
+Import data and produce standard ggplot scatterplot, plus basic adjustments from theme "qk".
+Use river to identify groups and generate colours.
+For clarity, particularly with colorBlindness, we'll hide the legend as well.
+
+```{r}
+bleeker1 <- read_csv("../data/bleeker1.csv")
+cbt<-ggplot(data=bleeker1, aes(x=tl,y=gm, color=river))+
+    geom_point() +
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x = "Total length", y = "Gonad mass", 
+       )+
+  theme_qk()+ theme(legend.position="none")
+cbt
+```
+Note that this plot just uses ggplot default colours.
+
+Now see how this graph looks with various forms of colourblindness
+```{r}
+cvd<-cvdPlot(cbt)
+cvd
+```
+Now change plot to colour palette that is more compatible with a wide range of viewers.
+We'll use the viridis package, and its default settings, though there are several other options in other packages, such as *rcolorBrewer* and *ggsci*.
+```{r}
+cbt2<-cbt+scale_color_viridis(discrete=TRUE)
+cbt2
+```
+This plot is OK on screen, but when projected, in, e.g. a lecture, the yellow tends to fade into the backgroun, so we'd use a different palette.
+
+On the plus side, this palette still works with several forms of colorblindness:
+```{r}
+cvd2<-cvdPlot(cbt2)
+cvd2
+```
+
+Here's another option, using the u_chicago palette from *ggsci*
+```{r}
+cbt3<-cbt+scale_color_uchicago()
+cbt3
+```
+This palette still works with several forms of colorblindness:
+```{r}
+cvd3<-cvdPlot(cbt3)
+cvd3
+```
+
+For teaching, export these plots. 
+```{r eval=FALSE}
+ggsave("cbt.pdf", plot = cbt)
+ggsave("cbt2.pdf", plot = cbt2)
+ggsave("cvd.pdf", plot = cvd)
+ggsave("cvd2.pdf", plot = cvd2)
+ggsave("cbt3.pdf", plot = cbt3)
+ggsave("cvd2.pdf", plot = cvd3)
+```

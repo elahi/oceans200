@@ -1,0 +1,76 @@
+---
+title: "QK Box 2.2"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO~2~ levels were recorded after 120 minutes. The *H*~0~ was that there is no difference between the anesthetics in the mean blood CO~2~ level. This is an independent comparison because individual mice were only given one of the two anesthetics.
+
+## Preliminaries
+
+First, load the required packages (tidyverse, RMisc, MKinfer, car, emmeans)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")
+```
+
+Import low data file
+
+```{r}
+low <- read.csv("../data/lowco2.csv")
+low
+```
+
+## Get summary statistics by anesthetic
+
+```{r }
+low_stats <- summarySE(data=low,measurevar="co2", groupvars="anesth")
+low_stats
+low %>%  
+  group_by (anesth) %>% 
+summarise (median = median(co2), mean=mean(co2))
+```
+
+## Fit model and get effect size
+
+```{r}
+low.aov <- aov(co2~anesth,data=low)
+tidy(low.aov, conf.int=TRUE)
+
+low.emm <- emmeans(low.aov,"anesth")
+eff_size(low.emm, sigma=sigma(low.aov), edf=df.residual(low.aov))
+```
+Note that we've chosen to show a standardized effect size, using the pooled variance from the analysis of variance - Residual MS = 262.44, and √262.44 = 16.2
+
+## Test variances
+
+```{r}
+leveneTest(co2 ~ anesth, low)
+```
+
+### t-test for equal variances
+
+```{r}
+t.test(co2~anesth,var.equal=TRUE, data=low)
+```
+
+### t-test for separate variances
+
+```{r}
+t.test(co2~anesth,data=low)
+```
+
+## Wilcoxon-Mann-Whitney
+
+```{r}
+wilcox.test(co2~anesth,data=low)
+sum(rank(low$co2)[low$anesth=="ac"])
+sum(rank(low$co2)[low$anesth=="iso"])
+```
+
+

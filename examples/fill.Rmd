@@ -1,0 +1,218 @@
+---
+title: "Q & K Box 13.4"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Fill et al (2021) studied the effect of duff (leaf litter) on the post-fire ecology of wiregrass (*Aristida beyrichiana*) in a section of pine savanna. They sampled 99 plants in an area of 0.1 km^2^, recorded plant basal area and allocated each plant to one of three treatments: high duff, low duff, low duff with added pine cones. They then burnt the area and five months later, counted the number of culms on each plant. We will model numbers of culms per plant against basal area and duff treatment using each plant as the unit of analysis.
+
+This box explores several different ways in which count data can be treated, from the "classical" OLS models where the counts are square-root transformed, to GLMs based on the poisson distribution, to several options for data that are overdispersed.
+
+[![Aristida beyrichiana. [© Copyright Bobby Hattaway 2011](http://www.discoverlife.org/ap/copyright.html) /Discover Life](../media/Aristida_beyrichiana,I_TQBH6350.jpeg)](https://www.discoverlife.org/mp/20p?see=I_TQBH6350&res=640)
+
+*Aristida beyrichiana*. [© Copyright Bobby Hattaway 2011/Discover Life](https://www.discoverlife.org/ap/copyright.html)
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0247159) and Figure 1 has relevant photos.
+
+Fill, J. M., Zamora, C., Baruzzi, C., Salazar-Castro, J. & Crandall, R. M. (2021). Wiregrass (*Aristida beyrichiana*) survival and reproduction after fire in a long-unburned pine savanna. *PLoS One*, 16, e0247159.
+
+### Preliminaries
+
+First, load the required packages (car, performance, MuMIn, statmod, lmtest, vcd, Rmisc, MASS, pscl)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(performance)
+library(statmod)
+library(vcd)
+library(pscl)
+```
+
+Import fill data file ([fill.csv](data/fill.csv))
+
+```{r}
+fill <- read.csv("../data/fill.csv")
+fill
+```
+
+Check culm distribution with histogram
+
+```{r }
+plot(table(fill$culm))
+```
+
+Boxplot against treatment
+
+```{r }
+boxplot(culm~treatment, data=fill)
+```
+
+Get mean and variance by year and treatment, and look for mean vs variance relationship.
+
+Data possibly over-dispersed for poisson
+
+```{r }
+summarySE(data=fill, measurevar="culm", groupvars=c("treatment"))
+```
+
+Data possibly over-dispersed for poisson, but not bad.
+
+## Fit poisson glm
+
+```{r }
+fill1.glm <- glm(culm~basalarea+treatment+basalarea*treatment, family=poisson, data=fill)
+summary(fill1.glm)
+AICc(fill1.glm)
+```
+
+Check deviance residuals, influential values and collinearity
+
+```{r }
+residualPlots(fill1.glm, type="deviance")
+residuals(fill1.glm, type="deviance")
+influence.measures(fill1.glm)
+influencePlot(fill1.glm)
+```
+
+```{r }
+vif(lm(culm ~ basalarea+treatment+basalarea*treatment, data=fill))
+```
+
+Check collinearity - OK
+
+### Test interaction
+
+```{r }
+fill2.glm <- glm(culm~basalarea+treatment, family=poisson, data=fill)
+lrtest(fill1.glm, fill2.glm)
+```
+
+Get analysis of deviance table
+
+```{r }
+anova(fill1.glm, test="LRT")
+```
+
+### Check overdispersion by calculating dispersion statistic
+
+```{r }
+presid1 <- resid(fill1.glm, type="pearson")
+ssize1 <- nrow(fill)
+params1 <- length(coef(fill1.glm))
+disp1 <- sum(presid1^2)/(ssize1-params1)
+disp1
+```
+
+**Note** residual deviance \>\> residual df and dispersion stat \>\> 1 so overdispersed. Might be better with negative binomial rather than poisson.
+
+## Fit neg binomial
+
+```{r }
+fill1.nb <- glm.nb(culm~basalarea+treatment+basalarea*treatment, data=fill)
+summary(fill1.nb)
+AICc(fill1.nb)
+
+fill2.nb <- glm.nb(culm~basalarea+treatment, data=fill)
+lrtest(fill1.nb, fill2.nb)
+summary(fill2.nb)
+AICc(fill2.nb)
+
+fill3.nb <- glm.nb(culm~basalarea, data=fill)
+summary(fill3.nb)
+AICc(fill3.nb)
+lrtest(fill2.nb, fill3.nb)
+
+fill4.nb <- glm.nb(culm~treatment, data=fill)
+lrtest(fill2.nb, fill4.nb)
+anova(fill1.nb, test="LRT")
+```
+
+Check diagnostics
+
+```{r }
+residualPlots(fill1.nb, type="deviance")
+influence.measures(fill1.nb)
+influencePlot(fill1.nb)
+```
+
+Dispersion statistic (note add 1 to parameters because of estimating k)
+
+```{r }
+nbresid <- resid(fill1.nb, type="pearson")
+nbssize <- nrow(fill)
+nbparams <- length(coef(fill1.nb))+1
+nbdisp <- sum(nbresid^2)/(nbssize-nbparams)
+nbdisp
+```
+
+Dispersion statistic just over 1 so much better.
+
+## Compare to quasi-Poisson as an alternative
+
+```{r }
+fill.qp <- glm(culm~basalarea+treatment+basalarea*treatment, family=quasipoisson, data=fill)
+fill.qp$theta
+summary(fill.qp)
+anova(fill.qp, test="LRT")
+residualPlots(fill.qp, type="deviance")
+influence.measures(fill.qp)
+influencePlot(fill.qp)
+```
+
+## Compare with two additive zinb models
+
+Check predicted number of zeros from -ve binomial first observed number (ignoring treatments)
+
+```{r }
+zerobs <- fill$culm == 0
+propzerobs <- sum(zerobs)/nrow(fill)
+propzerobs
+```
+
+Second, predicted number from -ve binomial
+
+```{r }
+munb <- exp(predict(fill2.nb))
+theta <- fill2.nb$theta           
+znb <- dnbinom(0, mu=munb, size=theta)
+mean(znb)
+```
+
+### ZIP1
+
+```{r }
+fill1.zip <- zeroinfl(culm~basalarea+treatment|1, data=fill, dist="negbin")
+summary(fill1.zip)
+AIC(fill1.zip)
+```
+
+### ZIP2
+
+```{r }
+fill2.zip <- zeroinfl(culm~basalarea+treatment|basalarea+treatment, data=fill, dist="negbin")
+summary(fill2.zip)
+AIC(fill2.zip)
+lrtest(fill1.zip, fill2.zip)
+```
+
+## Compare with linear model
+
+```{r }
+fill.lm <- lm(culm~basalarea+treatment+basalarea*treatment, data=fill)
+summary(fill.lm)
+plot(fill.lm)
+AIC(fill.lm)
+```
+
+### Try linear with sqrt transform
+
+```{r }
+fill.lm <- lm(sqrt(culm)~basalarea+treatment+basalarea*treatment, data=fill)
+summary(fill.lm)
+plot(fill.lm)
+AIC(fill.lm)
+```

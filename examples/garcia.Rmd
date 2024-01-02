@@ -1,0 +1,236 @@
+---
+title: "QK Box 12.3"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Garcia et al. (2015) studied the effect of the appetite-regulating hormone leptin on appetite and mating preferences in the spadefoot toad *Spea bombifrons*. Eighteen female toads collected from the wild were allocated to a treatment group (n = 9) which received a subcutaneous injection of leptin once per day for six days, and a control group (n = 9), which received saline injections with the same frequency. One hour after the day 6 injections, each toad was presented with approximately 50 crickets. The response variable was the cumulative number of attacks by each toad over three-minute intervals for 15 minutes. Treatment (leptin versus control was the fixed between-subject factor and toads were the subjects. The within-subjects fixed factor was time with five groups representing 3, 6, 9, 12 and 15 minutes after the introduction of crickets.
+
+[![](../media/Plains_spadefoot_toad_(48126396031).jpg){width="350"}](https://commons.wikimedia.org/wiki/File:Plains_spadefoot_toad_%2848126396031%29.jpg)
+
+Plains spadefoot toad. USFWS Mountain-Prairie, Public domain, via Wikimedia Commons
+
+Garcia, N. W., Pfennig, K. S. & Burmeister, S. S. (2015). Leptin manipulation reduces appetite and causes a switch in mating preference in the Plains Spadefoot Toad (*Spea bombifrons*). *PLoS One*, 10, e0125981.
+
+Link to the [paper](http://doi.org/10.1371/journal.pone.0125981)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import garcia data file
+
+```{r}
+garcia <- read.csv("../data/garcia.csv")
+garcia
+```
+
+set contrasts using afex
+
+```{r }
+set_sum_contrasts()
+```
+
+set toad as factor and create timefac as categorical version of time
+
+```{r }
+garcia$toad <- factor(garcia$toad)
+garcia$timefac <- factor(garcia$time, ordered=TRUE)
+```
+
+### Diagnostics
+
+Check residuals - uneven spread related to mean
+
+```{r }
+garcia1.aov <- aov(cumattack~treatment*time, garcia)
+plot(garcia1.aov)
+```
+
+Check boxplots - unequal spread related to mean
+
+```{r }
+boxplot(cumattack~treatment*time,data=garcia)
+```
+
+Check homogeneity of within-group variances - very different variances
+
+```{r }
+garcia_stats <- summarySE(data=garcia,measurevar="cumattack", groupvars=c("treatment","time"))
+garcia_stats
+```
+
+#### Original authors did not use log10 transform but worth tryings
+
+```{r }
+garcia$lcumattack <- log10(garcia$cumattack)
+garcia1log.aov <- aov(lcumattack~treatment*time, garcia)
+plot(garcia1log.aov)
+boxplot(lcumattack~treatment*time,data=garcia)
+garcialog_stats <- summarySE(data=garcia,measurevar="lcumattack", groupvars=c("treatment","time"))
+garcialog_stats
+```
+
+Log10 overcorrects - analyse original data and try different variances with lme First analyse with time as categorical factor
+
+## Run as simple split-plot with polynomial contrasts
+
+**fully balanced so all SS are OK**
+
+```{r }
+garcia2.aov <- aov(cumattack~treatment*timefac+Error(toad), garcia)
+summary(garcia2.aov)
+summary(garcia2.aov, split=list(timefac=list(linear=1, quadratic=2, cubic=3)))
+emmeans(garcia2.aov, ~timefac|treatment)
+```
+
+### Run with ez to get GG and HF adjustments
+
+```{r }
+ezgarcia1 <- ezANOVA(data=garcia, dv=cumattack, wid=toad, within=timefac, between=treatment, type=3, detailed=TRUE)
+print(ezgarcia1)
+```
+
+## Run as REML mixed effects
+
+Use lme4 using time as factor - use anova and Anova to look at fixed effects (Type 3 is OK to decide whether to keep intyeraction)
+
+### First random intercepts only to match aov model
+
+```{r }
+garcia1.lmer <- lmer(cumattack~treatment*timefac+(1|toad), garcia)
+summary(garcia1.lmer, ddf="Kenward-Roger")
+anova(garcia1.lmer, ddf="Kenward-Roger")
+```
+
+Get var comps
+
+```{r }
+garcia1.ci <- confint.merMod(garcia1.lmer)
+garcia1.vc <- (garcia1.ci)^2
+print(garcia1.vc)
+```
+
+#### Try random intercepts and slopes - doesn't work as too many parameters (too many df used for toad\*time interaction)
+
+```{r error=TRUE}
+garcia1a.lmer <- lmer(cumattack~treatment*timefac+(timefac|toad), garcia)
+```
+
+### Run as mixed effects with nlme using time as factor - random intercepts only to match above - matches above
+
+```{r }
+garcia1.lme <- lme(cumattack~treatment*timefac, random=~1|toad, method="REML",garcia)
+summary(garcia1.lme)
+anova(garcia1.lme, type="marginal")
+```
+
+### Compare above model to one that allows group-specific variances to differ - refit with ML
+
+```{r }
+garcia2.lme <- lme(cumattack~treatment*timefac, random=~1|toad, method="ML",garcia)
+garcia3.lme <- lme(cumattack~treatment*timefac, random=~1|toad, weights = varIdent(form= ~ 1 | treatment*timefac),method="ML",garcia)
+anova(garcia2.lme, garcia3.lme)
+AICc(garcia2.lme, garcia3.lme)
+```
+
+### Refit unequal variances model with REML
+
+```{r }
+garcia4.lme <- lme(cumattack~treatment*timefac, random=~1|toad, weights = varIdent(form= ~ 1 | treatment*timefac),method="REML",garcia)
+anova(garcia4.lme, type="marginal")
+```
+
+## Second, analyse with time as continuous covariate Plot cumattack-time relationships for each toad - all relationships positive but some differences in slopes
+
+```{r }
+xyplot(cumattack~time|toad, groups=treatment, type=c("p","r"), auto.key=T, garcia)
+```
+
+Now examine individual slopes (and intercepts) - again, variation in slopes
+
+```{r }
+list_garcia <- lmList(cumattack~time|toad, garcia)
+summary(list_garcia)
+```
+
+### Run as mixed effects with lme4 using time as continuous covariate
+
+First ML model with random slopes and intercepts
+
+```{r }
+garcia2.lmer <- lmer(cumattack~treatment+time+treatment*time+(time|toad), REML=FALSE, garcia)
+```
+
+Second just random intercepts
+
+```{r }
+garcia3.lmer <- lmer(cumattack~treatment*time+(1|toad), REML=FALSE, garcia)
+```
+
+Test random slopes term - note the comparison is based on ML fits
+
+```{r }
+anova(garcia3.lmer,garcia2.lmer)
+AICc(garcia3.lmer,garcia2.lmer)
+```
+
+### Use random slopes model - refit using REML
+
+```{r }
+garcia4.lmer <- lmer(cumattack~treatment+time+treatment*time+(time|toad), REML=TRUE, garcia)
+summary(garcia4.lmer, ddf="Kenward-Roger")
+anova(garcia4.lmer, type="3", ddf="Kenward-Roger")
+```
+
+get var comps
+
+```{r }
+garcia4.ci <- confint.merMod(garcia4.lmer, oldNames=FALSE)
+garcia4.vc <- (garcia4.ci)^2
+print(garcia4.vc)
+```
+
+### Compare to random intercepts for interest - refit using REML
+
+```{r error=TRUE}
+garcia5.lmer <- lmer(cumattack~treatment*time+(1|toad), REML=TRUE, garcia)
+summary(garcia5.lmer, ddf="Kenward-Roger")
+anova(garcia5.lmer, type="3", ddf="Kenward-Roger")
+
+#Get CIs as well
+garcia5.ci <- confint.merMod(garcia5.lmer, oldNames=FALSE)
+garcia5.vc <- (garcia5.ci)^2
+print(garcia5.vc)
+
+```
+
+## Now allow covariances to differ using nlme - compare default to AR(1) - use random slopes model
+
+```{r error=TRUE}
+lmeControl(maxIter = 100)  #Controls lme optimization process
+garcia5.lme <- lme(cumattack~treatment*time, random=~time|toad, method="ML",garcia)
+garcia6.lme <- lme(cumattack~treatment*time, random=~time|toad, correlation=corAR1(, form=~1|toad),method="ML",garcia)
+```
+
+**couldn't get convergence with AR(1) with random slopes even when increasing max iterations to 100 so use random intercept model. For the rand. int. model, we still need to keep the number of iterations above the default**
+
+```{r }
+garcia7.lme <- lme(cumattack~treatment*time, random=~1|toad, method="ML",garcia)
+garcia8.lme <- lme(cumattack~treatment*time, random=~1|toad, correlation=corAR1(, form=~1|toad),method="ML",garcia)
+```
+
+## Compare models
+
+```{r }
+anova(garcia7.lme,garcia8.lme)
+AICc(garcia7.lme,garcia8.lme)
+```

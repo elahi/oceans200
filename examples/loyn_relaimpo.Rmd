@@ -1,0 +1,159 @@
+---
+title: "QK Box 9.1"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This box continues with the forest bird data set used in [Boxes 8.2](loyn.nb.html) and [8.10](loyncat.nb.html)
+
+We calculated common measures of relative importance based on the fit of the following full model relating bird abundance to five predictors for the dataset from Loyn (1997; see Box 8.2): (bird abundance)~i~ = β~0~ + *β*~1~(log patch area) + *β*~2~(log distance to nearest patch) +*β*~3~(grazing) +*β*~4~(altitude) + *β*~5~(year isolated) + *ε~i~*
+
+### Preliminaries
+
+First, load the required packages (relaimpo, car, hier.part, MuMIn, lm.beta, sjstats)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("R/libraries.R")
+library(hier.part)      #This package has been removed from CRAN
+library(relaimpo)
+library(lm.beta)
+library(sjstats)
+```
+
+Import loyn data file ([data/loyn.csv](data/loyn.csv)); from previous example, we needed to transform area and distance
+
+```{r}
+loyn <- read.csv("../data/loyn.csv")
+head(loyn,10)
+loyn$logarea <- log10(loyn$area)
+loyn$logdist <- log10(loyn$dist)
+```
+
+For some analyses, we also need two dataframes that are subsets of loyn containing the response variable and the predictors
+
+```{r}
+loyn_abund<-loyn$abund
+loyn_pred<-subset(loyn, select = c("logarea","logdist","alt","yearisol","graze"))
+```
+
+### Run model from Box 8.2
+
+```{r }
+loyn.lm <- lm(abund~ logarea+logdist+graze+alt+yearisol, data=loyn)
+tidy(loyn.lm)
+```
+
+#### Get Standardized coefficients (usual)
+
+```{r }
+lm.beta.loyn <- lm.beta(loyn.lm)
+tidy(lm.beta.loyn, conf.int=TRUE)
+```
+
+#### Standardized coefficients (both usual and partial sd)
+
+```{r error=FALSE}
+std.coef(loyn.lm, partial.sd=FALSE)
+std.coef(loyn.lm, partial.sd=TRUE)
+```
+
+## Get relative importance
+
+```{r}
+calc.relimp(loyn.lm, type = c("lmg", "pmvd", "last", "first", "betasq", "pratt"), rela=FALSE)
+```
+
+**Note:** Available metrics from *relaimpo* package: lmg, pmvd (non-US version only), last, first, betasq, pratt, genizi and car. - from package help
+
+Can only get pmvd to run if we obtain the non-US version from author's website and install manually - copy into relevant R library folder.
+
+Author web site is <http://prof.beuth-hochschule.de/groemping/software/relaimpo/>
+
+**Note:** Use stand coefficents based on partial sd above instead of betasq
+
+```{r }
+loyn.boot <- boot.relimp(loyn.lm, b=1000, type = c("lmg", "pmvd"))
+booteval.relimp(loyn.boot)
+```
+
+### Now look at hierarchical partitioning
+
+```{r error=TRUE}
+hier.part(loyn_abund, loyn_pred, family="gaussian", gof="Rsqu")
+```
+
+The package hier.part was removed from CRAN in March 2023. The code above will work if you have hier.part installed already.
+An alternative is to use the package *glmm.hp*, which is done in the next code chunk.
+
+Hier.part can also be installed from Github, though there may be issues with M1/M2 Macs. The quick way from Github is using devtools:
+devtools::install_github("cjbwalsh/hier.part")
+
+```{r}
+library (glmm.hp)
+glmm.hp(loyn.lm, type="R2")
+```
+
+### Model selection (unstandardized coefficients)
+
+```{r }
+options(na.action = "na.fail")
+loyn.dredge <-dredge(loyn.lm, beta="none", evaluate=TRUE)
+loyn.dredge
+```
+
+### Model selection (standardized coefficients, by partial sd)
+
+```{r }
+options(na.action = "na.fail")
+loyn.dredge1 <-dredge(loyn.lm, beta="partial.sd", evaluate=TRUE)
+loyn.dredge1
+```
+
+## Model averaging
+
+**Note** confint only provides CIs for conditional (natural) averages, based on z=1.96. Modified SE CIs in Box 9.1 calculated by hand for full averaging
+
+### Unstandardized first
+
+```{r }
+loyn.ma<-model.avg(loyn.dredge)
+summary(loyn.ma)
+confint(loyn.ma)
+```
+
+### Get standardized (by partial sd and unconditional sd) model averaged estimates
+
+```{r error=TRUE}
+loyn.ma1<-model.avg(loyn.dredge, beta="sd") #Recent update gives error with this averaging
+summary(loyn.ma1)
+confint(loyn.ma1)
+loyn.ma2<-model.avg(loyn.dredge, beta="partial.sd")
+summary(loyn.ma2)
+confint(loyn.ma2)
+```
+
+### Sum of akaike weights
+
+```{r }
+sw(loyn.dredge)
+# importance(loyn.dredge)   #this function now defunct, and sw recommended
+```
+
+## k-fold cross validation
+
+```{r }
+cv_error(loyn, abund~ logarea+logdist+graze+alt+yearisol, k=5)
+cv_error(loyn, abund~ logarea+logdist+graze+alt+yearisol, k=10)
+```
+
+### leave one out cross-validation
+
+```{r }
+cv_error(loyn, abund~ logarea+logdist+graze+alt+yearisol, k=56)
+```

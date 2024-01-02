@@ -1,0 +1,232 @@
+---
+title: "Q & K Box 13.9"
+output:
+    html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Cabanellas-Reboredo et al. (2019) studied the spread of a disease in a large bivalve (Pinna nobilis) in the Mediterranean caused by a protozoan endoparasite. They collated observations of dead or unwell bivalves from many sites using information from scientific surveys and citizen science contributions. They only used observations from sites that their dispersal models indicated the disease could have spread to. They focused on relating the presence of the disease at a site to salinity and temperature.
+
+You can find a nice picture of *Pinna nobilis* [here](https://upload.wikimedia.org/wikipedia/commons/0/02/Pinnidae_-_Pinna_nobilis.jpg){.uri}, but to get an idea what these bivalves look like, here's the smaller *Pinna bicolor* from southern Australia, which "only" grows to 45 or 50 cm.
+
+![](../media/Pinna%20bicolor.jpg)
+
+Mick Keough [![](../media/by.png){width="57"}](https://creativecommons.org/licenses/by/4.0)
+
+The original paper is [here](https://doi.org/10.1038/s41598-019-49808-4). The supplementary data in the paper is a superset of that used for the GAM. The data can be obtained from the paper, but Dr Cabanellas-Reboredo has kindly provided the script to create the right subset, and the easiest option is to use the version [here](cabanellas.csv).
+
+Cabanellas-Reboredo, M., et al. (2019). Tracking a mass mortality outbreak of pen shell *Pinna nobilis* populations: A collaborative effort of scientists and citizens. *Scientific Reports*, 9, 13355.
+
+### Preliminaries
+
+First, load the required packages (mgcv, gratia, statmod, lmtest, car, performance)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(mgcv)
+library(gratia)
+library(statmod)
+library(performance)
+library(vcd)
+```
+
+Import cabanellas data file ([cabanellas.csv](../data/cabanellas.csv))
+
+```{r}
+cabanellas <- read.csv("../data/cabanellas.csv")
+head(cabanellas)
+```
+
+**Note**: there are two ways to get these data. From the original paper, the data are available as a text file of all 421 observations (Table 1). The analysis used a subset of the observations from sites of potential parasite infection, excluding sites outside the current range. If you work from this full file, Dr Miguel Cabanellas Rebredo has kindly provided the script to select the required 271 observations. It is below as a code chunk that is not evaluated. You'll need to modify the markdown to run this chunk.
+
+```{r eval=FALSE}
+# Import Parasite Data
+df=read.table("data/PinnaParasite.txt", header=TRUE, sep=" ", 
+                 na.strings = "NA", check.names = FALSE) #data frame with all 421 records
+# Subset the records to fit the GAM
+df.gam <- subset(df, df$GAM=="GAM")
+# This subset respond to records where the parasite was detected (Parasite==1) and #
+# records where the parasite was no detected (Parasite==0), but given the expasion #
+# of the parasite, such regions should be infected                                 #
+
+#Change comma per dot
+df.gam$Lat=as.numeric(gsub(",", ".", df.gam$Lat))
+df.gam$Lon=as.numeric(gsub(",", ".", df.gam$Lon))
+df.gam$Sdepth=as.numeric(gsub(",", ".", df.gam$Sdepth))
+df.gam$Stemp=as.numeric(gsub(",", ".", df.gam$Stemp))
+df.gam$Ss=as.numeric(gsub(",", ".", df.gam$Ss))
+cabanellas<-df
+```
+
+## Fit logistic GLM
+
+Do simple plots for cont predictors
+
+```{r }
+plot(parasite~stemp, data=cabanellas)
+plot(parasite~ssal, data=cabanellas)
+```
+
+Check boxplots for continuous predictors
+
+```{r }
+boxplot(cabanellas$stemp~cabanellas$parasite)
+boxplot(cabanellas$ssal~cabanellas$parasite)
+```
+
+### Fit full glm
+
+```{r }
+cabanellas.glm <- glm(parasite ~ stemp+ssal,data=cabanellas,family=binomial)
+summary(cabanellas.glm)
+AIC(cabanellas.glm)
+```
+
+Do LR test for each predictor
+
+First salinity
+
+```{r }
+cabanellas1.glm <- glm(parasite ~ stemp,data=cabanellas,family=binomial)
+lrtest(cabanellas.glm, cabanellas1.glm)
+```
+
+now temp
+
+```{r }
+cabanellas2.glm <- glm(parasite ~ ssal,data=cabanellas,family=binomial)
+lrtest(cabanellas.glm, cabanellas2.glm)
+```
+
+Check quantile residuals
+
+```{r error=TRUE}
+qcabanellas <- qresid(cabanellas.glm)
+qcabanellas
+plot(qcabanellas~cabanellas.glm$fitted.values)
+```
+
+Check deviance residuals
+
+```{r }
+residualPlots(cabanellas.glm, type="deviance")
+```
+
+Check for overdispersion
+
+```{r }
+c(deviance(cabanellas.glm), df.residual(cabanellas.glm))
+```
+
+-   underdispersion if anything
+
+Check collinearity
+
+```{r }
+vif(lm(parasite ~ stemp+ssal,data=cabanellas))
+cor(cabanellas$stemp,cabanellas$ssal)
+```
+
+get H-L test and tjur r^2^
+
+```{r }
+performance_hosmer(cabanellas.glm, n_bins=10)
+r2_tjur(cabanellas.glm)
+```
+
+Plot predicted values
+
+```{r }
+plot(cabanellas.glm$fitted.values~cabanellas$stemp)
+plot(cabanellas.glm$fitted.values~cabanellas$ssal)
+```
+
+### Fit GAM with thin plate regression spline
+
+```{r }
+cabanellas1.gam <- gam(parasite ~ s(stemp)+s(ssal),data=cabanellas,family=binomial(link=logit))
+summary(cabanellas1.gam)
+AIC(cabanellas1.gam)
+```
+
+Check diagnostics although residuals difficult to interpret with binary data
+
+(quantile residuals not available in mcgv) edf not too close to k although index is \< 1
+
+```{r }
+gam.check(cabanellas1.gam, type="deviance")
+```
+
+qq-plot looks OK
+
+```{r }
+appraise(cabanellas1.gam, type="deviance")
+```
+
+Plot smoother
+
+```{r }
+plot(cabanellas1.gam, resid=TRUE, shade=TRUE, cex=0.5, pch=1)
+```
+
+Use gratia to get nicer plots
+
+```{r }
+source("../R/appearance.R")
+p<-draw(cabanellas1.gam, select=c(1,2), residuals=FALSE, ci_level=0.95,rug=FALSE)&
+  theme_qk() &
+  theme(
+  title=element_blank()
+)
+p
+```
+
+### Fit gam with cubic regression spline
+
+```{r }
+cabanellas2.gam <- gam(parasite ~ s(stemp, bs="cr")+s(ssal, bs="cr"),data=cabanellas,family=binomial(link=logit))
+summary(cabanellas2.gam)
+AIC(cabanellas2.gam)
+```
+
+Check diagnostics although residuals difficult to interpret with binary data (quantile residuals not available in mcgv)
+
+```{r }
+gam.check(cabanellas2.gam, type="deviance")
+appraise(cabanellas2.gam, type="deviance")
+```
+
+Plot smoother
+
+```{r }
+plot(cabanellas2.gam, resid=TRUE, shade=TRUE, cex=0.5, pch=1)
+draw(cabanellas2.gam, select=c(1,2), residuals=TRUE, ci_level=0.95,rug=TRUE)
+```
+
+Try visreg, as used by Cabanellas
+
+```{r}
+library(visreg)
+library(ggplot2)
+plotStemp=visreg(cabanellas1.gam, "stemp", rug=0, xlab="Temperature (ºC)", ylab="Partial Effect",
+                 gg=TRUE, line=list(col=lc),
+                 fill=list(fill="grey80", alpha=0.5),
+                 points=list(size=1, pch=1, col=lc)) + theme_qk()+
+  scale_x_continuous(breaks=seq(8,30,by=2), expand = c(0.01, 0.01))
+plotStemp
+p1<-plotStemp+ theme_qk()
+#--------
+plotSs=visreg(cabanellas1.gam, "ssal", rug=0, xlab="Salinity (psu)", ylab="Partial Effect",
+              gg=TRUE, line=list(col=lc),
+              fill=list(fill="grey80", alpha=0.5),
+              points=list(size=1, pch=1, col=lc))+
+  scale_x_continuous(breaks=seq(35,43,by=1), expand = c(0.01, 0.01))
+  plotSs
+  p2<-plotSs + theme_qk()
+  p1
+  p2
+  p1+p2
+```

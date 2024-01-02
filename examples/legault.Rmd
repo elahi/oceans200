@@ -1,0 +1,143 @@
+---
+title: "QK Box 11.2"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Legault et al. (2018) experimentally examined the effects of nutrient loading on the outcome of competitive interactions between two species of saltmarsh plants, the native *Spartina alterniflora* and the exotic *Phragmites australis*, in northeast USA. The between-plots factor was nutrient addition (fixed, with three groups: none, low and high) with five 50-gallon bins containing half-strength seawater as the plots. The within-plots factor was competition (fixed with two groups: no competition, with competition), with sub-plots being small pots containing one (no competition) or both (with competition) species within each bin. This design was replicated at the sub-plot level with two pots for each competition group within each bin. We will analyze biomass of *P. australis* at ambient temperature as the response variable.
+
+![*Phragmites australis*. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)](../media/phragmites2.jpg){width="512"}
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0100718)
+
+Legault, R., Zogg, G. P. & Travis, S. E. (2018). Competitive interactions between native *Spartina alterniflora* and non-native *Phragmites australis* depend on nutrient loading and temperature. *PLoS One*, 13, e0192234.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import legault data file ([legault.csv](data/legault.csv))
+
+```{r}
+legault <- read.csv("../data/legault.csv")
+legault
+```
+
+Set contrasts from afex
+
+Re-arrange nutrient levels so that no nutrients is reference
+
+```{r }
+set_sum_contrasts()
+legault$nutrient <- factor(legault$nutrient, levels=c("Null (0 g N/m2/year)","Low (30 g N/m2/year)","High (120 g N/m2/year)"))
+legault$comp<-factor(legault$comp)
+```
+
+### Fit aov crossed model to check approx residuals
+
+```{r }
+legault1.aov <- aov(biom~nutrient+comp+nutrient*comp, legault)
+plot(legault1.aov)
+```
+
+Some evidence for unequal residuals but use untransformed biomass to match original paper
+
+### Fit model using aov (balanced design so all SS types the same)
+
+```{r }
+legault2.aov <- aov(biom~nutrient+Error(bin/comp)+comp+nutrient*comp, legault)
+summary(legault2.aov)
+print(summary(legault2.aov))
+```
+
+### Fit split-plot anova model using ez for comparison of output
+
+This uses mean biomass for each competition group within each bin - same answers as above due to balanced design
+
+```{r }
+legault.ez <- ezANOVA(dv=biom, wid=bin, within=comp, between=nutrient, type=1, legault)
+print(legault.ez)
+```
+
+### Rerun as classic split-plot design based on sub-plot means - matches above
+
+This example illustrates a short-cut that produces a simpler analysis for a paper, etc.
+
+```{r }
+legault_means <- summarySE(legault, measurevar= 'biom', groupvars= c('nutrient','bin','comp'))
+legault_means
+legault3.aov <- aov(biom~nutrient*comp+Error(bin), legault_means)
+summary(legault3.aov)
+```
+
+### Fit mixed model using lme4
+
+```{r }
+legault1.lmer <- lmer(biom~nutrient+comp+nutrient*comp+(1|bin)+(1|bin:comp), REML=TRUE, legault)
+```
+
+Get residuals from lmer model fit - some evidence on variance heterogeneity but again use untransformed biom to match original paper
+
+```{r }
+plot(legault1.lmer)
+summary(legault1.lmer, ddf="Kenward-Roger")
+anova(legault1.lmer, ddf="Kenward-Roger")
+```
+
+Contrast no nutrients with low and high separately
+
+```{r }
+legault1.emm <- emmeans(legault1.lmer, ~nutrient)
+legault1.con <- contrast(legault1.emm, "trt.vs.ctrl", ref=1)
+summary(legault1.con, adjust="none")
+```
+
+Get variance components with CIs
+
+```{r }
+legault1.ci <- confint.merMod(legault1.lmer, oldNames=FALSE)
+legault1.vc <- (legault1.ci)^2
+print(legault1.vc)
+```
+
+Evaluate whether to omit bins(nutrients) x competition interaction
+
+```{r error=TRUE}
+legault1a.lmer <- lmer(biom~nutrient+comp+nutrient*comp+(1|bin)+(1|bin:comp), REML=FALSE, legault)
+legault2.lmer <- lmer(biom~nutrient+comp+nutrient*comp+(1|bin), REML=FALSE, legault)
+anova(legault1a.lmer,legault2.lmer)
+AICc(legault1a.lmer,legault2.lmer)
+```
+
+Get results from model omiting bins(nutrients) x competition interaction
+
+```{r error=TRUE }
+legault2a.lmer <- lmer(biom~nutrient+comp+nutrient*comp+(1|bin), REML=TRUE, legault)
+summary(legault2a.lmer)
+anova(legault2a.lmer, type="3", ddf="Kenward-Roger")
+```
+
+### Fit mixed model on means (classic split-plot design) using lmer
+
+```{r }
+legault3.lmer <- lmer(biom~nutrient+comp+nutrient*comp+(1|bin), REML=TRUE, legault_means)
+summary(legault3.lmer)
+anova(legault3.lmer, ddf="Kenward-Roger")
+```
+
+Get variance components with CIs
+
+```{r }
+legault3.ci <- confint.merMod(legault3.lmer)
+legault3.vc <- (legault3.ci)^2
+print(legault3.vc)
+```

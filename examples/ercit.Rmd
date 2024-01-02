@@ -1,0 +1,151 @@
+---
+title: "QK Box 8.1"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ercit et al. (2014) focused on whether egg number influenced jump distance of female crickets, taking into account differences in body size (pronotum length) and leg strength (leg mass). They initially fitted a model that included all three predictors plus interaction terms. However, the sample size (n=29) is relatively small for a model to include 7 parameters plus the intercept so we will focus just on the main effects of the three predictors.
+
+[![Black-horned_Tree_Cricket\_(Oecanthus_nigricornis). Andrew C, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons](../media/Black-horned_Tree_Cricket_(Oecanthus_nigricornis)_(15170887362).jpg)](https://upload.wikimedia.org/wikipedia/commons/3/32/Black-horned_Tree_Cricket_%28Oecanthus_nigricornis%29_%2815170887362%29.jpg) Black-horned_Tree_Cricket (*Oecanthus nigricornis*). Andrew C, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0110298)
+
+Ercit, K., Martinez-Novoa, A. & Gwynne, D. T. (2014). Egg load decreases mobility and increases predation risk in female black-horned tree crickets (*Oecanthus nigricornis*). *PLoS One*, 9, e110298.
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(lm.beta)
+```
+
+Import ercit data file (ercit.csv)
+
+```{r}
+ercit <- read.csv("../data/ercit.csv")
+head(ercit,10)
+```
+
+## Run diagnostics
+
+Do scatterplotMatrix for all variables
+
+```{r }
+scatterplotMatrix(~distance+eggs+pronotum+legmass, data=ercit, regLine=FALSE, diagonal=list(method='boxplot'))
+```
+
+All variables look symmetrically distributed, no obvious outliers, relationships between distance and each predictor show no signs of non-linearity.
+
+Now check for collinearity among predictors - correlations and scatterplots and VIFs
+
+```{r }
+cor(ercit[,c('eggs','pronotum','legmass')])
+vif(lm(distance~ eggs+pronotum+legmass, data=ercit))
+```
+
+Some collinearity between pronotum length and egg mass but r \< 0.7 and no VIFs \>5 so proceed (will do re-analysis later)
+
+### Fit model with 3 predictors
+
+```{r }
+ercit.lm <- lm(distance~ eggs+pronotum+legmass, data=ercit)
+```
+
+This command fits this model:
+
+```{r echo=FALSE, results='asis'}
+equatiomatic::extract_eq(ercit.lm)
+```
+
+Examine regression diagnostics (residual plot and Cooks D)
+
+```{r }
+plot(ercit.lm)
+augment(ercit.lm)
+```
+
+Residual plot OK, no unusually large Cook D values
+
+## Display results of model fitting
+
+We're comfortable with the diagnostics, so we can now assess the parameters:
+
+```{r echo=FALSE, results='asis'}
+equatiomatic::extract_eq(ercit.lm, use_coefs = TRUE)
+```
+
+```{r }
+options(digits = 3)
+tidy(ercit.lm, conf.int = TRUE)
+glance(ercit.lm)
+```
+
+### Get standarised regression coefficients
+
+Use lm.beta function from lm.beta package
+
+```{r }
+lm.beta.ercit <- lm.beta(ercit.lm)
+tidy(lm.beta.ercit, conf.int = TRUE)
+glance(lm.beta.ercit)
+```
+
+### Show the partial regression (added-variable) plots
+
+```{r }
+avPlots(ercit.lm, ask=F)
+```
+
+## Illustrate model comparison approach
+
+There is also an issue with collinearity between pronotum and leg mass. While the collinearity measure does not exceed our threshold, we might also be interested in models with only one of this pair. We'll drop leg mass and then omit pronotum.
+
+```{r }
+# Omit legg mass from model
+ercit1.lm <- lm(distance~ eggs+pronotum, data=ercit)
+tidy(ercit1.lm, conf.int = TRUE)
+lm.beta.ercit1 <- lm.beta(ercit1.lm)
+tidy(lm.beta.ercit1, conf.int = TRUE)
+# Omit pronotum from model
+ercit2.lm <- lm(distance~ eggs+legmass, data=ercit)
+tidy(ercit2.lm, conf.int = TRUE)
+lm.beta.ercit2 <- lm.beta(ercit2.lm)
+tidy(lm.beta.ercit2, conf.int = TRUE)
+```
+
+### Illustration of partial regression coefficient for egg number (Box 8.5)
+
+We need two steps:
+
+1.  Variation in egg number that is independent of pronotum and legmass. To get this, we fit a linear model where egg number is the response and pronotum and legmass the predictors. We want the residuals from this regression.
+
+2.  Fit a regression model linking jump distance to the residuals from step 1. The slope of this regression is the partial regression coefficient
+
+```{r}
+ercit_egg<-lm(eggs~pronotum+legmass,data=ercit)
+model1<-lm(ercit$distance~ercit_egg$residuals)
+tidy(model1)
+```
+
+### Illustration of model comparison approach (Box 8.6)
+
+First test overall H~0~ that all regression coefficients equal zero, then test H~0~s about individual regression coefficients (egg number for example)
+
+```{r }
+#Overall test
+ercit.lm <- lm(distance~ eggs+pronotum+legmass, data=ercit)
+ercit1.lm <- lm(distance~1, data= ercit)
+anova(ercit.lm, ercit1.lm)
+#Now drop egg number from model
+ercit2.lm <- lm(distance~pronotum+legmass, data= ercit)
+#Compare the two models
+anova(ercit.lm, ercit2.lm)
+```

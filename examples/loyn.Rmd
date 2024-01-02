@@ -1,0 +1,119 @@
+---
+title: "QK Box 8.2"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loyn (1987) selected 56 forest patches in southeastern Victoria, Australia, and related the abundance of forest birds in each patch to six predictor variables: patch area (ha), distance to nearest patch (km), distance to nearest larger patch (km), grazing stock (1 to 5 indicating light to heavy), altitude (m) and years since isolation (years). The aim was to develop a predictive model relating bird abundance to these predictors and to assess which predictors were most important for bird abundance.
+
+![Tawny Frogmouth, Podargus strigoides. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)](../media/frogmouth.jpg)
+
+![Eastern Yellow Robin, *Eopsaltria australis*. Emmet Keough, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)](../media/robin.jpg)
+
+This data set was used in the first edition and is available [here](data/loyn.csv)
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta, hier.part)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(lm.beta)
+library(hier.part)
+```
+
+Import loyn data file (loyn.csv)
+
+```{r}
+loyn <- read.csv("../data/loyn.csv")
+head(loyn,10)
+
+```
+
+### Check distributions of predictors and look for correlations
+
+We will use the scatterplotMatrix function from the car package
+
+```{r }
+scatterplotMatrix(~abund+area+dist+graze+alt+yearisol, data=loyn, cex=0.33, regLine=FALSE, diagonal=list(method='boxplot'))
+```
+
+abund looks symmetrical but two unusual observations for area resulting in non-linear relationships with abund and one outlier for distance to nearest patch
+
+#### Try log(10) transformation of area and dist
+
+```{r }
+scatterplotMatrix(~abund+log10(area)+log10(dist)+graze+alt+yearisol, data=loyn, cex=0.33, regLine=FALSE, diagonal=list(method='boxplot'))
+```
+
+Plots look much better. Now transform the variables in loyn
+
+```{r }
+loyn$logarea <- log10(loyn$area)
+loyn$logdist <- log10(loyn$dist)
+```
+
+### Now check for collinearity among predictors (using larea and ldist)
+
+Use correlations and VIF
+
+```{r }
+scatterplotMatrix(~logarea+logdist+graze+alt+yearisol, data=loyn, cex=0.33, regLine=FALSE, diagonal=list(method='boxplot'))
+cor(loyn[,c('logarea','logdist','graze','alt','yearisol')])
+vif(lm(abund~ logarea+logdist+graze+alt+yearisol, data=loyn))
+```
+
+Collinearity OK so now fit linear model relating response to predictor
+
+```{r }
+loyn.lm <- lm(abund~ logarea+logdist+graze+alt+yearisol, data=loyn)
+```
+
+### Examine regression diagnostics (residual plot and Cooks D)
+
+```{r }
+plot(loyn.lm)
+augment(loyn.lm)
+```
+
+### Display results of model fitting
+
+Get parameter estimates, their confidence intervals, and tests
+```{r }
+tidy(loyn.lm, conf.int=TRUE)
+```
+
+### Get standarised regression coefficients
+
+Use lm.beta function from lm.beta package
+
+```{r }
+lm.beta.loyn <- lm.beta(loyn.lm)
+summary(loyn.lm)
+tidy(lm.beta.loyn, conf.int=TRUE)
+```
+
+Show the partial regression (added-variable) plots
+
+```{r }
+avPlots(loyn.lm, ask=F)
+```
+
+### Run hierarchical partitioning (used later)
+
+We  need two dataframes that are subsets of loyn containing the response variable and the predictors
+
+```{r}
+loyn_abund<-loyn$abund
+loyn_pred<-subset(loyn, select = c("logarea","logdist","alt","yearisol","graze"))
+```
+
+```{r}
+hier.part(loyn_abund, loyn_pred, family="gaussian", gof="Rsqu")
+```

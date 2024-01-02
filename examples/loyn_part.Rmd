@@ -1,0 +1,189 @@
+---
+title: "QK Box 9.3 and 9.4"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This example continues from Box 9.1 and earlier
+
+A regression tree for the data from Loyn (1987) related the abundance of forest birds in 56 forest fragments to log patch area, log distance to nearest patch, grazing intensity, altitude and year of isolation. Transformations of predictors to improve linearity are unnecessary for regression trees (and made almost no difference to this specific analysis) but we kept these predictors transformed to match our previous analyses of these data (Boxes 8.2 and 9.1). We used the anova method of maximizing the between-groups SS for each split and used a change in r2 of 0.01 as a default cp value. No other tree-building constraints were imposed. The residual plot from fitting the regression tree did not reveal any strong variance heterogeneity nor outliers.
+
+### Preliminaries
+
+First, load the required packages (need rpart, randomForest, Metrics, gbm, dismo, caret)
+
+```{r include=FALSE, results='hide', error=TRUE}
+library(randomForest)
+library(rpart)
+library(Metrics)
+library(gbm)
+library(dismo)
+library(caret)
+library(tidyverse)
+```
+
+Import loyn data file ([loyn.csv](../data/loyn.csv)) and log-transform area & dist
+
+```{r}
+loyn <- read.csv("../data/loyn.csv")
+head(loyn,10)
+
+loyn$logarea <- log10(loyn$area)
+loyn$logdist <- log10(loyn$dist)
+```
+
+## Fit regression tree
+
+```{r }
+loyn.rpart1 <- rpart(abund~ logarea+logdist+graze+alt+yearisol, data=loyn, method="anova")
+plot(predict(loyn.rpart1),residuals(loyn.rpart1))
+loyn.rpart1
+summary(loyn.rpart1)
+plotcp(loyn.rpart1)
+plot(loyn.rpart1)
+text(loyn.rpart1, use.n=TRUE, all=TRUE)
+```
+
+### Variable importance from caret
+
+```{r }
+varImp(loyn.rpart1)
+```
+
+### Try a lower cp - no difference in resulting tree
+
+```{r }
+loyn.rpart2 <- rpart(abund~ logarea+logdist+graze+alt+yearisol, data=loyn, method="anova", cp=0.005)
+plot(predict(loyn.rpart2),residuals(loyn.rpart2))
+summary(loyn.rpart2)
+print(loyn.rpart2)
+printcp(loyn.rpart2)
+plot(loyn.rpart2)
+text(loyn.rpart2, use.n=TRUE, all=TRUE)
+```
+
+### Use untramsformed predictors - almost identical to first tree
+
+```{r }
+loyn.rpart3 <- rpart(abund~ area+dist+graze+alt+yearisol, data=loyn, method="anova")
+plot(predict(loyn.rpart3),residuals(loyn.rpart3))
+summary(loyn.rpart3)
+print(loyn.rpart3)
+loyn.rpart3$variable.importance
+plot(loyn.rpart3)
+text(loyn.rpart3, use.n=TRUE, all=TRUE)
+```
+
+## Do bagged regression tree
+
+```{r }
+loyn.bag <- randomForest(abund~ logarea+logdist+graze+alt+yearisol, mtry=5, data=loyn)
+print(loyn.bag)
+plot(loyn.bag)
+```
+
+## Do random forest using 2 predictors chosen randomly at a time
+
+```{r error=TRUE}
+loyn.forest <- randomForest(abund~ logarea+logdist+graze+alt+yearisol, mtry=2, data=loyn)
+print(loyn.forest)
+p1<-partialPlot(loyn.forest,loyn, x.var="logarea", plot=FALSE)
+plot(p1)
+```
+
+### Compare RMSE to single rpart tree with no pruning (cp=0)
+
+```{r }
+loyn.rpart1a <- rpart(abund~ logarea+logdist+graze+alt+yearisol, data=loyn, method="anova", cp=0)
+summary(loyn.rpart1a)
+loyn.rpart1a.predict <- xpred.rpart(loyn.rpart1a)
+rmsqe1a <- rmse(loyn$abund, loyn.rpart1a.predict)
+rmsqe1a
+```
+
+### Compare to RMSE of actual final tree based on cp=0.01
+
+```{r }
+loyn.rpart1.predict <- xpred.rpart(loyn.rpart1)
+rmsqe1 <- rmse(loyn$abund, loyn.rpart1.predict)
+rmsqe1
+```
+
+## Boosted regression tree - using dismo first set learning rate and complexity
+
+```{r }
+loyn.gbm <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.01, tree.complexity=2)
+print(loyn.gbm)
+```
+
+### Try smaller learning rate to get above 1000 trees
+
+```{r }
+loyn.gbm1 <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.005, tree.complexity=2)
+print(loyn.gbm1)
+```
+
+**this is chosen model to calculate RMSE**
+
+```{r }
+rmsqe2 <- sqrt(min(loyn.gbm1$cv.values))
+rmsqe2
+```
+
+## Do partial dependence plots which include variable importance - all on one page
+
+```{r }
+gbm.plot(loyn.gbm1, variable.no=0)
+```
+
+**Try simpler tree (complexity=1)**
+
+```{r }
+loyn.gbm2 <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.005, tree.complexity=1)
+print(loyn.gbm2)
+```
+
+**Try more complex tree (complexity=3)**
+
+```{r }
+loyn.gbm3 <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.005, tree.complexity=3)
+print(loyn.gbm3)
+```
+
+**try more complex tree (complexity=4)**
+
+```{r }
+loyn.gbm4 <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.005, tree.complexity=4)
+print(loyn.gbm4)
+```
+
+**try more complex tree (complexity=5)**
+
+```{r }
+loyn.gbm5 <- gbm.step(gbm.y=1, gbm.x=c(3,6:9), data=loyn, family="gaussian", bag.fraction=0.5, learning.rate=0.005, tree.complexity=5)
+print(loyn.gbm5)
+```
+
+## Boosted regression tree - fit chosen model using gbm
+
+```{r }
+loyn.gbm6 <- gbm(abund~ logarea+logdist+graze+alt+yearisol, data=loyn, n.trees=2000, distribution="gaussian", interaction.depth=2, bag.fraction=0.5, shrinkage=0.005, cv.folds=10)
+summary(loyn.gbm6)
+print(loyn.gbm6)
+loyn.gbm6
+```
+
+**do partial dependence plots one at a time, but not sure what n.trees refers to** partial doesn't seem to like gbm objects; seems like it's now done using plot.gbm, with slightly different arguments. Left out n.trees - used package defaults
+
+```{r error=TRUE}
+#p2 <- partialPlot(loyn.gbm6, x.var=c("graze"), n.trees=984)
+#plot(p2)
+plot.gbm(loyn.gbm6, i.var=c("graze"))
+plot.gbm(loyn.gbm6, variable.no=0)
+gbm.perf(loyn.gbm6, method="cv")
+```

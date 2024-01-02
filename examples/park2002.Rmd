@@ -1,0 +1,135 @@
+---
+title: "QK Box 12.5"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Parkinson et al. (2002) examined the differences in the abundance of birds between different habitats on a floodplain. Habitat was a between-subjects factor, and there were three groups: permanent billabongs, temporary billabongs, and non-wetland habitat. Four sites (subjects) were chosen within each habitat group. The authors were also interested in whether the pattern between habitats was consistent over months (austral summer: November, December, January, February) and time of the day (morning and evening chorus), so each site was sampled morning and evening on one day each month; month and time of day were the crossed within-subjects factors. The relative abundance of birds was the response variable.
+
+![](../media/pelican.jpg){width="600"}
+
+Australian Pelican, *Pelecanus conspicillatus.* Mick Keough, CC BY-SA 4.0.
+
+![](../media/darter.jpg){width="600"}
+
+Australasian Darter, *Anhinga novaehollandiae.* Mick Keough, CC BY-SA 4.0.
+
+Link to paper and [data](../data/park2002.csv)
+
+Parkinson, A., Mac Nally, R. & Quinn, G. P. (2002). Differential macrohabitat use by birds on the unregulated Ovens River floodplain of southeastern Australia. *River Research and Applications*, 18, 495-506.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+source("../R/appearance.R")  #Graphics tweaks
+```
+
+Import parkinson data file
+
+```{r}
+parkinson <- read.csv("../data/park2002.csv")
+head(parkinson,10)
+```
+
+Set contrasts using afex
+
+```{r, results='hide' }
+set_sum_contrasts()
+```
+
+### Check residuals - uneven spread related to mean
+
+```{r }
+park1.aov <- aov(abund~habitat*ampm*month, parkinson)
+plot(park1.aov)
+```
+
+Unequal spread
+
+### Original authors used 4th root transform but we will use log10 here
+
+By now, you should be able to run your own version of this analysis with 4th root transform.
+
+```{r }
+parkinson$labund <- log10(parkinson$abund)
+park2.aov <- aov(labund~habitat*ampm*month, parkinson)
+plot(park2.aov)
+```
+
+Log10 improves spread in residual plot
+
+## Run as split-plot
+
+```{r }
+park3.aov <- aov(labund~habitat*month*ampm+Error(bong/(month*ampm)), parkinson)
+summary(park3.aov)
+```
+
+Run with ezANOVA to get GG and HF adjustments
+
+```{r }
+ezpark1 <- ezANOVA(data=parkinson, dv=labund, wid=bong, within=month*ampm, between=habitat, type=3, detailed=TRUE)
+print(ezpark1)
+```
+
+#### Draw bar graph
+
+Pool times as time didn't interact with anything
+
+```{r }
+park_stats <- summarySE(parkinson,measurevar='labund', groupvars= c('habitat','month'))
+ggplot(park_stats, aes(x=month, y=labund, fill=habitat))+
+  geom_bar(stat="identity", position=position_dodge())+
+  geom_errorbar(aes(ymin=labund-se, ymax=labund+se), position=position_dodge(0.9), width=0.3, color="darkblue")+
+  scale_fill_uchicago()
+```
+
+## Run as mixed effects with lme4
+
+```{r }
+park1.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong)+(1|bong:month)+(1|bong:ampm), parkinson)
+summary(park1.lmer, ddf="Kenward-Roger")
+anova(park1.lmer, ddf="Kenward-Roger")
+```
+
+Get variance components
+
+```{r }
+park1.ci <- confint.merMod(park1.lmer, oldNames=FALSE)
+park1.vc <- (park1.ci)^2
+print(park1.vc)
+```
+
+### Evaluate whether to keep site within habitat by ampm or by month interactions (use ML)
+
+```{r }
+park1a.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong)+(1|bong:month)+(1|bong:ampm), REML=FALSE,parkinson)
+park2.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong)+(1|bong:month), REML=FALSE, parkinson)
+park3.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong)+(1|bong:ampm), REML=FALSE, parkinson)
+anova(park1a.lmer, park2.lmer)
+anova(park1a.lmer, park3.lmer)
+AICc(park1a.lmer, park2.lmer, park3.lmer)
+```
+
+### Neither contribute to model fit, refit model without them
+
+```{r }
+park4.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong), REML=FALSE, parkinson)
+anova(park1a.lmer, park4.lmer)
+AICc(park1a.lmer, park2.lmer, park3.lmer, park4.lmer)
+```
+
+## Refit simpler model with REML
+
+```{r }
+park4a.lmer <- lmer(labund~habitat+month+ampm+habitat*month+habitat*ampm+month*ampm+habitat*month*ampm+(1|bong), parkinson)
+summary(park4a.lmer, ddf="Kenward-Roger")
+anova(park4a.lmer, ddf="Kenward-Roger")
+```

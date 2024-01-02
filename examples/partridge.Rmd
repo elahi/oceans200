@@ -1,0 +1,168 @@
+---
+title: "QK Box 8.12"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Partridge and Farquhar (1981) studied the effect of number of mating partners on longevity of fruitflies. There were five treatments: one virgin female per day, one newly inseminated (pregnant) female per day, eight virgin females per day, eight newly inseminated (pregnant) females per day, and a control group with no females. There were 25 males, individually kept in separate vials, in each group. The thorax length of each individual fly was also recorded as a covariate. If thorax length explains some of the variation in longevity, then the evaluation of the effect of treatment on longevity adjusted for thorax length will be more precise. The raw data were extracted by reading from Figure 2 in the original paper (see also description and discussion in Hanley & Shapiro 1994). Our general H~0~ was that there was no effect of partner treatment on longevity of male fruitflies, adjusting for thorax length.
+
+This example was also used in the first edition; the data file is [here](data/partridge.csv).
+
+Partridge, L. & Farquhar, M. (1981). Sexual activity and the lifespan of male fruitflies. *Nature*, 294, 580-81.
+
+### Preliminaries
+
+First, load the required packages (car, effects)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("../R/libraries.R")   #This is the common library
+library(effects)
+```
+
+Import partridge data file (partridge.csv)
+
+```{r}
+partridge <- read.csv("../data/partridge.csv")
+head(partridge,10)
+partridge$treatment <- factor(partridge$treatment)
+```
+
+### Check assumptions
+
+```{r }
+boxplot(longev ~ treatment, data = partridge)
+boxplot(thorax ~ treatment, data = partridge)
+```
+
+Boxplots don't indicate any skewness or unequal variances
+
+```{r }
+scatterplot(longev ~ thorax | treatment, data = partridge)
+```
+
+Lines look linear and close to parallel
+
+Check that covariate not affected by treatments
+
+```{r }
+cov.aov <- aov(thorax ~ treatment, data = partridge)
+summary(cov.aov)
+```
+
+### Fit full model with interaction to evaluate homogeneous slopes. 
+
+All SS types produce same result for interaction
+
+```{r }
+partridge.aov1 <- aov(longev ~ treatment + thorax + treatment*thorax, data = partridge)
+plot(partridge.aov1)
+```
+
+Residual plot shows some pattern with smaller variances at each end - only one unusual value (66). longev values only cover small range so no transformation used
+
+```{r }
+anova(partridge.aov1)
+```
+
+Conclude no evidence for non-parallelism (P = 0.984)
+
+### Refit model leaving out interaction
+
+**Set contrasts to get Type III SS**
+
+```{r }
+partridge.aov2 <- aov(longev ~ treatment + thorax, contrasts = list(treatment = contr.sum), data = partridge)
+anova(partridge.aov2)
+```
+
+Default anova will be Type I SS, so order of factor and covariate in model matter; use Type III SS
+
+```{r }
+Anova(partridge.aov2, type = 'III')
+```
+
+Compare to type II
+
+```{r }
+Anova(partridge.aov2, type = 'II')
+```
+
+### Compare MS Residual to a model without covariate
+
+Only single predictor so SS types irrelevant
+
+```{r }
+partridge.aov3 <- aov(longev ~ treatment, data = partridge)
+anova(partridge.aov3)
+```
+
+### Get adjusted means
+
+```{r }
+adjmeans <- effect("treatment", partridge.aov2, se = TRUE)
+summary(adjmeans)
+```
+
+### Now for contrasts
+
+Need to centre covariate to get correct intercept (i.e. overall mean or reference category) for contrasts
+
+```{r }
+partridge$cthorax <- scale(partridge$thorax, center = TRUE, scale = FALSE)
+```
+
+Get default contrasts by setting control group (no females) as reference
+
+```{r }
+partridge$treatment <- relevel(partridge$treatment, ref = "none")
+```
+
+### Refit model with centered covariate
+
+```{r }
+partridge.aov4 <- aov(longev ~ treatment + cthorax, data = partridge)
+```
+
+get summary.lm output
+
+```{r }
+summary.lm(partridge.aov4)
+confint(partridge.aov4)
+```
+
+### Get specific planned contrasts 
+
+#### First, preg vs virg and then 1 virg vs 8 virg)
+
+```{r }
+contrasts(partridge$treatment) <- cbind(c(0,0.5,0.5,-0.5,-0.5), c(0,0,0,1,-1))
+contrasts(partridge$treatment)
+partridge.aov5 <- aov(longev ~ treatment + thorax, data = partridge)
+summary.lm(partridge.aov5)
+confint(partridge.aov5)
+```
+
+Do same contrasts but partition anova table and use F tests
+
+```{r }
+pregvsvirg = c(0,0.5,0.5,-0.5,-0.5)
+virg1vsvirg8 = c(0,0,0,1,-1)
+matriz = cbind(pregvsvirg, virg1vsvirg8)
+contrasts(partridge$treatment) = matriz
+CList=list("pregvsvirg" = 1, "virg1vsvirg8" = 2)
+partridge.aov5 <- aov(longev ~ treatment + thorax, data = partridge)
+summary(partridge.aov5, split = list(treatment = CList))
+```
+
+### Finally, compare to anova on longevity without covariate
+
+```{r }
+partridge.aov6 <- aov(longev ~ treatment, data = partridge)
+summary(partridge.aov6)
+```

@@ -1,0 +1,17 @@
+group,genetype,psg,lineage,count
+hearing,sensory,psg,in,54
+hearing,sensory,psg,out,69
+hearing,sensory,nonpsg,in,25
+hearing,sensory,nonpsg,out,10
+nshl,sensory,psg,in,16
+nshl,sensory,psg,out,30
+nshl,sensory,nonpsg,in,17
+nshl,sensory,nonpsg,out,3
+vision,sensory,psg,in,66
+vision,sensory,psg,out,77
+vision,sensory,nonpsg,in,30
+vision,sensory,nonpsg,out,19
+control,nonsensory,psg,in,146
+control,nonsensory,psg,out,144
+control,nonsensory,nonpsg,in,21
+control,nonsensory,nonpsg,out,23

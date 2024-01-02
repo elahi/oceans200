@@ -1,0 +1,216 @@
+---
+title: "QK Box 10.10"
+
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Singh et al. (2016) examined the response of copulatory traits in male fruitflies (*Drosophila melanogaster*) to cold stress. They had two selection treatments (populations selected for cold shock versus control populations, a fixed effect) crossed with five ancestral populations that experimental flies were derived from (random effect). The data we will analyse are from an experiment that compared files from the two selection treatments that were cold shocked, allowed to recover and then copulatory traits were measured after 4, 12 and 30 hours. Different flies were used for each period so there are no repeated measures. This fully-crossed design has two fixed effects (selection treatment, period) and one random effect (ancestral population, termed "block" by Singh et al. (2016), the sample size varied from 35 to 62 flies in each combination of selection treatment, period and ancestral population, and the response variable we will focus on was mating latency (minutes).
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0153629)
+
+Singh, K., Samant, M. A., Tom, M. T. & Prasad, N. G. (2016). Evolution of pre- and post-copulatory traits in male *Drosophila melanogaster* as a correlated response to selection for resistance to cold stress. *PLoS One*, 11, e0153629.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc, MuMin, emmeans)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import singh data file (singh.csv)
+
+```{r}
+singh <- read.csv("../data/singh.csv")
+head(singh,5)
+```
+
+Set contrasts from afex
+
+Convert period and block to factors
+
+```{r }
+set_sum_contrasts()
+singh$block <- factor(singh$block)
+singh$period <- factor(singh$period)
+```
+### Diagnostics
+Check assumptions with boxplots - very skewed distributions
+
+```{r }
+boxplot(matlat~selection*period, data=singh)
+```
+
+Fit OLS anova model to check residuals
+
+```{r }
+singh.aov <- aov(matlat~selection*period*block, data=singh)
+```
+
+Check residuals - variance increases with mean
+
+```{r }
+plot(singh.aov)
+```
+
+Transform response to logs (+1 to handle zero values)
+
+```{r }
+singh$lmatlat <- log10(singh$matlat+1)
+```
+
+Check assumptions - much improved boxplots
+
+```{r }
+boxplot(lmatlat~selection*period, data=singh)
+```
+
+Refit OLS model and check residuals (much better)
+
+```{r }
+singh.aov1 <- aov(lmatlat~selection*period*block, data=singh)
+plot(singh.aov1)
+```
+
+### Use transformed data 
+
+Although the original paper used untransformed data, our pre-analysis checks suggest that a data transformation, or, as in later chapters, a generalized linear model, might be a better fit
+
+### Fit lm models to get type III SS using car
+
+```{r }
+singh.lm1 <- lm(lmatlat ~ selection*period*block, data=singh)
+summary(singh.lm1)
+
+Anova(singh.lm1, type='III')
+```
+
+Get correct F-ratio and P value for selection x period
+
+```{r }
+f = 0.03/0.14
+f
+1-pf(f, 2, 8, lower.tail = TRUE, log.p = FALSE)
+```
+
+Get correct F-ratio and P value for selection
+
+```{r }
+f = 4.72/0.13
+f
+1-pf(f, 1, 4, lower.tail = TRUE, log.p = FALSE)
+```
+
+Get correct F-ratio and P value for period
+
+```{r }
+f = 11.09/0.33
+f
+1-pf(f, 2, 8, lower.tail = TRUE, log.p = FALSE)
+```
+
+#### Use VCA package to get anova var comps - unreliable sue to imbalance in sample sizes
+
+```{r }
+singh.vca <- anovaMM(lmatlat~selection + period + selection*period + (block) + (selection*block) + (period*block) + (selection*period*block), singh)
+VCAinference(singh.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+Get least squares means for selection and period
+
+```{r }
+emmeans (singh.lm1, "selection")
+emmeans(singh.lm1, "period")
+```
+### Backtransform values
+FCB & FSB:
+```{r}
+#means
+10^.974
+10^.858
+#lower CIs
+10^.949
+10^ .834
+#upper CIs
+10^1
+10^.882
+```
+Periods
+```{r}
+10^1.079
+10^.899
+10^.77
+```
+
+## Fit mixed effects model using REML
+
+```{r }
+singh.lmer1 <- lmer(lmatlat~selection + period +selection:period + (1|block) + (1|selection:block)
+            + (1|period:block) + (1|selection:period:block), REML=TRUE, singh)
+summary(singh.lmer1, ddf="Kenward-Roger")
+anova(singh.lmer1, ddf="Kenward-Roger")
+```
+
+Model fit singular - over-fitted due to zero variance component for 3 way interaction 
+
+### CI on REML variance components (remembering to square CIs from lmer with are in SD units)
+
+```{r }
+singh.ci1 <- confint.merMod(singh.lmer1, oldNames=FALSE)
+singh.vc1 <- (singh.ci1)^2
+print(singh.vc1)
+```
+
+### Refit model omitting three way interaction to deal with singular fit
+
+```{r }
+singh.lmer2 <- lmer(lmatlat~selection + period +selection:period + (1|block) + (1|selection:block)
+                     + (1|period:block), REML=TRUE, singh)
+```
+
+Compare models
+
+```{r }
+anova(singh.lmer1, singh.lmer2)
+AICc(singh.lmer1, singh.lmer2)
+```
+Omitting the interaction has little effect on fit
+
+### Get results from this reduced model
+
+```{r }
+summary(singh.lmer2, ddf="Kenward-Roger")
+```
+
+F tests of fixed effects (Type III SS) for this new model - same conclusions as above
+
+```{r }
+anova(singh.lmer2, ddf="Kenward-Roger")
+```
+
+#### Calculate CIs on var component for this new model
+
+```{r }
+singh.ci2 <- confint.merMod(singh.lmer2, oldNames=FALSE)
+singh.vc2 <- (singh.ci2)^2
+print(singh.vc2)
+```
+
+## Analysis using untransformed response
+
+This is the approach used by the paper's author's. We've given the initial OLS fit, which you can adjust for the random effects by recalculating F-ratios as shown in the earlier code. You can easily also run the REML mixed effects model.
+
+```{r }
+options(digits=4)
+singh.lm2 <- lm(matlat~selection*period*block, data=singh)
+summary(singh.lm2)
+Anova(singh.lm2, type='III')
+#use anova to show MS
+anova(singh.lm2)
+glance(singh.lm2)
+```
+

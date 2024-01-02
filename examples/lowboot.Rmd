@@ -1,0 +1,53 @@
+---
+title: "QK Box 2.3"
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This box continues with the Low et al. anesthetic example from Box 2.2
+
+### Preliminaries
+packages: MKinfer, resample
+```{r results='hide'}
+library(MKinfer)
+library(resample)
+library(tidyverse)
+```
+use low data
+```{r }
+low <- read_csv("../data/lowco2.csv")
+
+```
+### Get jackknife SE for two groups
+```{r}
+low1 <- subset(low,anesth=="iso")
+jackknife(low1$co2,mean)
+low2 <- subset(low,anesth=="ac")
+jackknife(low2$co2,mean)
+```
+### Get bootstrap SE and 95%CI
+```{r}
+low1boot <- bootstrap(low1$co2,mean,R=9999)
+low1boot
+CI.percentile(low1boot, probs=c(0.025,0.975))
+CI.bca(low1boot, probs=c(0.025,0.975))
+low2boot <- bootstrap(low2$co2,mean,R=9999)
+low2boot
+CI.percentile(low2boot, probs=c(0.025,0.975))
+CI.bca(low2boot, probs=c(0.025,0.975))
+```
+### Get bootstrap SE and CI on difference
+```{r}
+lowboot <- bootstrap2(low$co2,mean,treatment=low$anesth,R=9999,ratio=FALSE)
+lowboot
+CI.percentile(lowboot, probs=c(0.025,0.975))
+```
+### Randomization test
+```{r}
+perm.t.test(co2~anesth, data=low, R=9999, paired= FALSE)
+```
+

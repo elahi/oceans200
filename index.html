@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Worked examples</title>
+
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">QK 2nd ed worked examples</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Worked examples</h1>
+
+</div>
+
+
+<p>The online versions of the worked examples are different from those
+in the book:</p>
+<ul>
+<li><p>For a start, they are less polished. The book versions have
+detailed explanations of the analysis and what it means. Here, we just
+provide brief statements as a guide to any next steps</p></li>
+<li><p>They include the R code, so you can run the analysis for yourself
+or use it for similar data structures and models</p></li>
+<li><p>In most cases, the R code includes preliminary steps in the data
+analysis and may show alternative ways to fit a particular
+model.</p></li>
+<li><p>They include links to the published paper, and, if necessary, the
+data repository. We’ve tried to use examples from journals such as
+PlosOne, where the data links are clear within the paper</p></li>
+<li><p>Where we think it’s helpful, we’ve included images of the study
+organism or system. We haven’t bothered if the target is a mouse or
+<em>Drosophila melanogaster</em>, assuming that you’ll have some
+familiarity (;-)), but there are others that involve less common
+species, and some examples where we found that an intriguing title
+(e.g. Are teasel carnivorous?) led us to a widely-distributed weed. The
+images are mostly available under Creative Commons licenses and good for
+including in lectures.</p></li>
+</ul>
+<p><strong>You can just browse the examples and code as a web site, or
+you can run and play with the code yourself.</strong></p>
+<p><strong>We will update these online examples periodically</strong> to
+maintain compatibility with <em>R</em> upgrades, improve the code, and
+possibly add more material. It’s also worth checking <a
+href="https://qkstats.com">our personal website</a> and <a
+href="https://mjkeough.github.io/index.html">Github</a> for minor
+updates, suggestions, discussion, etc.</p>
+<div id="the-examples-by-chapter" class="section level2">
+<h2>The examples, by chapter</h2>
+<div id="chapter-2" class="section level3">
+<h3>Chapter 2</h3>
+<ul>
+<li><p><a href="examples/low.nb.html">Box 2.2 Traditional estimation and
+hypothesis tests: anesthetic effects on mice</a></p></li>
+<li><p><a href="examples/lowboot.nb.html">Box 2.3 Resampling inference
+for two-group design: anesthetic effects on mice</a></p></li>
+<li><p><a href="examples/lowbayes.nb.html">Box 2.5 Bayesian inference
+for two-group design: anesthetic effects on mice</a></p></li>
+</ul>
+</div>
+<div id="chapter-3" class="section level3">
+<h3>Chapter 3</h3>
+<p>This chapter has one example box; it uses summary data from Chapter
+2, which you can get from Box 2.2.</p>
+</div>
+<div id="chapter-4" class="section level3">
+<h3>Chapter 4</h3>
+<p>No worked examples.</p>
+</div>
+<div id="chapter-5" class="section level3">
+<h3>Chapter 5</h3>
+<p>No worked examples. The code to replicate the exploratory procedures
+is available on request</p>
+</div>
+<div id="chapter-6" class="section level3">
+<h3>Chapter 6</h3>
+<ul>
+<li><p><a href="examples/christ.nb.html">Box 6.1 Single-predictor linear
+regression: coarse woody debris in lakes</a></p></li>
+<li><p><a href="examples/shibao.nb.html">Box 6.2 Single-predictor linear
+regression: soldier production in aphids</a></p></li>
+<li><p><a href="examples/allison.nb.html">Box 6.3 Single-random
+predictor linear regression: brain and body weights of
+mammals</a></p></li>
+<li><p><a href="examples/giri.nb.html">Box 6.4 Single-factor design with
+ordered treatment groups: fatty acid production in salmon</a></p></li>
+<li><p><a href="examples/medley.nb.html">Box 6.5 Single-factor design:
+diatom communities in metal affected streams</a></p></li>
+<li><p><a href="examples/serpulid.nb.html">Box 6.7 and 6.11
+Single-factor design with planned comparisons and power analysis: marine
+invertebrate recruitment and biofilms</a></p></li>
+<li><p><a href="examples/peakquinn.nb.html">Box 6.8 Linear regression
+diagnostics and transformations: diversity in mussel clumps</a></p></li>
+<li><p><a href="examples/aranda.nb.html">Box 6.10 Power analysis for
+single-predictor linear regression: bryophyte diversity</a></p></li>
+</ul>
+</div>
+<div id="chapter-7" class="section level3">
+<h3>Chapter 7</h3>
+<ul>
+<li><p><a href="examples/linton.nb.html">Box 7.1 Two-factor crossed
+design: effects of insecticides on land crabs</a></p></li>
+<li><p><a href="examples/breit.nb.html">Box 7.2 Two-actor crossed
+design: biomarkers in scallops</a></p></li>
+<li><p><a href="examples/tartu_hg.nb.html">Box 7.3 Two-factor unbalanced
+crossed design: mercury concentrations in kittiwakes</a></p></li>
+<li><p><a href="examples/longport.nb.html">Box 7.5 Three-factor crossed
+design: restoration of cordgrass</a></p></li>
+<li><p><a href="examples/shawshack.nb.html">Box 7.6 Four-factor crossed
+design: are teasel carnivorous?</a></p></li>
+</ul>
+</div>
+<div id="chapter-8" class="section level3">
+<h3>Chapter 8</h3>
+<ul>
+<li><p><a href="examples/ercit.nb.html">Box 8.1, 8.5 &amp; 8.6
+Multiple-predictor linear regression: cricket jump distance</a></p></li>
+<li><p><a href="examples/loyn.nb.html">Box 8.2 Multiple-predictor linear
+regression: bird abundance in remnant forest patches</a></p></li>
+<li><p><a href="examples/collin.nb.html">Box 8.7 Illustration of
+Multicollinearity among Predictors</a></p></li>
+<li><p><a href="examples/paruelo.nb.html">Box 8.8 Multiple-predictor
+linear regression with interactions: geography, climate and abundance of
+C3 plants</a></p></li>
+<li><p><a href="examples/caley.nb.html">Box 8.10 Single-predictor
+polynomial regression: predicting local species richness from regional
+richness</a></p></li>
+<li><p><a href="examples/loyncat.nb.html">Box 8.11 Multiple-predictor
+linear regression with continuous and categorical predictors: bird
+abundance in remnant forest patches</a></p></li>
+<li><p><a href="examples/partridge.nb.html">Box 8.12 Single-factor
+ANCOVA design: sex and fruit fly longevity</a></p></li>
+<li><p><a href="examples/constable.nb.html">Box 8.13 Single-factor
+ANCOVA design: shrinking sea urchins</a></p></li>
+<li><p><a href="examples/covrange.nb.html">Box 8.15 Overlapping
+covariate ranges is a statistical <em>and</em> a biological
+issue</a></p></li>
+<li><p><a href="examples/yavno.nb.html">Box 8.16 Two-factor crossed
+ANCOVA design: morphology of sunfish from different populations living
+in different water flow</a></p></li>
+</ul>
+</div>
+<div id="chapter-9" class="section level3">
+<h3>Chapter 9</h3>
+<ul>
+<li><p><a href="examples/loyn_relaimpo.nb.html">Box 9.1 Relative
+predictor importance: bird abundance in remnant forest
+patches</a></p></li>
+<li><p><a href="examples/yasuhara_relaimpo.nb.html">Box 9.2 Relative
+predictor importance: ostracod diversity</a></p></li>
+<li><p><a href="examples/loyn_part.nb.html">Box 9.3 &amp; 9.4 Regression
+trees: bird abundance in remnant forest patches</a></p></li>
+</ul>
+</div>
+<div id="chapter-10" class="section level3">
+<h3>Chapter 10</h3>
+<ul>
+<li><p><a href="examples/medley_rand.nb.html">Box 10.2 Single random
+factor design: diatom communities in metal affected streams</a></p></li>
+<li><p><a href="examples/bleeker.nb.html">Box 10.3 Single random factor
+design with continuous covariate: gobies along the Rhine
+River</a></p></li>
+<li><p><a href="examples/lozada.nb.html">Box 10.4 Two-level nested
+design: lesions in corals</a></p></li>
+<li><p><a href="examples/newman.nb.html">Box 10.5 Two-level unbalanced
+nested design: flower characteristics in different phenotypes of a
+geophytic plant</a></p></li>
+<li><p><a href="examples/caballes.nb.html">Box 10.6 three-level nested
+design: nutrition of Crown-of-thorns seastar larvae</a></p></li>
+<li><p><a href="examples/schlegel.nb.html">Box 10.7 Two-factor mixed
+crossed design: urchin sperm and ocean acidity</a></p></li>
+<li><p><a href="examples/wamelink.nb.html">Box 10.8 Single-factor block
+design: life on Mars</a></p></li>
+<li><p><a href="examples/singh.nb.html">Box 10.10 Three-factor mixed
+crossed design: cold stress and fruit fly mating</a></p></li>
+<li><p><a href="examples/vandergeest.nb.html">Box 10.11 Two-factor
+crossed block design: seagrass mutualisms</a></p></li>
+</ul>
+</div>
+<div id="chapter-11" class="section level3">
+<h3>Chapter 11</h3>
+<ul>
+<li><p><a href="examples/stokes.nb.html">Box 11.1 Split-plot
+unreplicated design: neurotoxins in flatworms</a></p></li>
+<li><p><a href="examples/legault.nb.html">Box 11.2 Split-plot replicated
+design: effects of nutrient loading on competition between saltmarsh
+plants</a></p></li>
+<li><p><a href="examples/ratpup.nb.html">Box 11.3 Split-plot unbalanced
+design: growth of rat pups</a></p></li>
+<li><p><a href="examples/aljanabi.nb.html">Box 11.4 split-plot design
+with two crossed between-plots factors: nutrients and future climate
+effects on seaweeds</a></p></li>
+<li><p><a href="examples/hey.nb.html">Box 11.5 split-plot design with
+two crossed within-plots factors: artificial light at night (ALAN)
+affects wildflowers</a></p></li>
+</ul>
+</div>
+<div id="chapter-12" class="section level3">
+<h3>Chapter 12</h3>
+<ul>
+<li><p><a href="examples/steiger.nb.html">Box 12.1 Repeated measures
+design with single within-subjects factor: testing the Coolidge effect
+in beetles</a></p></li>
+<li><p><a href="examples/chadha.nb.html">Box 12.2 Repeated measures
+design with single quantitative within-subjects factor: plant growth
+through time</a></p></li>
+<li><p><a href="examples/garcia.nb.html">Box 12.3 Repeated measures
+design with single between-subjects factor and single within-subjects
+factor: effect of an appetite-regulating hormone on toad
+hunger</a></p></li>
+<li><p><a href="examples/skrip.nb.html">Box 12.4 Repeated measures
+design with two crossed between-subjects factors and single
+within-subjects factor: effect of laying order on egg mass in
+birds</a></p></li>
+<li><p><a href="examples/park2002.nb.html">Box 12.5 Repeated measures
+design with single between-subjects factor and two crossed
+within-subjects factors: birds on billabongs</a></p></li>
+</ul>
+</div>
+<div id="chapter-13" class="section level3">
+<h3>Chapter 13</h3>
+<ul>
+<li><p><a href="examples/polis.nb.html">Box 13.1 Single-predictor
+logistic regression: presence/absence of lizards on islands</a></p></li>
+<li><p><a href="examples/mayekar.nb.html">Box 13.2 Multiple-predictor
+logistic regression: determinants of butterfly color</a></p></li>
+<li><p><a href="examples/finneytest.nb.html">Box 13.3 Dose response
+curves: you might already be using GLMs or GLMMs without knowing
+it</a></p></li>
+<li><p><a href="examples/fill.nb.html">Box 13.4 multiple-predictor
+Poisson regression (overdispersion and zero inflation): post-fire
+ecology of wiregrass</a></p></li>
+<li><p><a href="examples/morehouse.nb.html">Box 13.5 2 x 2 two-way
+contingency table: problem bears, cubs</a></p></li>
+<li><p><a href="examples/teng.nb.html">Box 13.6 R x C two-way
+contingency table: cat owners’ attitudes</a></p></li>
+<li><p><a href="examples/mcgowen.nb.html">Box 13.7 Three-way contingency
+table: cetacean sensory genes</a></p></li>
+<li><p><a href="examples/ryeland.nb.html">Box 13.8 Generalized linear
+mixed model (GLMM): birds “backrest roosting”</a></p></li>
+<li><p><a href="examples/cabanellas.nb.html">Box 13.9 Generalized
+additive model (GAM): disease and an endangered bivalve</a></p></li>
+</ul>
+</div>
+<div id="chapter-14" class="section level3">
+<h3>Chapter 14</h3>
+<ul>
+<li><a href="examples/clevenger.nb.html">Boxes 14.1 Deriving components
+(eigenvectors) and 14.2 Dissimilarity measures for continuous &amp;
+binary variables: Wildlife uses of underpasses</a></li>
+</ul>
+</div>
+<div id="chapter-15" class="section level3">
+<h3>Chapter 15</h3>
+<ul>
+<li><p><a href="examples/wu.nb.html">Box 15.1 Principal components
+analysis (PCA): soil characteristics and land use in China</a></p></li>
+<li><p><a href="examples/lemmensCA.nb.html">Box 15.2 Correspondence
+analysis (CA): invertebrates in artificial ponds</a></p></li>
+<li><p><a href="examples/lemmensRDA.nb.html">Box 15.3 Constrained
+ordination: invertebrates in artificial ponds</a></p></li>
+<li><p><a href="examples/feinbergLDA.nb.html">Box 15.4 Linear
+discriminant (function) analysis: cryptic diversity in leopard
+frogs</a></p></li>
+</ul>
+</div>
+<div id="chapter-16" class="section level3">
+<h3>Chapter 16</h3>
+<ul>
+<li><p><a href="examples/lemmpcoa.nb.html">Box 16.1 Principal
+coordinates analysis (PCoA): invertebrates in artificial
+ponds</a></p></li>
+<li><p><a href="examples/lemmmds.nb.html">Box 16.2 Multidimensional
+scaling (NMDS), ANOSIM, PERMANOVA, MV-ABUND, BIO-ENV: invertebrates in
+artificial ponds</a></p></li>
+<li><p><a href="examples/park2020mds.nb.html">Box 16.3 Multidimensional
+scaling (NMDS), PERMANOVA, MV-ABUND, SIMPER: artificial light and
+aquatic and terrestrial invertebrates</a></p></li>
+<li><p><a href="examples/feinbclust.nb.html">Box 16.4 Cluster analysis:
+cryptic diversity in leopard frogs</a></p></li>
+</ul>
+</div>
+<div id="chapter-17" class="section level3">
+<h3>Chapter 17</h3>
+<ul>
+<li><p><a href="examples/errbar.nb.html">Box 17.4 Worked example of
+ambiguous error bars</a></p></li>
+<li><p>Additional material: example to illustrate <a
+href="examples/Colourblind%20example.nb.html">importance of careful
+colour selection</a></p></li>
+</ul>
+</div>
+</div>
+<div id="folder-structures" class="section level2">
+<h2>Folder structures</h2>
+<p>When you’re unzip the material into a local folder, you should take
+note of the folder structure we’ve used for material. You should use
+this local folder as the RStudio the session directory.</p>
+<p>The home folder includes:</p>
+<ul>
+<li>the home page (index.html)</li>
+<li><strong>data</strong> folder, with data files (csv or xls). We’ve
+created our own working files from the raw data from each example. When
+that’s the case, you’ll also see a link to our file, and generally in
+the scripts.</li>
+<li><strong>R</strong> folder, which includes common R scripts (2) that
+we use to load commonly used packages and make consistent graphics:
+<ul>
+<li><a href="../R/libraries.R">libraries.R</a> is a small script that
+loads packages that are used across several examples, plus packages that
+make life easier, such as the Tidyverse and broom. It makes life easier
+to add packages via this script, rather than add individually to each
+example. The script should install any packages that aren’t present and
+then load all of the packages.</li>
+<li><a href="../R/appearance.R">appearance.R</a> is a collection of
+tweaks used to produce the figure layouts in the book. It functions as a
+style sheet for graphics, and defines a set of variables used for axis
+colour, symbol colours, etc. Changing this script is a quick way to
+change lots of figures, e.g. to colours suitable for teaching, rather
+than the gray scales predominantly used in the printed book. It’s
+invoked in ggplot using +theme_qk(). Default ggplot settings reappear if
+you disable this line in the code.</li>
+</ul></li>
+<li><strong>media</strong> folder, which includes images</li>
+</ul>
+<div id="a-note-on-the-r-code" class="section level4">
+<h4>A note on the <em>R</em> code</h4>
+<p>The scripts should be fine for <em>R</em> version 4.3.1.</p>
+<p>Each example is based on an Rmarkdown notebook, which has two
+important features:</p>
+<ul>
+<li><p>You can show or hide the code throughout the document for for
+individual code chunks. Sometimes it’s good to just see the comments and
+the output, while at other times you really want the code. Mix and
+match!</p></li>
+<li><p>The Rmarkdown files can be downloaded using the button at the top
+right of each screen. <strong>This isn’t working atm,</strong> but you
+can save the html file and open it in RStudio and you’ll have the Rmd
+file.</p></li>
+</ul>
+</div>
+<div id="the-data-files" class="section level4">
+<h4>The data files</h4>
+<p>We’ll load those files from our own folder, rather than importing
+directly from a journal repository, Dryad, etc. That’s largely for
+convenience, and because most files require a little housekeeping before
+loading into a dataframe. Often that’s just some tidying of the first
+few rows and renaming of variables, but it can be more extensive. Excel
+files are quite common, and they often have a few header rows. We could
+deal with that as part of the script for each example, but for teaching
+purposes, it’s cleaner to just be able to load a file where the variable
+names match the rest of the script exactly.</p>
+<p>In a few cases, the analyses in the published papers used a more
+complex subset of a larger dataset that was provided online. There, such
+as for Box 13.9, we’ve included an R code chunk replicating the data
+subset in the paper. In Box 13.9, that code chunk was kindly provided by
+the authors.</p>
+</div>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

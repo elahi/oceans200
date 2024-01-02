@@ -1,0 +1,92 @@
+---
+title: "QK Box 17.4"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We illustrate how “default” error bars produced by most software packages can be misleading when summarizing mixed models. We generated two simple data sets for a three-factor mixed model design. Factor A has two levels and is fixed. Factor B is a random effect with four levels and is nested in A. Factor C is crossed with A & C and is fixed with three levels. In the first data set (response variable Y1), there are strong effects of the random factor, and effects of factor C are consistent across that factor. The second data set (Y2) has identical observations for each combination of A & C, but data were permuted so the effects of C vary across levels of B. 
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans) and, for convenience, apaTables
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")
+source("../R/appearance.R")
+library(apaTables)
+```
+
+Import errbar data file (errbar.csv)
+
+```{r}
+errbar <- read.csv("../data/errbar.csv")
+errbar
+```
+
+set contrasts from afex
+make individual a factor, make sure species a factor too
+
+```{r results='hide'}
+set_sum_contrasts()
+errbar$B <- factor(errbar$B)
+```
+
+
+### Fit full model with Y1
+
+```{r }
+errbar1.aov <- aov(Y1~A*C+Error(B),errbar)
+summary(errbar1.aov)
+```
+
+use ez for comparison with type 3 SS - same result as design is balanced
+
+```{r }
+ezerrbar <- ezANOVA(data=errbar, dv=Y1, wid=B, within=C, between=A, type=3)
+print(ezerrbar)
+#GG issue, so print clean table with corrections
+apa.ezANOVA.table(ezerrbar)
+```
+
+### Repeat for Y2
+```{r }
+errbar2.aov <- aov(Y2~A*C+Error(B),errbar)
+summary(errbar2.aov)
+```
+
+### Graphics
+Plot raw data for Y1 and Y2
+```{r}
+graphY1<-ggplot(data=errbar, aes(x=C, y=Y1, color=A, group=B))+
+    geom_point(size=2,show.legend = FALSE)+
+  geom_line(show.legend=FALSE)+
+  theme_qk()+scale_color_viridis(discrete=TRUE, option="H", begin=0.25)
+graphY2<-ggplot(data=errbar, aes(x=C, y=Y2, color=A, group=B))+
+    geom_point(size=2,show.legend = FALSE)+
+  geom_line(show.legend=FALSE)+
+  theme_qk()+scale_color_viridis(discrete=TRUE, option="H", begin=0.25)
+emm1<-emmeans(errbar1.aov, ~A|C)      #extract means
+emm2<-as.data.frame(emm1)                    #convert data table to frame
+```
+Plot means and standard errors
+The plot uses Y1, but could as easily be done with Y2
+```{r}
+pd=position_dodge(width=0.1)
+graphmean<-ggplot(emm2,aes(x=C,y=emmean,shape=A, group=A, color=A))+
+  geom_point(size=3,show.legend = FALSE, position=pd)+    #size=3 for larger symbols, as means shown (so fewer points on fig)
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), position=pd, width=0, show.legend = FALSE)+
+  geom_line(show.legend=FALSE, position=pd)+
+  labs(y="Mean")+
+   theme_qk()+scale_color_viridis(discrete=TRUE, option="H", begin=0.25)
+```
+Combined graph
+```{r}
+graphY1+graphmean+graphY2
+```
+
+

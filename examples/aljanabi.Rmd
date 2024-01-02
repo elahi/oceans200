@@ -1,0 +1,73 @@
+---
+title: "QK Box 11.4"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Al-Janabi et al (2016) examined the effects of ocean-acidification and warming (OAW) and nutrient levels on growth of different sibling groups of the early life stage of a seaweed, *Fucus vesiculosus*. There were two fixed and crossed between-plots factors: OAW (ambient pH and temperature vs future 2010 pH and temperature) and nutrient levels (ambient nutrients vs doubled nutrients). The plots were "benthocosms", benthic mesocosm tanks in an outdoor facility in Germany; there were three mesocosms nested within each combination of OAW and nutrients. The sub-plots were 2 cm^2^ sandstone cubes each containing germlings from one of 16 sibling groups (populations) of *F. vesiculosus* previously produced by mating male and female plants collected from the wild. One cube for each sibling group was placed within each mesocosm. In contrast to Al-Janabi et al who considered sibling group a random effect, we will illustrate the analysis with sibling group as fixed. The response variable was the mean relative growth rate (% change in area) of a subset of individual germlings on each cube over 8 weeks.
+
+[![Alex Lomas, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0) , via Wikimedia Commons](../media/769px-Fucus_vesiculosus_(2944485836).jpeg)](https://upload.wikimedia.org/wikipedia/commons/7/7a/Fucus_vesiculosus_%282944485836%29.jpg)
+
+*Fucus vesiculosus*. Alex Lomas, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0)
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0152948)
+
+Al-Janabi, B., Kruse, I., Graiff, A., Winde, V., Lenz, M. & Wahl, M. (2016). Buffering and amplifying interactions among OAW (Ocean Acidification & Warming) and nutrient enrichment on early life-stage *Fucus vesiculosus* L. (Phaeophyceae) and their carry over effects to hypoxia impact. *PLoS One*, 11, e0152948.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import aljanabi data file ([aljanabi.csv](../data/aljanabi.csv))
+
+```{r}
+aljanabi <- read.csv("../data/aljanabi.csv")
+aljanabi
+
+```
+
+set contrasts from afex
+
+```{r }
+set_sum_contrasts()
+```
+
+## Model fitting
+
+Don't use OLS ANOVA because of missing cell
+
+Fit mixed effects models with lmer
+
+```{r }
+aljanabi.lmer <- lmer(meanrate~oaw+nutrient+oaw*nutrient+sib+oaw*sib+nutrient*sib+oaw*nutrient*sib+(1|mesocosm), REML=TRUE, na.action=na.omit, aljanabi)
+```
+
+Check residuals from lmer plot
+
+```{r }
+plot(aljanabi.lmer)
+```
+
+Looks fine
+
+```{r}
+summary(aljanabi.lmer, ddf="Kenward-Roger")
+anova(aljanabi.lmer, ddf="Kenward-Roger")
+```
+
+Get variance components with CIs
+
+```{r }
+aljanabi.ci <- confint.merMod(aljanabi.lmer,oldNames=FALSE)
+aljanabi.vc <- (aljanabi.ci)^2
+print(aljanabi.vc)
+```

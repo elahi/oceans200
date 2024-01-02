@@ -1,0 +1,42 @@
+---
+title: "QK Box 6.11"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This script just generates some basic summary statistics that are used as input for power calculations using the Aranda et al. data set
+
+```{r results='hide'}
+source("../R/libraries.R")   #the libraries script loads a common set of packages
+```
+
+```{r}
+aranda <- read.csv("../data/aranda.csv")
+#Plot to check that linear relationship is reasonable as a model
+plot(richness~precip, data=aranda)
+# fit model in case residuals are wanted
+reg<-lm(richness~precip, data=aranda)
+```
+
+For power, we want estimates of *σ*~x~ and *σ*~y~. The best estimates are the standard deviations of precipitation and species richness. In the worked example, we've decided that a 50% change in overall richness is an important effect to detect. We need to translate this into an actual change in the response variable, and there are several ways we could do it. We will calculate the overall mean richness, and then hypothesise that the lowest precipitation has richness 25% below this value, and the highest precipitation sites have an increase of 25%. To get the effect, we just need the mean(richness)
+
+```{r}
+summarise(aranda,mean=mean(richness), sd=sd(richness))
+summarise(aranda,mean=mean(precip), sd=sd(precip))
+```
+
+The values we want are:
+
+-   108 for the change in species richness (216/2)
+
+-   132 for s~y~
+
+-   432 for s~x~
+
+To calculate a slope of interest, we'll assume that the range in precipitation is represented by the range in the existing data (113-1492). We could have also obtained this information from other sources.   
+

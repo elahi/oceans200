@@ -1,0 +1,135 @@
+---
+title: "Q & K Box 14.1"
+output: 
+  html_notebook:
+    theme: flatly
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Deriving components (modified from Jackson 2003)
+There are two strategies for extracting eigenvectors (components) and their eigenvalues from a multivariate data set of n objects by p variables. First, we can use an eigenanalysis (spectral decomposition) of a p x p association matrix between variables. Second, we can use a singular value decomposition (SVD) of the n x p data matrix, with variables standardized as necessary.
+
+Consider the matrix (Y) of raw data from Clevenger and Waltho (2000), who recorded the numbers of seven taxa of wildlife for eleven underpasses in Alberta, Canada.
+
+Load the vegan package
+```{r results='hide'}
+library(tidyverse)
+library(vegan)
+```
+
+```{r}
+#datasets: clevenger.csv
+clevenger <- read_csv("../data/clevenger.csv")
+head(clevenger,10)
+```
+### Illustrate centroid using relationship between human activity index (hui) and elk numbers
+Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+```{r echo=FALSE, results='hide'}
+source("../R/appearance.R")
+```
+Fig 14.2
+```{r}
+f14_2<-ggplot(data=clevenger,aes(x=hui, y=elk))+
+  geom_point(color=sc, size=ss, alpha= 1) +
+  theme_qk()+
+  geom_point(aes(x=mean(hui),y=mean(elk)), pch=8, size=3)
+f14_2
+```
+
+### Get centered and standardized raw data matrices
+```{r}
+# centered
+clevenger.cen <- scale(clevenger[,c('bbear','gbear','cougar','wolf','deer','elk','moose')], scale=F)
+clevenger.cen
+# get standardized raw data
+clevenger.stan <- scale(clevenger[,c('bbear','gbear','cougar','wolf','deer','elk','moose')], scale=T)
+clevenger.stan
+```
+### Generate covariance and correlation matrices
+Covariance matrix for wildlife
+```{r}
+clevenger.cov <- cov(clevenger[,c('bbear','gbear','cougar','wolf','deer','elk','moose')])
+```
+Correlation matrix for wildlife
+```{r}
+clevenger.cor <- cor(clevenger[,c('bbear','gbear','cougar','wolf','deer','elk','moose')])
+```
+
+### Derive eigenvectors and eigenvalues based on correlation matrix
+```{r}
+clevenger.eigen <- eigen(clevenger.cor)
+clevenger.eigen
+```
+### Do PCA
+```{r}
+clevenger.pca <- princomp(~bbear+gbear+cougar+wolf+deer+elk+moose, cor=T, data=clevenger)
+summary(clevenger.pca)
+```
+### Calculate dissimilarities for raw and standardized (by object and variables) and presence/absence
+Calculate Euclidean, Chisq and Bray-Curtis measures
+```{r}
+# raw data
+clev1 <- clevenger[c(16:22)]
+vegdist(clev1, method="euclidean")
+vegdist(clev1, method="chisq")
+vegdist(clev1, method="bray")
+# standardized by object totals
+clev1$total <- rowSums(clev1)
+clev2 <- clev1
+clev2$bbeart <- clev2$bbear/clev2$total
+clev2$gbeart <- clev2$gbear/clev2$total
+clev2$cougart <- clev2$cougar/clev2$total
+clev2$wolft <- clev2$wolf/clev2$total
+clev2$deert <- clev2$deer/clev2$total
+clev2$elkt <- clev2$elk/clev2$total
+clev2$mooset <- clev2$moose/clev2$total
+clev3 <- clev2[c(9:15)]
+vegdist(clev3, method="euclidean")
+vegdist(clev3, method="chisq")
+vegdist(clev3, method="bray")
+# standardized by variable totals
+clev1$bbeart <- clev1$bbear/sum(clev2$bbear)
+clev1$gbeart <- clev1$gbear/sum(clev2$gbear)
+clev1$cougart <- clev1$cougar/sum(clev2$cougar)
+clev1$wolft <- clev1$wolf/sum(clev2$wolf)
+clev1$deert <- clev1$deer/sum(clev2$deer)
+clev1$elkt <- clev1$elk/sum(clev2$elk)
+clev1$mooset <- clev1$moose/sum(clev2$moose)
+clev4 <- clev1[c(9:15)]
+vegdist(clev4, method="euclidean")
+vegdist(clev4, method="chisq")
+vegdist(clev4, method="bray")
+```
+**create pres/abs datafile**
+```{r error=TRUE}
+clev5 <- clevenger[c(16:22)]
+clev5[clev5>0] <-1
+clev5
+vegdist(clev5, method="jaccard")
+vegdist(clev5, method="bray")
+```
+Check outliers with Mahalanobis distances - no particularly unusual objects
+```{r}
+# Problem with code; needs to be fixed
+#mahalanobis(clev1, colMeans(clev1), cov(clev1))
+```
+
+### Fig 14.3 - ordination with BC MDS
+```{r}
+clev6 <- clevenger[c(1,16:22)]
+clev6.stand <- decostand(clev6[,2:8], "total")
+clev6.stand.bc <- vegdist(clev6.stand,"bray")
+clev6.mds <- metaMDS(clev6.stand.bc,k=2)
+plot(clev6.mds$points,type="n", )
+text(clev6.mds$points,lab=clev6$underpass, col="black")
+```
+```{r, error=TRUE}
+mdsplot <- as.data.frame(scores(clev6.mds))
+mdsplot$underpass<-clev6$underpass
+f14_3<-ggplot(data=mdsplot,aes(x=NMDS1, y=NMDS2, label=underpass))+
+  geom_text()+
+  theme_qk()+
+  theme(axis.text = element_blank())
+f14_3
+```
