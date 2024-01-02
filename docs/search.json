@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "low.html",
+    "href": "low.html",
+    "title": "QK Box 2.2",
+    "section": "",
+    "text": "Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO2 levels were recorded after 120 minutes. The H0 was that there is no difference between the anesthetics in the mean blood CO2 level. This is an independent comparison because individual mice were only given one of the two anesthetics."
+  },
+  {
+    "objectID": "low.html#preliminaries",
+    "href": "low.html#preliminaries",
+    "title": "QK Box 2.2",
+    "section": "Preliminaries",
+    "text": "Preliminaries\nFirst, load the required packages (tidyverse, RMisc, MKinfer, car, emmeans)\nImport low data file\n\nlow &lt;- read.csv(\"data/lowco2.csv\")\nlow\n\n   anesth co2\n1     iso  43\n2     iso  35\n3     iso  50\n4     iso  39\n5     iso  56\n6     iso  54\n7     iso  39\n8     iso  51\n9     iso  49\n10    iso  54\n11    iso  51\n12    iso  79\n13     ac  60\n14     ac  53\n15     ac  54\n16     ac  73\n17     ac  64\n18     ac  95\n19     ac  57\n20     ac  80\n21     ac 115\n22     ac  79\n23     ac  50"
+  },
+  {
+    "objectID": "low.html#get-summary-statistics-by-anesthetic",
+    "href": "low.html#get-summary-statistics-by-anesthetic",
+    "title": "QK Box 2.2",
+    "section": "Get summary statistics by anesthetic",
+    "text": "Get summary statistics by anesthetic\n\nlow_stats &lt;- summarySE(data=low,measurevar=\"co2\", groupvars=\"anesth\")\nlow_stats\n\n  anesth  N      co2       sd       se        ci\n1     ac 11 70.90909 20.20126 6.090909 13.571391\n2    iso 12 50.00000 11.39378 3.289100  7.239261\n\nlow %&gt;% dplyr::count(anesth)\n\n  anesth  n\n1     ac 11\n2    iso 12\n\nlow %&gt;%  \n  group_by(anesth) %&gt;% \n  dplyr::summarise(n = n(), \n            mean = mean(co2),\n            median = median(co2),\n            sd = sd(co2), \n            variance = var(co2), \n            se = sd / sqrt(n), \n            CI_upper = mean + se * qt(p = 0.975, df = n-1), \n            CI_lower = mean + se * qt(p = 0.025, df = n-1), \n            CI = se * qt(p = 0.975, df = n-1), \n            upper = mean + CI, \n            lower = mean - CI\n            )\n\n# A tibble: 2 × 12\n  anesth     n  mean median    sd variance    se CI_upper CI_lower    CI upper\n  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 ac        11  70.9   64    20.2     408.  6.09     84.5     57.3 13.6   84.5\n2 iso       12  50     50.5  11.4     130.  3.29     57.2     42.8  7.24  57.2\n# ℹ 1 more variable: lower &lt;dbl&gt;\n\n\nPlay around with df to see how the z-multiplier changes when using the T-distribution to calculate the 95% confidence interval.\n\n# Standard normal distribution\nqnorm(p = 0.025)\n\n[1] -1.959964\n\nqnorm(p = 0.975)\n\n[1] 1.959964\n\n# Student-t distribution\nqt(p = 0.025, df = 100)\n\n[1] -1.983972\n\nqt(p = 0.975, df = 100)\n\n[1] 1.983972"
+  },
+  {
+    "objectID": "low.html#plot-data",
+    "href": "low.html#plot-data",
+    "title": "QK Box 2.2",
+    "section": "Plot data",
+    "text": "Plot data\n\nlow %&gt;% \n  ggplot(aes(anesth, co2)) + \n  geom_point(alpha = 0.5) + \n  theme_qk()"
+  },
+  {
+    "objectID": "low.html#fit-model-and-get-effect-size",
+    "href": "low.html#fit-model-and-get-effect-size",
+    "title": "QK Box 2.2",
+    "section": "Fit model and get effect size",
+    "text": "Fit model and get effect size\n\nlow.aov &lt;- aov(co2~anesth,data=low)\ntidy(low.aov, conf.int=TRUE)\n\n# A tibble: 2 × 6\n  term         df sumsq meansq statistic  p.value\n  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 anesth        1 2509.  2509.      9.56  0.00552\n2 Residuals    21 5509.   262.     NA    NA      \n\nlow.emm &lt;- emmeans(low.aov,\"anesth\")\neff_size(low.emm, sigma=sigma(low.aov), edf=df.residual(low.aov))\n\n contrast effect.size    SE df lower.CL upper.CL\n ac - iso        1.29 0.463 21    0.329     2.25\n\nsigma used for effect sizes: 16.2 \nConfidence level used: 0.95 \n\n\nNote that we’ve chosen to show a standardized effect size, using the pooled variance from the analysis of variance - Residual MS = 262.44, and √262.44 = 16.2"
+  },
+  {
+    "objectID": "low.html#test-variances",
+    "href": "low.html#test-variances",
+    "title": "QK Box 2.2",
+    "section": "Test variances",
+    "text": "Test variances\n\nleveneTest(co2 ~ anesth, low)\n\nWarning in leveneTest.default(y = y, group = group, ...): group coerced to\nfactor.\n\n\nLevene's Test for Homogeneity of Variance (center = median)\n      Df F value Pr(&gt;F)\ngroup  1   2.604 0.1215\n      21               \n\n\n\nt-test for equal variances\n\nt.test(co2~anesth,var.equal=TRUE, data=low)\n\n\n    Two Sample t-test\n\ndata:  co2 by anesth\nt = 3.0927, df = 21, p-value = 0.005515\nalternative hypothesis: true difference in means between group ac and group iso is not equal to 0\n95 percent confidence interval:\n  6.849172 34.969010\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000 \n\n\n\n\nt-test for separate variances\n\nt.test(co2~anesth,data=low)\n\n\n    Welch Two Sample t-test\n\ndata:  co2 by anesth\nt = 3.0206, df = 15.485, p-value = 0.008362\nalternative hypothesis: true difference in means between group ac and group iso is not equal to 0\n95 percent confidence interval:\n  6.194866 35.623316\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000"
+  },
+  {
+    "objectID": "low.html#wilcoxon-mann-whitney",
+    "href": "low.html#wilcoxon-mann-whitney",
+    "title": "QK Box 2.2",
+    "section": "Wilcoxon-Mann-Whitney",
+    "text": "Wilcoxon-Mann-Whitney\n\nwilcox.test(co2~anesth,data=low)\n\nWarning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot\ncompute exact p-value with ties\n\n\n\n    Wilcoxon rank sum test with continuity correction\n\ndata:  co2 by anesth\nW = 114, p-value = 0.003398\nalternative hypothesis: true location shift is not equal to 0\n\nsum(rank(low$co2)[low$anesth==\"ac\"])\n\n[1] 180\n\nsum(rank(low$co2)[low$anesth==\"iso\"])\n\n[1] 96"
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html",
+    "href": "chapter_notes/chapter2.html",
+    "title": "Chapter 2",
+    "section": "",
+    "text": "Questions for review and discussion, based on chapter 2 from Quinn and Keough 2023."
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section",
+    "href": "chapter_notes/chapter2.html#section",
+    "title": "Chapter 2",
+    "section": "2.1",
+    "text": "2.1\nWhat is a sample?\nWhat is the difference between a statistic and a parameter?\nWhat is the difference between process and observation uncertainty?"
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-1",
+    "href": "chapter_notes/chapter2.html#section-1",
+    "title": "Chapter 2",
+    "section": "2.2",
+    "text": "2.2\nDefine the following terms:\n\nprobability\nsample space\nconditional probability\n\nDraw a Venn diagram representing the probability of three outcomes (A, B) in a sample space. Let C be mutually exclusive of A and B, but allow A and B to overlap. Use this diagram to visualize the idea of conditional probability, and relate it to the the mathematical equation for conditional probability."
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-2",
+    "href": "chapter_notes/chapter2.html#section-2",
+    "title": "Chapter 2",
+    "section": "2.3",
+    "text": "2.3\nDefine the following terms:\n\nrandom variable\ndiscrete variable\ncontinuous variable\nprobability distribution\nprobability mass function\nprobability density function\n\nImagine you have counted rockfish along transects in the kelp forest. You are an avid diver, so you completed 1000 transects. Because these are count data, we will use a Poisson distribution (the support for the Poisson is non-negative integers). The average number of fish is 2 per transect. Note that in the Poisson, one parameter (\\(\\lambda\\)), governs the central tendency and the spread of the distribution (unlike, e.g., the Normal). This means the single parameter of the Poisson distribution is \\(\\lambda = 2\\).\nHere, we generate data according to our data story:\n\nset.seed(101)\nx &lt;- rpois(n = 1000, lambda = 2)\nhist(x, xlab = \"Rockfish per transect\",\n           main = expression(paste(\"1000 samples from a Poisson(\", lambda, \" = 2)\")))\n\n\n\n\nNow run these two lines of code. Why do these two expressions give you the same answer? (To force you to dig into the help files for these functions, I am not writing explicit code).\n\ndpois(0, 2) + dpois(1, 2) + dpois(2, 2)\nppois(2, 2)\n\nThe above code tells us that ~67% of the probability mass of a Poisson(2) distribution lies at or below 2. Returning to our random samples, let’s use quantile to figure out which of our values is at the 67th percentile in our data:\n\nquantile(x = x, probs = 0.67)\n\nNow let’s use qpois to identify the value at which we have 67% of the observations:\n\nqpois(p = 0.67, lambda = 2)\n\nFinally, let’s just tabulate the data to see if this all makes sense:\n\ntable(x)\nsum(table(x)[1:3]) / 1000\n\nPonder all of this until your understanding of the inter-relationships between d, p, q, r - pois is solid.\n\nPlotting distributions\nLet’s plot a Normal distribution centered at 0, with different standard deviations:\n\nx_grid &lt;- seq(-4, 4, 0.01)\n\nplot(x_grid, dnorm(x_grid, mean = 0, sd = 0.5), type = \"l\", \n     col = \"red\", xlab = \"x\", ylab = \"probability density\")\n\nlines(x_grid, dnorm(x_grid, mean = 0, sd = 1), type = \"l\", \n     col = \"blue\")\n\nlines(x_grid, dnorm(x_grid, mean = 0, sd = 1.5), type = \"l\", \n     col = \"black\")\n\n\n\n\nLet’s compare with a Student t-distribution:\n\nx_grid &lt;- seq(-3, 3, 0.01)\n\nplot(x_grid, dt(x_grid, df = 40), type = \"l\", \n     col = \"red\", xlab = \"x\", ylab = \"probability density\")\n\nlines(x_grid, dt(x_grid, df = 20), type = \"l\", \n     col = \"blue\")\n\nlines(x_grid, dt(x_grid, df = 10), type = \"l\", \n     col = \"black\")\n\nlines(x_grid, dnorm(x_grid, mean = 0, sd = 1), type = \"l\", \n     col = \"gray\", lty = 2)\n\n\n\n\nThe difference appears to be small. But the ‘thicker tails’ of the t-distribution dramatically increases the probability of extreme events, so-called black swans (e.g., in animal populations).\n\n\nMore practice\n\nFind the mean, variance, and 95% quantiles (i.e., 2.5% and 97.5% quantiles) of 1000 random draws from a Poisson distribution with \\(\\lambda=33\\).\nWhat is the probability \\(\\text P (X \\leq 6)\\) that a random draw from a Poisson distribution with \\(\\lambda = 4\\) will be less than or equal to 6?\nWhat is the probability \\(\\text P(X = 3)\\) of obtaining a value of 3 from a Binomial distribution with \\(p = 0.3\\) and \\(n = 5\\)?\nWhat is the probability \\(\\text P(-1.5 \\leq X \\leq 1.5)\\) that a value drawn from a standard normal distribution will be between -1.5 and 1.5? It may help to approach this visually.\nFind the value \\(x\\) that satisfies to \\(\\text P(X \\leq x) = 0.8\\), if \\(X\\) is a Gamma random variable with \\(k=2\\) and \\(\\theta = 1\\)."
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-3",
+    "href": "chapter_notes/chapter2.html#section-3",
+    "title": "Chapter 2",
+    "section": "2.4",
+    "text": "2.4\nWhat is estimation?\nWhat makes a good estimator?\nCompare and contrast these frequentist estimation methods:\n\nordinary least squares\nmaximum likelihood\nresampling (bootstrap)\n\n\nBox 2.2"
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-4",
+    "href": "chapter_notes/chapter2.html#section-4",
+    "title": "Chapter 2",
+    "section": "2.5",
+    "text": "2.5\nHypothesis testing"
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-5",
+    "href": "chapter_notes/chapter2.html#section-5",
+    "title": "Chapter 2",
+    "section": "2.6",
+    "text": "2.6\nComments on frequentist inference"
+  },
+  {
+    "objectID": "chapter_notes/chapter2.html#section-6",
+    "href": "chapter_notes/chapter2.html#section-6",
+    "title": "Chapter 2",
+    "section": "2.7",
+    "text": "2.7\nBayesian inference"
+  }
+]
