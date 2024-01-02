@@ -1,6 +1,11 @@
 project:
   type: website
   output-dir: docs
+  render: 
+    - "*.qmd"
+    - "!examples/"
+    - "!examples_re/"
+
 
 website:
   title: "qk2_examples"

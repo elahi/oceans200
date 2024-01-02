@@ -4,7 +4,7 @@
 # Graphics enhancements: "ggExtra", "patchwork", "viridis", "ggsci", "ggforce"
 
 # Package names
-packages <- c("knitr", "tidyverse", "broom", "broom.mixed", 
+packages <- c("knitr", "tidyverse", "broom", "broom.mixed", "sjstats", "pwr", 
               "car", "MASS", "Rmisc", "ez", "afex", "emmeans", "lme4", "lmerTest", "nlme", "VCA", "MuMIn", "lattice", "effectsize", "lmtest", 
               "ggExtra", "patchwork", "viridis", "ggsci", "ggforce") 
 
