@@ -13,6 +13,7 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - chapter_notes/chapter2.qmd
       - low.qmd
 
 format:

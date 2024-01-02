@@ -1,9 +1,12 @@
 ---
 title: "Chapter 2"
 author: "Robin Elahi"
-format: html
-editor: visual
-editor_options: 
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
   chunk_output_type: console
 ---
 
@@ -148,7 +151,7 @@ Compare and contrast these frequentist estimation methods:
 
 -   resampling (bootstrap)
 
-### Box 2.2
+[Box 2.2](low.html)
 
 ## 2.5
 
