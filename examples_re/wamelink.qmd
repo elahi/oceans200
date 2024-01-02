@@ -1,0 +1,144 @@
+---
+title: "QK Box 10.8"
+
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Wamelink et al. (2014) compared the growth of 14 species of plant grown in soil collected from near the Rhine River with simulant regolith representing the soil conditions on the moon and on Mars. We will focus on total biomass of *Sedum reflexum* as the response variable. Twenty spatial blocks were established in a glasshouse and for this species, there were 3 small pots (each with five seeds) in each block, representing the three soils types. Soil type is considered a fixed factor and block is a random factor. The full layout of the experiment is shown clearly in Figures 1 and 2 of their paper.
+
+![](../media/Sedum.jpg)
+
+*Sedum*. Mick Keough, ![](../media/by.png){width="57"}
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0103138)
+
+Wamelink, G. W. W., Frissel, J. Y., Krijnen, W. H. J., Verwoert, M. R. & Goedhart, P. W. (2014). Can plants grow on Mars and the Moon: A growth experiment on Mars and Moon soil simulants. *PLoS One*, 9, e103138.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc, MuMin)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import wamelink data file (wamelink1.csv)
+
+```{r}
+wamelink <- read.csv("../data/wamelink1.csv")
+head(wamelink,5)
+
+```
+
+Set contrasts from afex & make block a factor
+
+```{r results='hide'}
+set_sum_contrasts()
+wamelink$block <- factor(wamelink$block)
+```
+
+Check assumptions with boxplots
+
+```{r }
+boxplot(totbiomass~soil, data=wamelink)
+```
+
+### Fit OLS model with default aov SS
+
+```{r }
+wamelink.aov <- aov(totbiomass~soil+block, data=wamelink)
+```
+
+Check residuals - some evidence for interaction
+
+```{r error=TRUE}
+plot(wamelink.aov)
+```
+
+Do interaction plot
+
+```{r }
+interaction.plot(wamelink$block,wamelink$soil,wamelink$totbiomass)
+```
+
+Order of treatments consistent but differences vary greatly between blocks
+
+```{r }
+boxplot(log10(totbiomass)~soil, data=wamelink)
+```
+
+### Transform to logs due to variance heterogeneity and to minimise interaction
+
+```{r }
+wamelink$ltotbiomass <- log10(wamelink$totbiomass)
+```
+
+Recheck diagnostics - much better with less interaction
+
+```{r }
+boxplot(ltotbiomass~soil, data=wamelink)
+interaction.plot(wamelink$block,wamelink$soil,wamelink$ltotbiomass)
+```
+
+### Fit OLS model with default aov SS
+
+```{r }
+wamelink.aov1 <- aov(ltotbiomass~soil+block, data=wamelink)
+```
+
+Check residuals - look OK
+
+```{r error=TRUE}
+plot(wamelink.aov1)
+```
+
+Examine results
+
+```{r }
+options(digits = 3)
+summary(wamelink.aov1)
+```
+
+### Use VCA package to get anova var comps
+
+Note that VCs can be -ve when based on OLS model fits
+
+```{r }
+wamelink.vca <- anovaMM(ltotbiomass~soil+(block), wamelink)
+wamelink.vca
+VCAinference(wamelink.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+### Fit random intercept model using lme4 and REML
+
+```{r }
+wamelink.lmer1 <- lmer(ltotbiomass~soil + (1|block), REML=TRUE, wamelink)
+summary(wamelink.lmer1)
+AICc(wamelink.lmer1)
+```
+
+F tests of fixed effects (Type III SS) - matches t-test from summary command
+
+```{r }
+anova(wamelink.lmer1, ddf="Kenward-Roger")
+```
+
+CI on variance components (remembering to square CIs from lmer with are in SD units)
+
+```{r }
+wamelink.ci3 <- confint.merMod(wamelink.lmer1)
+wamelink.vc3 <- (wamelink.ci3)^2
+print(wamelink.vc3)
+```
+
+### Fit model that omits blocks
+
+```{r }
+wamelink.gls2 <- gls(ltotbiomass~soil,wamelink)
+summary(wamelink.gls2)
+AICc(wamelink.gls2)
+```

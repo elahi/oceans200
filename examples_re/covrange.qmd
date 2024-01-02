@@ -1,0 +1,121 @@
+---
+title: "QK Box 8.15"
+
+output: 
+ html_notebook:
+  theme: flatly
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We use a simple hypothetical data set to illustrate some issues when covariate ranges do not match well. The data set consists of two treatment groups, a single response variable (Y) and a single covariate (X) Thie data file is [here](../data/covrange.csv)
+
+### Preliminaries
+
+First, load the required packages (car)
+
+```{r include = FALSE, results = 'hide', error = TRUE}
+source("../R/libraries.R")  #This is the common library
+library(reghelper)
+library(interactions)
+library(kader)
+library(effects)
+```
+
+Import covrange data file
+
+```{r}
+covrange <- read.csv("../data/covrange.csv")
+head(covrange,10)
+#Make group a factor
+covrange$group<-factor(covrange$group)
+```
+
+### Fit full model with interaction to evaluate homogeneous slopes
+
+All SS types produce same result for interaction
+
+```{r }
+covrange.aov1 <- aov(y~group+x+group*x, data = covrange)
+plot(covrange.aov1)
+```
+
+```{r }
+Anova(covrange.aov1, type = 3)
+```
+
+Not strong evidence for heterogenous slopes
+
+### Run simpler model
+
+```{r }
+covrange.aov2 <- aov(y~group+x, data = covrange)
+Anova(covrange.aov2, type = 3)
+```
+
+Get adjusted means
+
+```{r }
+adjmeans <- effect("group", covrange.aov2, se = TRUE)
+summary(adjmeans)
+```
+
+### Use Huitema adjustment
+
+Instead of using raw x values as covariates, Huitema suggests using the x-residuals from each group. This is done already in the data file (xres), but it can be done by fitting a lm with x as the response and group as the predictor, and using the calculated residuals. We'll skip the comparison of slopes and just run the pooled slopes model and get adjusted means
+
+```{r }
+covrange.aov3 <- aov(y~group+xres, data = covrange)
+Anova(covrange.aov3, type = 3)
+adjmeans <- effect("group", covrange.aov3, se = TRUE)
+summary(adjmeans)
+```
+
+### Generate graph
+
+```{r include = FALSE, results = 'hide'}
+source("../R/appearance.R")  #This is the common library of graphics tweaks, defining the qk theme
+```
+
+```{r}
+
+df1<-covrange  # Copy dataframe to df1 so generic code can be used
+aggregate(x = df1$x,        # Specify data column
+     by = list(df1$group),       # Specify group indicator
+     FUN = mean) 
+p1<-ggplot(data = df1,aes(x = x,y = y,group = group, shape = group, color = group))+
+ geom_point()+
+ geom_smooth(method = "lm",se = FALSE)+
+ geom_vline(xintercept = 3.872, linetype = "dashed", color = lf)+
+ geom_segment(x = 2.803,y = 6,xend = 2.803,yend = 7, arrow = arrow(length = unit(3, "mm")),color = lc)+
+ geom_segment(x = 4.94,y = 6,xend = 4.94,yend = 7, arrow = arrow(length = unit(3, "mm")),color = lc)+
+ labs(x = "X", y = NULL)+
+ scale_color_grey(end = 0.6)+
+ theme_qk()+
+ theme(
+  legend.position = "none"
+ )
+p2<-ggplot(data = df1,aes(x = xres,y = y,group = group, shape = group, color = group))+
+ geom_point()+
+ geom_smooth(method = "lm",se = FALSE)+
+ geom_vline(xintercept = 0, linetype = "dashed", color = lf)+
+ labs(x = "X residual", y = NULL)+
+ scale_color_grey(end = 0.6)+
+ theme_qk()+
+ theme(
+  legend.position = "none"
+ )
+p3<-ggplot(data = df1,aes(x = x,y = y))+
+ geom_point(color = sc)+
+ geom_smooth(method = "lm",se = FALSE, color = sc,linetype = "dashed")+
+ geom_smooth(method = "loess", color = lc, linetype = "solid", se = FALSE, span = 2)+
+ labs(x = "X", y = NULL)+
+ scale_color_grey(end = 0.6)+
+ theme_qk()+
+ theme(
+  legend.position = "none"
+ )
+p1+p2+p3
+```

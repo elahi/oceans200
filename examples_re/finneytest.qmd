@@ -1,0 +1,129 @@
+---
+title: "Q & K Box 13.3"
+output:
+    html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Calculations in ecotoxicology. The data used here are summary vaules taken from the Bliss data used by Finney in his description of probit analysis. Data are in 2 forms - individual live/dead values, and summary proportions for each dose.
+
+The data files are [here](../data/findisagg.csv) and [here](../data/finneyagg.csv)
+
+### Preliminaries
+
+First, load the required packages (vcd)
+
+```{r }
+source("../R/libraries.R")   #This is the common library
+library(performance)
+library(vcd)
+```
+
+## Disaggregated data file
+
+```{r}
+finndisagg <- read_csv("../data/finneydisagg.csv")
+head(finndisagg)
+plot(dead~dose, data=finndisagg)
+```
+
+Fit GLM with binomial response variable
+
+```{r}
+fdisagg.lm<-glm(dead~dose,family=binomial, data=finndisagg)
+tidy(fdisagg.lm, conf.int=TRUE)
+plot(fdisagg.lm$fitted.values~finndisagg$dose)
+coef(fdisagg.lm)
+summary(fdisagg.lm) #get model fit
+```
+
+Calc LC50 Use parameter values from the dose-response, solve for 50%
+
+```{r }
+3.28/.612
+```
+
+### Original analysis used log 10 transform of dose
+
+```{r}
+fdisagg.lm3<-glm(dead~ldose,family=binomial, data=finndisagg, na.action=na.omit)
+tidy(fdisagg.lm3, conf.int=TRUE)
+summary(fdisagg.lm3) #get model fit
+```
+
+solve for y=0; use coefficients to calculate LC50
+
+```{r }
+coef(fdisagg.lm3)
+5.12/7.43
+```
+
+backtransform to get LC50 on raw dose scale
+
+```{r }
+10^0.689
+```
+
+### Fit same model as probit, rather than logit
+
+```{r }
+fdisagg.lm4<-glm(dead~ldose,family=binomial(link="probit"), data=finndisagg, na.action=na.omit)
+tidy(fdisagg.lm4, conf.int=TRUE)
+summary(fdisagg.lm4) #get model fit
+```
+
+Use coefficients to calculate LC50
+
+```{r }
+coef(fdisagg.lm4)
+3.03/4.38
+10^0.692
+```
+
+### For comparison to original analyses, we'll use aggregated values, generate probit and logit values for each dose and fit linear regression.
+
+```{r }
+finney <- read_csv("../data/finneyagg.csv")
+head(finney)
+```
+
+#### Fit logit model
+
+```{r}
+finn.lm<-lm(logit~l10dose, data=finney, na.action=na.omit)
+tidy(finn.lm)
+#Use coefficients to calculate LC50
+
+coef(finn.lm)
+4.805/7.004
+
+
+# Back-transform to untransformed dose
+
+10^.686
+```
+
+#### Probit transformed values
+
+```{r }
+finn.lm2<-lm(probit_raw~l10dose,data=finney, na.action=na.omit)
+tidy(finn.lm2)
+# use coefficients to calculate LC50
+coef(finn.lm2)
+2.85/4.15
+# Back-transform
+10^0.687
+```
+
+**Note**: Finney used probits with 5 added
+
+```{r}
+finn.lm3<-lm(probit_finney~l10dose,data = finney, na.action=na.omit)
+tidy(finn.lm3)
+# solve for y=5
+(5-2.14)/4.16
+10^.688
+```

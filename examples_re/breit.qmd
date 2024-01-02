@@ -1,0 +1,191 @@
+---
+title: "QK Box 7.2"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Breitwieser et al. (2016) surveyed variegated scallops, *Mimachlamys varia*, living at several sites along the French Atlantic coast. Four sites were chosen (factor site); three sites were chosen because they were potentially contaminated, with different sources of contaminants, and a fourth site was considered relatively clean (and considered a reference site). The authors sampled scallops at two times of the year (March and September), chosen to correspond to before and at the end of the scallop's reproductive season. These two times were levels of the factor season (although strictly these levels represent two different sampling times that may or may not reflect seasonal differences). Breitwieser and colleagues measured several variables to assess the condition of scallops, and here we use their data using a biomarker, Malondialdehyde (MDA). MDA is a stress marker and was measured (μM/g fresh tissue) in ten scallops from each combination of site and season. A two-factor linear model (7.3) including the fixed main effects of site and season and their interaction was fitted to these data.
+
+![](../media/31146.jpg){width="600"}
+
+Dugornay Olivier (2020). [Ifremer](https://image.ifremer.fr/data/00664/77619/). [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0){.uri}
+
+
+
+Breitwieser, M., *et al.* (2016). Short-term and long-term biological effects of chronic chemical contamination on natural populations of a marine bivalve. *PLoS One*, 11, e0150184. The paper is [here](https://doi.org/10.1371/journal.pone.0150184)
+
+### Preliminaries
+
+First, load the required packages (car, effectsizes, afex) + ggplot2, patchwork
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import breit data file (breit.csv)
+
+```{r}
+breit <- read.csv("../data/breit.csv")
+head(breit,10)
+```
+
+### Initial look at raw data
+
+Start with boxplot
+
+```{r }
+boxplot(mda~group,data=breit)
+```
+
+#### Fit model to untransformed data and check residuals
+
+```{r }
+breit.aov<-aov(mda~site*season, data=breit)
+plot(breit.aov)
+```
+
+### Transform response to logs & redo diagnostics
+
+Boxplots
+
+```{r }
+breit$lmda<- log10(breit$mda) 
+boxplot(lmda~group,data=breit)
+```
+
+### Refit model with log data and check residuals
+
+```{r }
+lbreit.aov<-aov(lmda~site*season, data=breit)
+plot(lbreit.aov)
+```
+
+## Analysis with untransformed data
+
+Some oddities in the boxplots, but no real improvement when log-transforming, so go with original data
+
+```{r }
+summary(breit.aov)
+```
+
+Get effect size measures (sjstats package)
+
+```{r }
+effectsize(breit.aov)
+```
+
+### Interaction plot
+
+```{r }
+interaction.plot(breit$site,breit$season,breit$mda)
+afex_plot(breit.aov, "site", "season", dodge=0.1, data_plot=FALSE)+theme_light()
+```
+
+### Simple main effects - effect of site in March
+
+```{r}
+breitmar.aov <- aov(mda~site, data = breit, subset = c(season == 'march')) 
+# Anova() function from car package tests simple main effect against original error term from 2 factor model 
+Anova(lm(breitmar.aov), lm(breit.aov), type=3)
+```
+
+### Effect of site in September
+
+```{r}
+breitsep.aov <- aov(mda~site, data = breit, subset=c(season == 'sept')) 
+Anova(lm(breitsep.aov), lm(breit.aov), type = 3)
+```
+
+Now include contrast between Loix and average of rest
+
+```{r }
+breit$site <- factor(breit$site)
+contrasts(breit$site)<- c(-3,1,1,1)
+contrasts(breit$site)
+
+breit2.aov <- aov(mda~site*season, data = breit)
+
+summary.lm(breit2.aov)
+```
+
+### Figure
+
+```{r include = FALSE, results = 'hide'}
+source("../R/appearance.R")   #This is the common library of graphics tweaks, defining the qk theme
+```
+
+Residual plot
+
+```{r}
+p1<-ggplot(breit.aov, aes(x = breit.aov$fitted.values, y = breit.aov$residuals)) +
+  geom_point(color=sc) +
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text = element_text(colour = ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac),
+        )+labs(x = "Predicted", y = "Residuals"
+       )
+p1<-p1+ annotate ("text", x=95, y=170, label="Untransformed")
+p1
+
+```
+
+```{r}
+p3<-ggplot(lbreit.aov, aes(x = lbreit.aov$fitted.values, y = lbreit.aov$residuals)) +
+  geom_point(color=sc) +
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text = element_text(colour = ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac))+
+  labs(x = "Predicted", y = "Residuals"
+       )
+p3<-p3 + annotate ("text", x=1.96, y=0.35, label="Log-transformed")
+p3
+```
+
+Interaction plot
+
+```{r}
+breit2<-summarySE(data=breit,measurevar="mda", groupvars=c("site", "season"))
+p5<-ggplot(breit2, aes(x = site, y = mda, fill = season)) +
+  geom_errorbar(aes(ymin = mda-se, ymax = mda+se), width=0, position = position_dodge(width=0.6)) +
+  geom_bar(stat = "identity", width=.6, position = position_dodge(width=0.6), color=lc) +
+  scale_fill_uchicago(na.value = "red",labels = c("March", "September"))+
+  scale_y_continuous(expand = c(0,0))+
+  scale_x_discrete(labels = str_wrap(c("Les Palles", "Loix", "Minimes", "Port Neuf"), width = 7))+
+  labs(x = NULL, y = "MDA")+
+    theme_qk()+
+    theme(
+    axis.text.x = element_text(colour = lc, size=8),
+    legend.key.size = unit(0.35, 'cm'), #change legend key size
+#        legend.key.height = unit(1, 'cm'), #change legend key height
+#        legend.key.width = unit(1, 'cm'), #change legend key width
+ #       legend.title = element_text(size=14), #change legend title font size
+#        legend.text = element_text(size=10)) #change legend text font size
+  legend.position = "right",
+  legend.title = element_blank(),
+  legend.text=element_text(size=7),
+  )+
+theme(
+  legend.position = c(.5, .95),
+  legend.justification = c("right", "top"),
+  legend.box.just = "right",
+  legend.margin = margin(6, 6, 6, 6),
+  legend.title = element_blank()
+)
+p5
+```
+
+Combine figures
+
+```{r}
+p1+p3+p5+plot_layout(widths = c(1,1,2))
+```

@@ -1,0 +1,149 @@
+---
+title: "Q & K Box 10.4"
+output: 
+  html_notebook:
+    theme:
+      flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Lozada-Misa et al. (2015) compared two different morphology types of the coral genus *Porites* for lesions caused by white syndrome disease. They collected ten random colonies of the branching *P. cylindrica* and ten colonies of the massive *Porites* spp., and five random lesions per colony were photographed and measured. Morphology type was a fixed factor, with colony a random factor nested within morphology type, and size of individual lesions as the observations.
+
+![Branching coral. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).](../media/branching.jpg){width="800"}
+
+![Massive coral. Emmet Keough, [CC BY4.0](https://creativecommons.org/licenses/by/4.0/).](../media/massive_EK.jpg){width="800"}
+
+![Massive coral. Liam Keough, [CC BY-SA 4.0](https://creativecommons.org/licenses/by/4.0/)](../media/massive_LK.jpg){width="800"}
+
+![Coral surface showing lesions. Mick Keough [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)](../media/lesion.jpg){width="800"}
+
+The paper is [here](https:://doi.org/10.1371/journal.pone.0129841)
+
+Lozada-Misa, P., Kerr, A. M. & Raymundo, L. (2015). Contrasting lesion dynamics of white syndrome among the scleractinian corals *Porites* spp. *PLoS One*, 10, e0129841.
+
+## Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc, MuMin)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import lesions data file (lesions.csv)
+
+```{r}
+lesions <- read.csv("../data/lesions.csv")
+head(lesions, 10)
+```
+
+Set contrasts from afex
+
+Make colony a factor
+
+```{r results='hide'}
+set_sum_contrasts()
+lesions$col <-factor(lesions$col)
+```
+
+Calculate summary stats by groups (to be used later)
+
+```{r }
+lesions_sum <- summarySE(lesions,measurevar='size', groupvars= c('col','morph'))
+```
+
+### Do preliminary checks
+
+Run for all data and summary data with means for each colony
+
+```{r }
+boxplot(size~morph, data=lesions)
+boxplot(size~morph, data=lesions_sum)
+boxplot(log10(size)~morph, data=lesions)
+boxplot(log10(size)~morph, data=lesions_sum)
+```
+
+Size distributions look better with log10 transform
+
+```{r }
+lesions$lsize <- log10(lesions$size)
+```
+
+## Fit nested anova model
+
+```{r }
+lesions.aov <- aov(lsize~morph+Error(col), lesions)
+```
+
+Plot residuals based on colonies
+
+```{r }
+plot(resid(lesions.aov[[2]])~fitted(lesions.aov[[2]]))
+```
+
+### Get anova summary
+
+```{r }
+options(digits = 3)
+tidy(lesions.aov)
+```
+
+To get a test for differences among colonies, construct an F-ratio using the colony variation ("Error:col Residuals) and the within-colony term. Use pf to get p value
+
+```{r}
+f <- 0.3041/0.2137
+f
+1-pf(f, 18, 80, lower.tail = TRUE, log.p = FALSE)
+```
+
+## Demonstrate that the nested analysis is the same as one-way on colony means
+
+This equality holds as long as the design is balanced. When there are unequal sample sizes within the nested factor (lesions for each colony in this example), the results will be very similar, though not identical
+
+```{r }
+lesions_sum <- summarySE(lesions,measurevar='lsize', groupvars= c('col','morph'))
+lesions.aov1 <- aov(lsize~morph, lesions_sum)
+tidy(lesions.aov1)
+```
+
+### using VCA package to get anova variance components
+
+This VCs are estimated from an OLS analysis, so it's possible that lower CIs can be negative
+
+```{r }
+lesions.vca <- anovaMM(lsize~morph/(col), lesions)
+lesions.vca
+VCAinference(lesions.vca, alpha=0.05, VarVC=TRUE, ci.method="satterthwaite")
+```
+
+## Mixed model using lme4
+
+This is an alternative approach where we specify fixed and random effects explicitly, and assess the model with a combination of REML and ML.
+
+```{r }
+lesions.reml <- lmer(lsize~morph + (1|col), lesions)
+summary(lesions.reml, ddf="Kenward-Roger")
+anova(lesions.reml, ddf="Kenward-Roger")
+lesions.ml <- lmer(lsize~morph + (1|col), lesions, REML=F)
+summary(lesions.ml)
+```
+
+### CI on variance components (remembering to square CIs from lmer with are in SD units)
+
+```{r }
+lesions.ci <- confint.merMod(lesions.reml)
+lesions.vc <- (lesions.ci)^2
+print(lesions.vc)
+```
+
+### Test fixed effect using likelihood ratio tests based on ML
+
+```{r }
+lesions.lme <- lmer(lsize~morph + (1|col), lesions, REML=F)
+AICc(lesions.lme)
+lesions.lme1 <- lmer(lsize~(1|col), lesions, REML=F)
+AICc(lesions.lme1)
+anova(lesions.lme,lesions.lme1)
+```

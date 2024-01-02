@@ -1,0 +1,154 @@
+---
+title: "QK Box 10.7"
+
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will analyse a modified dataset from Schlegel et al. (2012) who examined swimming speed of sea urchin sperm under three different seawater pH levels [pH 8.1(control) and two more acidic treatments of pH 7.8 and 7.5] and from 19 different randomly chosen individual animals. There were between nine and ten runs per individual and pH combination and the response variable was the average swimming speed of sperm.
+
+![Sea urchin, *Heliocidaris erythrogramma*. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)](../media/urchin.jpeg)
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0053118)
+
+Schlegel, P., Havenhand, J. N., Gillings, M. R. & Williamson, J. E. (2012). Individual variability in reproductive success determines winners and losers under ocean acidification: a case study with sea urchins. *PLoS One*, 7, e53118.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc, MuMin)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import schlegel data file (schlegel.csv)
+
+```{r}
+schlegel <- read.csv("../data/schlegel.csv")
+head(schlegel,10)
+```
+
+Set contrasts to sum from afex
+
+```{r }
+set_sum_contrasts()
+```
+
+Convert pH and indiv to factors
+
+```{r }
+schlegel$ph <- factor(schlegel$ph)
+schlegel$indiv <- factor(schlegel$indiv)
+```
+
+### Check assumptions with boxplots
+
+```{r }
+boxplot(avspeedtot~ph, data=schlegel)
+```
+
+### Fit model with default aov type I SS
+
+```{r }
+schlegel.aov <- aov(avspeedtot~ph*indiv, data=schlegel)
+```
+
+Check residuals - look OK
+
+```{r }
+plot(schlegel.aov)
+```
+
+### Examine results
+
+```{r }
+options(digits = 4)
+summary(schlegel.aov)
+```
+
+Get correct F-ratio for ph
+
+```{r }
+234.7/19.1
+21-pf(234.7/19.1, 2, 36, lower.tail = TRUE, log.p = FALSE)
+```
+
+### Fit models with lm to get type III SS using car
+
+```{r }
+options(digits=10)
+schlegel.lm1 <- lm(avspeedtot~ph*indiv, data=schlegel)
+Anova(schlegel.lm1, type='III')
+```
+
+Get correct F-ratio and P value for ph
+
+```{r }
+235.197/19.109
+1-pf(235.197/19.109, 2, 36, lower.tail = TRUE, log.p = FALSE)
+```
+
+Using VCA package to get anova var comps (with CIs that can be -ve)
+
+```{r }
+schlegel.vca <- anovaMM(avspeedtot~ph+(indiv)+(ph*indiv), schlegel)
+schlegel.vca
+VCAinference(schlegel.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+### Fit random "slope" and intercept (i.e. full) model using lme4 and REML to compare models with LR test
+
+```{r }
+schlegel.lmer1 <- lmer(avspeedtot~ph + (1|indiv) + (1|ph:indiv), REML=TRUE, schlegel)
+summary(schlegel.lmer1)
+AICc(schlegel.lmer1)
+```
+
+Fit random intercept-only mixed model using lme4 and REML to compare models with LR test
+
+```{r }
+schlegel.lmer2 <- lmer(avspeedtot~ph + (1|indiv), REML=TRUE, schlegel)
+summary(schlegel.lmer2)
+AICc(schlegel.lmer2)
+```
+
+Compare model fit to test random interaction fit
+
+```{r }
+anova(schlegel.lmer1, schlegel.lmer2)
+ranova(schlegel.lmer2, reduce.terms=TRUE)
+```
+
+Get CIs
+
+```{r}
+schlegel.ci1 <- confint.merMod(schlegel.lmer1)
+schlegel.vc1 <- (schlegel.ci1)^2
+print(schlegel.vc1)
+```
+
+Refit simpler model and change reference group to 8.1 for meaningful contrasts
+
+```{r }
+schlegel$ph <- relevel(schlegel$ph, ref="8.1")
+schlegel.lmer3 <- lmer(avspeedtot~ph + (1|indiv), REML=TRUE, schlegel)
+summary(schlegel.lmer3, ddf="Kenward-Roger")
+ranova(schlegel.lmer3, reduce.terms=TRUE)
+```
+
+F tests of fixed effects (Type III SS) - matches t-test from summary command
+
+```{r }
+anova(schlegel.lmer3, ddf="Kenward-Roger")
+```
+
+CI on variance components (remembering to square CIs from lmer with are in SD units)
+
+```{r }
+schlegel.ci3 <- confint.merMod(schlegel.lmer3)
+schlegel.vc3 <- (schlegel.ci3)^2
+print(schlegel.vc3)
+```

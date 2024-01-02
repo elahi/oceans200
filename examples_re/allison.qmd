@@ -1,0 +1,47 @@
+---
+title: "QK Box 6.3"
+
+output: 
+  html_notebook:
+    theme: flatly
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For the data from Allison and Cicchetti (1976), the two variables of interest, brain weight and body weight, will be treated as random with the focus on estimating the regression slope of the linear relationship between two random variables. The original variables were log-transformed, with both variables having strongly skewed distributions due to a small number of large-bodied (and large-brained) species.
+
+Allison, T. & Cicchetti, D. V. (1976). Sleep in mammals: ecological and constitutional correlates. *Science*, 194, 732-4.
+
+Data for this example were obtained for the first edition and are available [here](../data/allison.csv)
+
+### Preliminaries
+
+First, load the required packages (lmodel2)
+
+```{r include=FALSE, results='hide'}
+library(lmodel2)
+```
+
+Import allison data file (allison.csv)
+
+```{r}
+allison <- read.csv("../data/allison.csv")
+head(allison,10)
+```
+
+Transform bodywt and brainwt to log10
+
+```{r }
+allison$lbodywt <- log10(allison$bodywt)
+allison$lbrainwt <- log10(allison$brainwt)
+```
+
+### Fit model 2 regression
+
+```{r }
+allison2 <- lmodel2(lbrainwt~lbodywt, data=allison, range.y='interval', range.x='interval', nperm=1000)
+allison2
+```

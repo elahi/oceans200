@@ -1,0 +1,89 @@
+---
+title: "Q & K Box 13.6"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Teng et al. (2020) analyzed the results of a survey of domestic cat owners in Australia. The survey focused on factors (e.g. cat demographics, owner attitudes and demographics, etc.) that might affect the prevalence of overweight and obese cats. They related nearly 1400 survey responses of owner-assessed body condition score [BCS with five categories: very underweight (1), somewhat underweight (2), ideal (3), chubby/overweight (4), and fat/obese (5)] to a range of categorical predictors with a multivariate multinomial GLM. We will use one aspect of their data to construct a contingency table relating the BCS, reduced to three categories (1&2, 3, 4&5) to cats' begging behavior (four categories: never, sometimes, often, always).
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0234190)
+
+Teng, K. T., McGreevy, P. D., Toribio, J. & Dhand, N. K. (2020). Positive attitudes towards feline obesity are
+strongly associated with ownership of obese cats. *PLoS One*, 15, e0234190.
+
+### Preliminaries
+
+Install the package epitools
+
+```{r }
+library(tidyverse)
+library(epitools)
+library(vcd)
+```
+
+Read in data
+
+```{r}
+teng <- read_csv("../data/teng.csv")
+teng
+```
+
+Make begging a factor and put categories into a sensible order
+
+```{r}
+teng$begging <- factor(teng$begging, levels=c("never","sometimes","often","always"))
+teng.tab<-xtabs(count~begging + bcs, data=teng)
+teng.tab
+```
+
+Generate chi-square statistic and look at residuals
+
+```{r}
+chisq.test(teng.tab, correct=F)$exp
+teng.chi<- chisq.test(teng.tab, correct=F)
+teng.chi
+teng.chi$residuals
+```
+
+### Determine OR for being overweight for pairs of begging categories
+
+
+```{r}
+# Never vs sometimes begging
+teng1 <- subset(teng,subset = begging %in% c('never','sometimes'))
+teng1a <- subset(teng1,subset = bcs %in% c('bcs3','bcs45'))
+teng1a.tab <- xtabs(count~begging + bcs, data=teng1a, drop.unused.levels=TRUE)
+lodds(teng1a.tab, log = FALSE)
+loddsratio(teng1a.tab, log = FALSE)
+
+# Never vs often
+teng2 <- subset(teng,subset = begging %in% c('never','often'))
+teng2a <- subset(teng2,subset = bcs %in% c('bcs3','bcs45'))
+teng2a.tab <- xtabs(count~begging + bcs, data=teng2a, drop.unused.levels=TRUE)
+lodds(teng2a.tab, log = FALSE)
+loddsratio(teng2a.tab, log = FALSE)
+
+#  Never vs always begging
+teng3 <- subset(teng,subset = begging %in% c('never','always'))
+teng3a <- subset(teng3,subset = bcs %in% c('bcs3','bcs45'))
+teng3a.tab <- xtabs(count~begging + bcs, data=teng3a, drop.unused.levels=TRUE)
+lodds(teng3a.tab, log = FALSE)
+loddsratio(teng3a.tab, log = FALSE)
+```
+
+### fit log-linear models
+
+```{r}
+tengfull.glm <- glm(count~begging*bcs, family=poisson, data=teng)
+summary(tengfull.glm)
+anova(tengfull.glm, test="Chisq")
+tengred.glm <- glm(count~begging+bcs, family=poisson, data=teng)
+summary(tengred.glm)
+anova(tengred.glm, test="Chisq")
+anova(tengfull.glm, tengred.glm, test="Chisq")
+lrtest(tengfull.glm, tengred.glm)
+```

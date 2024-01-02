@@ -1,0 +1,133 @@
+---
+title: "QK Box 6.2"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Christensen et al. (1996) studied the relationships between coarse woody debris (CWD) and shoreline vegetation and lake development in a sample of 16 lakes in North America. The main variables of interest are the density of cabins (no. km^−1^), density of riparian trees (trees km−1), the basal area of riparian trees (m^2^ km^−1^), density of coarse woody debris (no. km−1), basal area of coarse woody debris (m^2^ km^−1^).
+
+![Coarse woody debris provides important habitat structure. Not quite a lake in Wisconsin, but World Heritage rainforest in northern Australia! Photo M. Keough](../media/cwd%20qld.jpg){width="800"}
+
+Coarse woody debris provides important habitat structure. Not quite a lake in Wisconsin, but World Heritage rainforest in northern Australia! Photo M. Keough ![](images/by-02.png){width="43"}
+
+Christensen, D. L., Herwig, B. R., Schindler, D. E. & Carpenter, S. R. (1996). Impacts of lakeshore residential development on coarse woody debris in north temperate lakes. *Ecological Applications*, 6, 1143-49.
+
+The original paper: <https://doi.org/10.2307/2269598>
+
+This data set was used for the first edition, and is available here [christ.csv](../data/christ.csv)
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta).
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+
+library(lm.beta)
+```
+
+Import Christensen data (christ.csv)
+
+```{r}
+christ <- read.csv("../data/christ.csv")
+head(christ,10)
+
+```
+
+### CWD versus riparian density first
+
+```{r }
+scatterplot(cwdbasal~ripdens, data=christ)
+christ.lm <- lm(cwdbasal ~ ripdens, data=christ)
+```
+
+Check diagnostics
+
+```{r }
+plot(christ.lm)
+augment(christ.lm)
+```
+
+Examine model output
+
+```{r }
+glance(christ.lm)
+tidy(christ.lm, conf.int = TRUE)
+anova(christ.lm)
+```
+
+Get standardized coefficients
+
+```{r }
+lm.beta(christ.lm)
+```
+
+Predict new CWD values for riparian densities of 1000 and 2000 trees per km
+
+```{r }
+predict(christ.lm, data.frame(ripdens=c(1500)), interval="prediction", se=T)
+```
+
+### Now CWD versus cabin density
+
+```{r }
+scatterplot(cwdbasal~cabin, data=christ)
+christ1.lm <- lm(cwdbasal ~ cabin, data=christ)
+```
+
+Check diagnostics
+
+```{r }
+plot(christ1.lm)
+augment(christ1.lm)
+anova(christ1.lm)
+
+```
+
+Examine model output
+
+Transform cabin density to log10 (cabin density + 1) and refit model
+
+```{r }
+christ$lcabin <- log10(christ$cabin+1)
+christ2.lm <- lm(cwdbasal ~ lcabin, data=christ)
+```
+
+Get diagnostics
+
+```{r }
+plot(christ2.lm)
+augment(christ2.lm)
+```
+
+Examine model output
+
+```{r }
+glance(christ2.lm)
+tidy(christ2.lm, conf.int = TRUE)
+anova(christ2.lm)
+
+```
+
+Get standardized coefficients
+
+```{r }
+lm.beta(christ2.lm)
+```
+
+### Fit log cwd vs log cabin model to get residual plots, etc. for figure used in book
+
+```{r}
+christ$lcwd<-log10(christ$cwdbasal)
+christ3.lm<-lm(christ$lcwd~christ$lcabin)
+glance(christ3.lm)
+tidy(christ3.lm)
+anova(christ3.lm)
+
+```

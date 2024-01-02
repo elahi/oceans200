@@ -1,0 +1,110 @@
+---
+title: "QK Box 10.11"
+output:
+  html_notebook:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Van der Geest et al (2020) set up a field experiment to examine the mutualistic relationship between seagrasses (*Zostera noltei*) and lucinid bivalves (*Loripes orbiculatus*), in particular the extent to which the bivalves and their endosymbiotic bacteria could oxidize harmful sulfides and prevent their accumulation by seagrasses. In a coastal lagoon in the western Mediterranean, they established two fixed factors: presence or absence of bivalves (added vs control/background levels) and organic matter (added to increase pore water sulfide production vs control), with a single experimental plot for each combination replicated across six randomly chosen locations (blocks). The response variable we will analyze was the percentage of sulfur in plant tissue originating from the sediment (F_Sulfide).
+
+You can find an image of the seagrass *Zostera noltei* here, but if you just would like to see what a typical Zostera looks like, here's *Zostera nigricaulis* from southern Australia.
+
+![](images/Zost_nigric.jpg){width="800"}
+
+Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+
+[![Lucinid bivalve, in this case Loripes aberrans. Muséum national d\'histoire naturelle, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](../media/1024px-Loripes_aberrans_(MNHN-IM-2000-34140)_002.jpeg)](https://upload.wikimedia.org/wikipedia/commons/3/33/Loripes_aberrans_%28MNHN-IM-2000-34140%29_002.jpeg)
+
+Lucinid bivalve, in this case *Loripes aberrans*. Muséum national d'histoire naturelle, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, MuMin, nlme, VCA, emmeans)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import vandergeest data file (vandergeest.csv)
+
+```{r}
+vandergeest <- read.csv("../data/vandergeest.csv")
+vandergeest
+
+```
+
+set contrasts from afex
+
+```{r }
+set_sum_contrasts()
+```
+
+### Fit OLS anova model to check residuals
+
+```{r }
+vandergeest.aov <- aov(fsulfide~om+bivalve+block+om*bivalve+om*block+bivalve*block, data=vandergeest)
+```
+
+Check residuals - variance increases with mean
+
+```{r }
+plot(vandergeest.aov)
+```
+
+residuals look fine
+
+### Fit models to get type III SS using car
+
+```{r }
+options(digits = 3)
+vandergeest.lm <- lm(aov(fsulfide~om+bivalve+block+om*bivalve+om*block+bivalve*block, data=vandergeest))
+Anova(vandergeest.lm, type='III')
+```
+
+Get correct F-ratio and P value for om: F = 100.711/4.785. These are the mean squares for om and om\*block
+
+```{r }
+
+1-pf(100.711/4.785, 1, 5, lower.tail = TRUE, log.p = FALSE)
+```
+
+Get correct F-ratio and P value for bivalve 25.122/4.681
+
+```{r }
+1-pf(25.122/4.681, 1, 5, lower.tail = TRUE, log.p = FALSE)
+```
+
+Get main effect means
+
+```{r }
+emmeans(aov(fsulfide~om+bivalve+block+om*bivalve+om*block+bivalve*block, data=vandergeest), "om")
+emmeans(aov(fsulfide~om+bivalve+block+om*bivalve+om*block+bivalve*block, data=vandergeest), "bivalve")
+```
+
+#### Using VCA package to get anova var comps
+
+```{r }
+vandergeest.vca <- anovaMM(fsulfide~om+bivalve+om*bivalve + (block) + (om*block) + (bivalve*block) , vandergeest)
+VCAinference(vandergeest.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+## Fit mixed effects model using REML
+
+```{r }
+vandergeest.lmer1 <- lmer(fsulfide~om+bivalve+om*bivalve + (1|block) + (1|om:block)
+                     + (1|bivalve:block) , REML=TRUE, vandergeest)
+summary(vandergeest.lmer1, ddf="Kenward-Roger")
+anova(vandergeest.lmer1, ddf="Kenward-Roger")
+```
+
+### Refit without 2-way interactions to solve singularity - unsuccessful
+
+```{r }
+vandergeest.lmer2 <- lmer(fsulfide~om+bivalve+om*bivalve + (1|block), REML=TRUE, vandergeest)
+summary(vandergeest.lmer2, ddf="Kenward-Roger")
+anova(vandergeest.lmer2, ddf="Kenward-Roger")
+```

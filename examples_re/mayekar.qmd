@@ -1,0 +1,176 @@
+---
+title: "Q & K Box 13.2"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Mayekar et al (2017) studied some potential determinants of colour (green vs brown) of a tropical butterfly species. A laboratory population was established, and newly hatched larvae were placed in a growth chamber set at either 60% or 85% relative humidity. Resulting pupae were recorded for colour, time to pupation, pupal weight and sex.  We will use their data to model green vs brown pupae against the two continuous predictors (time to pupation, pupal weight) and the one categorical predictor (sex). We will only use data from the low humidity treatment as brown pupae were very uncommon at high humidity.
+
+Mayekar, H. V. & Kodandaramaiah, U. (2017). Pupal colour plasticity in a tropical butterfly, *Mycalesis mineus* (Nymphalidae: Satyrinae). *PLoS One*, 12, e0171482.
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0171482), and Figure 1 is an excellent image of the divergent colour phenotypes.
+
+### Preliminaries
+
+First, load the required packages (car, performance, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(performance)
+```
+
+Import mayekar data file ([mayekar.csv](../data/mayekar.csv))
+
+```{r}
+mayekar <- read.csv("../data/mayekar.csv")
+mayekar
+```
+
+Create subset of the low-humidity treatment
+
+```{r }
+#select rh = low
+mayekar1 <- subset(mayekar, rh=="low")
+```
+
+### Do simple plots for cont. predictors
+
+```{r }
+plot(colnum~timepup, data=mayekar1)
+plot(colnum~weight, data=mayekar1)
+```
+
+### Fit full glm
+
+```{r }
+mayekar1.glm <- glm(colnum ~ timepup*weight*sex,data=mayekar1,family=binomial)
+tidy(mayekar1.glm)
+glance(mayekar1.glm)
+AICc(mayekar1.glm)
+```
+
+#### Check collinearity
+
+```{r }
+vif(lm(colnum ~ timepup*weight*sex, data=mayekar1))
+cor(mayekar1$timepup,mayekar1$weight)
+aov1 <-aov(timepup~sex, data=mayekar1)
+summary(aov1)
+aov2 <- aov(weight~sex, data=mayekar1)
+summary(aov2)
+```
+
+Try centering continuous predictors to reduce collinearity
+
+```{r }
+mayekar1$ctimepup <- scale(mayekar1$timepup, center=TRUE, scale=FALSE)
+mayekar1$cweight <- scale(mayekar1$weight, center=TRUE, scale=FALSE)
+vif(lm(colnum ~ ctimepup*cweight*sex, data=mayekar1))
+```
+
+## Centred predictors
+
+Fit full model
+
+```{r }
+mayekar2.glm <- glm(colnum ~ ctimepup*cweight*sex,data=mayekar1,family=binomial)
+summary(mayekar2.glm)
+AICc(mayekar2.glm)
+```
+
+Fit no interaction model
+
+```{r }
+mayekar3.glm <- glm(colnum ~ ctimepup+cweight+sex,data=mayekar1,family=binomial)
+summary(mayekar3.glm)
+AICc(mayekar3.glm)
+```
+
+Compare the two models
+
+```{r }
+anova(mayekar2.glm, mayekar3.glm, test = 'Chisq')
+```
+
+### For interest, see if not centering would have changed our conclusions
+
+#### Fit uncentered no interaction model
+
+```{r }
+mayekar4.glm <- glm(colnum ~ timepup+weight+sex,data=mayekar1,family=binomial)
+summary(mayekar4.glm)
+AICc(mayekar4.glm)
+```
+
+Compare to full model (uncentered)
+
+```{r }
+anova(mayekar1.glm, mayekar4.glm, test = 'Chisq')
+```
+
+Same results as for centered analysis
+
+### Focus on fit of no interaction model with uncentered data
+
+```{r }
+summary(mayekar4.glm)
+AICc(mayekar4.glm)
+confint(mayekar4.glm)
+anova(mayekar4.glm, test = 'Chisq')
+```
+
+### Create reduced models for lrtests
+
+Remove each of the individual predictors
+
+Note slight differences in P values for continuous predictors - lrtest more reliable
+
+```{r }
+mayekar5.glm <- glm(colnum ~ timepup+weight,data=mayekar1,family=binomial)
+mayekar6.glm <- glm(colnum ~ timepup+sex,data=mayekar1,family=binomial)
+mayekar7.glm <- glm(colnum ~ weight+sex,data=mayekar1,family=binomial)
+lrtest(mayekar5.glm, mayekar4.glm)
+lrtest(mayekar6.glm, mayekar4.glm)
+lrtest(mayekar7.glm, mayekar4.glm)
+```
+
+#### Check assumptions for the simple (no interaction) model
+
+Get and plot residuals - focus on deviance residuals plot
+
+```{r }
+residuals(mayekar4.glm, type="deviance")
+residualPlots(mayekar4.glm, type="deviance")
+```
+
+Check influence diagnostics
+
+```{r }
+influencePlot(mayekar4.glm)
+```
+
+### Examine some alternative assessments
+
+Get odds ratio with CI
+
+```{r }
+exp(coef(mayekar4.glm))
+exp(confint.default(mayekar4.glm))
+```
+
+Get added variable plots - hard to interpret
+
+```{r }
+avPlots(mayekar4.glm)
+```
+
+Get H-L test and Tjur r^2^
+
+```{r }
+performance_hosmer(mayekar4.glm, n_bins=10)
+r2_tjur(mayekar4.glm)
+```

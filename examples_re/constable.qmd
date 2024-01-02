@@ -1,0 +1,144 @@
+---
+title: "QK Box 8.13"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Constable (1993) studied the role of sutures in the shrinking of the test of the sea urchin Heliocidaris erythrogramma under different food regimes. The categorical predictor (factor) was food regime with three groups: high food regime, low food regime, and an initial sample. The response variable was the width of inter-radial sutures (mm) from each urchin and initial body volume (ml) was the covariate. There were 24 urchins in each group. Constable (1993) transformed body volume to cube roots to linearise the relationship between suture width and body volume, and while a scatterplot suggested the relationships were approximately linear (Figure ‎8.15), we will be consistent with the original paper and also apply transformation.
+
+![Heliocidaris erythrogramma. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).](../media/urchin.jpeg)
+
+This example was used in the first edition; the data file is [here](../data/constable.csv)
+
+Constable, A. J. (1993). The role of sutures in shrinking of the test in *Heliocidaris erythrogramma* (Echinoidea: Echinometridae). *Marine Biology*, 117, 423-30.
+
+### Preliminaries
+
+ancova for urchin data First, load the required packages (car, kader, reghelper, interactions)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("../R/libraries.R")   #This is the common library
+invisible(library(reghelper))
+library(interactions)
+library(kader)
+```
+
+Import constable data file (constable.csv)
+
+```{r}
+constable <- read.csv("../data/constable.csv")
+head(constable,10)
+constable$treatment<-factor(constable$treatment)
+```
+
+### Check assumptions
+
+```{r }
+boxplot(sutwidth~treatment, data=constable)
+boxplot(bodyvol~treatment, data=constable)
+```
+
+Boxplots don't indicate major skewness or markedly unequal variances
+
+```{r }
+scatterplot(sutwidth ~ bodyvol | treatment, data = constable)
+```
+
+Lines look reasonably linear (except maybe low) but not parallel (esp. low shallower than others) but original author transformed body volume to cube root so we will too.
+
+```{r }
+constable$cbodyvol <- (constable$bodyvol)^(1/3)
+```
+
+Check that covariate not affected by treatments
+
+```{r }
+cov.aov <- aov(cbodyvol~treatment, data=constable)
+summary(cov.aov)
+```
+
+### Fit full model with interaction to evaluate homogeneous slopes
+
+All SS types produce same result for interaction
+
+```{r }
+constable.aov1 <- aov(sutwidth~treatment+cbodyvol+treatment*cbodyvol, data=constable)
+plot(constable.aov1)
+```
+
+Residual plot looks OK
+
+```{r }
+summary(constable.aov1)
+```
+
+Conclude evidence for non-parallel slopes
+
+### Repeat analysis using lm - set low food as reference to get high vs low contrast
+
+```{r }
+constable$treatment <- relevel(constable$treatment, ref="low")
+constable.lm1 <- lm(sutwidth~treatment+cbodyvol+treatment*cbodyvol, data=constable)
+anova(constable.lm1)
+summary(constable.lm1)
+```
+
+A nice plot is available from the interactions package
+
+```{r }
+interact_plot(constable.lm1, pred=cbodyvol, modx=treatment, plot.points=TRUE)
+```
+
+Simple slopes
+
+```{r }
+simple_slopes(constable.lm1)
+```
+### Johnson-Neyman procedure
+
+Available in package *interactions*
+
+**Note for fixing; can't get pairwise sets, so using subsets of data **
+**Not sure how to deal with categorical predictor, though it should be possible; manual not clear**
+
+```{r}
+# Look at low vs high
+#create dummy variables
+library(fastDummies)
+df <- constable[constable$treatment %in% c('low','high'),]
+df <- dummy_cols(df, select_columns = 'treatment')
+constable.lm2 <- lm(sutwidth~treatment_high*cbodyvol, data = df)
+anova(constable.lm2)
+johnson_neyman(model = constable.lm2, pred = treatment_high, modx = cbodyvol)
+
+# Now low vs initial
+df2 <- constable[constable$treatment %in% c('low','initial'),]
+#df2 <- subset(constable, treatment !='high')
+df2 <- dummy_cols(df2, select_columns = 'treatment')
+constable.lm3 <- lm(sutwidth~treatment_initial*cbodyvol, data = df2)
+johnson_neyman(model = constable.lm3, pred = treatment_initial, modx = cbodyvol)
+
+# Now high vs initial
+df3 <- constable[constable$treatment %in% c('initial','high'),]
+df3 <- dummy_cols(df3, select_columns = 'treatment')
+constable.lm4 <- lm(sutwidth~treatment_initial*cbodyvol, data = df3)
+johnson_neyman(model = constable.lm4, pred = treatment_initial, modx = cbodyvol)
+
+```
+
+Alternative package for J-N
+
+```{r}
+devtools::install_github('kenstoyama/JNplots')
+library(JNplots)
+#Note that it seems to only deal with categorical predictors with 2 levels
+jnt_cat(X='cbodyvol', Y='sutwidth', m='treatment', data=df)
+jnt_cat(X='cbodyvol', Y='sutwidth', m='treatment', data=df2)
+jnt_cat(X='cbodyvol', Y='sutwidth', m='treatment', data=df3)
+```

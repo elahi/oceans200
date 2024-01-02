@@ -1,0 +1,318 @@
+---
+title: "Q & K Box 15.1"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Wu et al. (2021) took soil samples at 300 sites near the Three Gorges Reservoir in China. Each site was classified into one of three categories of land use: orchard (n = 75), dry land (n = 98), and paddy field (n = 127). They also measured the concentrations of ten metals (Ca, Cd, Cr, Cu, Fe, Mg, Mn, Ni, Pb, and Zn; mg/kg) and five soil characteristics (pH, concentrations of N and P in mg/kg, and % of soil organic carbon [SOC] and K) for each site. Wu et al. (2021) did a PCA on the metals and used the components in further analyses. Using PCA, we will instead examine the pattern among sites and land use categories based on the metals and the other characteristics (15 variables in total).
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0254928)
+
+Wu, W., Li, Y., Yan, M., Yang, L., Lei, J. & Liu, H. B. (2021). Surface soil metal elements variability affected by environmental and soil properties. *PLoS One*, 16, e0254928.
+
+### Preliminaries
+
+packages: vegan, Rmisc, lmodel2, pscych; ggvegan & ggfortify for graphics
+
+```{r results='hide'}
+
+source("../R/libraries.R")   #This is the common library
+library(vegan)
+library(ggvegan)
+library(ggfortify)
+library(lmodel2)
+library(psych)
+library(MultBiplotR)
+# ggvegan is used for some graphics; it needs to be installed from github. Use the code in the next line to install it.
+#remotes::install_github("gavinsimpson/ggvegan") #Use once to get ggvegan
+source("../R/appearance.R")   #This is the set of graphics tweaks for figs
+
+```
+
+Run evplot function needed to draw broken stick graph
+
+**Needs function from Legendre & Legendre book**
+
+```{r}
+source ('http://www.davidzeleny.net/anadat-r/doku.php/en:numecolr:evplot?do=export_code&codeblock=1')
+
+```
+
+Read in the data (wu.csv)
+
+```{r}
+wu <- read_csv("../data/wu.csv")
+head(wu, 10)
+```
+
+Quick data summary
+
+```{r }
+wu %>%
+  summarise_all(list(Mean=mean, SD=sd, Max=max,Min=min))
+```
+
+### Diagnostic checks
+
+Correlation and scatterplot matrices
+
+```{r }
+wu.cor<-cor(wu[,c('ca','cd','cr','cu','fe','mg','mn','ni','pb','zn','ph','soc','n','p','k')])
+options(digits = 2)
+wu.cor
+scatterplotMatrix(~ca+cr+cu+fe+mn+pb+zn+cd+mg+ni+soc+ph+n+k+p,data=wu,diagonal=list(method='boxplot'))
+```
+
+Correlations low, so no issues, and boxplots also look fine
+
+### Plot component 1 using RMA regression
+
+```{r}
+wu1.rma <- lmodel2(cu~mn, data=wu)
+print(wu1.rma)
+plot(wu1.rma, method="SMA")
+```
+
+Check factorability of correlation matrix with Bartlett and KMO tests
+
+```{r}
+cortest.bartlett(wu.cor, n=300)
+KMO(wu.cor)
+```
+
+## Do PCA on correlation matrix; get summary with scaling=2
+
+Scaling=2 is the rda default: angles between variables match their correlations)
+
+### Get eigenvalues
+
+```{r}
+wu1.rda <- rda(wu[,c('ca','cd','cr','cu','fe','mg','mn','ni','pb','zn','ph','soc','n','p','k')],scale=TRUE)
+summary(wu1.rda)
+wu1.eig <- wu1.rda$CA$eig
+wu1.eig
+```
+
+### Get scree and broken stick plots
+
+```{r}
+screeplot(wu1.rda,bstick=TRUE, bst.col="black",xlab = "Component", ylab = "Inertia",)
+bstick(wu1.rda)
+```
+
+#### Alternative run evplot function to draw broken stick graph
+
+```{r}
+evplot(wu1.eig)
+```
+
+### Retain the first 2 or 3 components
+
+Get eigenvectors coefficients This can be done in two ways:
+
+```{r}
+scores(wu1.rda, choices=c(1:3), display='species', scaling = 0)
+# alternatively
+wu1.vec <- eigen(wu.cor)
+print(wu1.vec)
+```
+
+Get true loadings as correlations; can also be done in a couple of ways
+
+```{r}
+wu1.load <- eigen.loadings(wu1.vec)
+print(wu1.load)
+# can also get loadings from principal in psych package
+wu1.pca <- principal(wu.cor, n.obs=300, nfactors=3, rotate="none", residuals=TRUE)
+print(wu1.pca)
+```
+
+Get correlation residuals - two methods from psych package
+
+```{r}
+residuals(wu1.pca, diag=TRUE)
+factor.residuals(wu.cor, wu1.pca)
+# get object residuals using mdaTools
+# create datafile with just 8 variables
+wumod <- wu[,c('ca','cd','cr','cu','fe','mg','mn','ni','pb','zn','ph','soc','n','p','k')]
+wu1a.pca <- pca(wumod,ncomp=3, scale=TRUE, method="svd")
+summary(wu1a.pca)
+#plotResiduals(wu1a.pca, res=wu1a.pca$res)
+#Can't work out plotResiduals command - not sure which package it's from
+```
+
+Try MultBiplotR package to get bootstrapped CIs
+
+```{r}
+wu.pca.mult <- PCA.Analysis(wumod,dimension=3,Scaling=5)
+summary(wu.pca.mult)
+wu.pca.boot <- PCA.Bootstrap(wumod,dimens=3,Scaling="Standardize columns", B=1000, type="np")
+summary(wu.pca.boot)
+```
+
+### Do biplots with scaling=1 (plot distances match euclidean dists - angles between variables irrelevant) and scaling=2
+
+```{r}
+biplot(wu1.rda, scaling=1)
+# now with scaling=2 - this is more useful
+biplot(wu1.rda, scaling=2)
+# try with ordiplot (default scale=2)
+ordiplot(wu1.rda, choices=c(1,2), display='sites', type='none')
+#points (wu1.rda, col = wu$group, pch = wu$group)
+autoplot(wu1.rda, shape = wu$group,
+         label = TRUE, label.size = 3,  loadings = TRUE,
+         loadings.label = TRUE, loadings.label.size = 3, scale= 0
+         ) +
+#geom_point(data = wu1.rda,aes(RDA1,RDA2,colour = landuse),size=2,alpha=0.5)  
+scale_shape_manual(values=c(0,1,2))+
+  theme_qk()+
+  theme(
+    legend.title = element_blank()
+  )
+```
+
+Try varimax rotation
+
+```{r}
+principal(wu.cor, n.obs=300, nfactors=3, rotate="varimax")
+```
+
+### Do PCA on covariance matrix
+
+```{r}
+options(digits=10)
+wu2.rda <- rda(wu[,c('ca','cd','cr','cu','fe','mg','mn','ni','pb','zn','ph','soc','n','p','k')],scale=FALSE)
+summary(wu2.rda)
+scores(wu2.rda, choices=c(1:2), display='species', scaling = 0)
+wu2.cov <- cov(wu[,c('ca','cd','cr','cu','fe','mg','mn','ni','pb','zn','ph','soc','n','p','k')])
+wu2.vec <- eigen(wu2.cov)
+print(wu2.vec)
+# get true loadings as correlations
+wu2.load <- eigen.loadings(wu2.vec)
+print(wu2.load)
+biplot(wu2.rda, scaling=1)
+biplot(wu2.rda, scaling=2)
+ordiplot(wu2.rda, choices=c(1,2), type='text')
+```
+
+### Do pca on correlation & covariance matrices with princomp
+
+Correlation matrix
+
+```{r}
+wu1.pca <- princomp(~ca+cd+cr+cu+fe+mg+mn+ni+pb+zn+ni+ph+soc+n+p+k, cor=T, data=wu)
+summary(wu1.pca)
+loadings(wu1.pca)
+autoplot(wu1.pca, data=wu, shape = "landuse", scale=1,
+         loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 3, 
+         loadings.label.colour="black", loadings.label.hjust=-0.25
+         )+
+scale_shape_manual(values=c(0,1,2))+
+  theme_qk()+
+  theme(
+    legend.title = element_blank()
+  )
+```
+
+PCA on covariance matrix with princomp
+
+```{r}
+wu2.pca <- princomp(~ca+cd+cr+cu+fe+mg+mn+ni+pb+zn+ni+ph+soc+n+p+k, cor=F, data=wu)
+summary(wu2.pca)
+loadings(wu2.pca)
+# do biplot
+biplot(wu2.pca)
+```
+
+### Repeat plot with ggplot2 in progress
+
+get variable loadings as correlations (unscaled variable scores)
+
+scores(wu1.rda, choices=c(1:4), display='species',scaling = 0)
+
+do biplots with scaling=1 (plot distances match euclidean dists - angles between variables irrelevant) and scaling=2
+
+```{r}
+biplot(wu1.rda, scaling=1)
+biplot(wu1.rda, scaling=2)
+p<-autoplot(wu1.rda, scale=1)
+#ordiplot(wu1.rda, choices=c(1,2), display='sites', type='none')
+#points (wu1.rda, col = wu$group, pch = wu$group )
+
+```
+
+try with ordiplot (default scale=2) ordiplot(wu1.rda, choices=c(1,2), display='sites', type='none') points (wu1.rda, col = wu$group, pch = wu$group ) do PCA on covariance matrix
+
+options(digits=10) wu2.rda \<- rda(wu[,c('ph','cond','wdepth','omdepth','cancov','larea','rivernear','wetlandnear')],scale=FALSE) summary(wu2.rda) scores(wu2.rda, scaling = 0) biplot(wu2.rda, scaling=1) biplot(wu2.rda, scaling=2) ordiplot(wu2.rda, choices=c(1,2), type='text') autoplot(wu2.rda)
+
+do pca on correlation matrix with princomp
+
+```{r}
+
+f15_3a<-autoplot(wu1.pca, data=wu, shape = "landuse", scale=1,colour=sc,
+         loadings = TRUE, loadings.colour = 'black',
+         loadings.label = TRUE, loadings.label.size = 3, 
+         loadings.label.colour="black", loadings.label.repel=TRUE
+         )+
+scale_shape_manual(values=c(0,1,2))+
+  theme_qk()+
+  theme(
+    legend.title = element_blank()
+  )
+```
+
+## Figures
+
+```{r}
+f15_1<-ggplot(wu)+
+  geom_point(aes(x=mn,y=cu), alpha=0.5,shape=1)+
+  geom_abline(intercept=wu1.rma$regression.results[3,2],
+              slope=wu1.rma$regression.results[3,3], colour="black")+
+  labs(x="Mn", y="Cu")+
+  theme_qk()
+f15_1
+```
+
+```{r}
+#Ugly little workaround to get single file with eigenvalues and broken stick into simple file
+f1<-as.data.frame(bstick(wu1.rda))
+a2<-as.data.frame(wu1.rda$CA$eig)
+a2<-cbind(a2,f1)
+a2$PC<-row.names(a2)
+names(a2)[names(a2) == 'wu1.rda$CA$eig'] <- 'eig'
+names(a2)[names(a2) == 'bstick(wu1.rda)'] <- 'bs'
+a2$PC <- factor(a2$PC, levels = a2$PC)
+a2$ID <- seq_along(a2[,1])
+f15_2<-ggplot(a2)+
+  geom_bar(aes(x=ID,y=eig),stat="identity", color=lc, fill=lf)+
+  scale_y_continuous(expand = c(0,0))+
+  geom_line(aes(x=ID,y=bs))+
+  geom_point(aes(x=ID,y=bs), shape=1)+
+  labs(y="Inertia",x="Principal Component")+
+  theme_qk()
+f15_2
+```
+
+```{r}
+p1<-autoplot(wu1.pca, data=wu, shape='landuse')
+p1<-p1+scale_shape_manual(values=c(0,1,2))+
+  theme_qk()+
+  theme(
+    legend.position = "top",
+    legend.title=element_blank()
+  )
+p2<-autoplot(wu1.pca, shape=FALSE,label=FALSE,
+         loadings=TRUE, loadings.label=TRUE, 
+         loadings.label.colour="black",
+         loadings.colour="black",
+         loadings.label.repel=TRUE
+)+
+  theme_qk()
+f15_3<-p1+p2
+f15_3
+```

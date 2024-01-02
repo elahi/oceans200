@@ -1,0 +1,175 @@
+---
+title: "QK Box 8.8"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Paruelo and Lauenroth (1996) analyzed the geographic distribution and the effects of climate variables on the relative abundance of a number of plant functional types (PFTs) including shrubs, forbs, succulents (e.g. cacti), C3 grasses and C4 grasses. There were 73 sites across North America. The response variable we will focus on is the relative abundance of C3 plants and there were six potential predictors: the latitude in centesimal degrees (LAT), the longitude in centesimal degrees (LONG), the mean annual precipitation in mm (MAP), the mean annual temperature in °C (MAT), the proportion of MAP that fell in June, July and August (JJAMAP) and the proportion of MAP that fell in December, January and February (DJFMAP).
+
+This is an example from the first edition; the data file is [here](data/paruelo.csv)
+
+Paruelo, J. M. & Lauenroth, W. K. (1996). Relative abundance of plant functional types in grasslands and shrublands of North America. *Ecological Applications*, 6, 1212-24.
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta, reghelper, Rmisc and rgl)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("../R/libraries.R")   #This is the common library
+library(lm.beta)
+library(reghelper)
+library(rgl)
+```
+
+Import paruelo data file (paruelo.csv)
+
+```{r}
+paruelo <- read.csv("../data/paruelo.csv")
+head(paruelo,10)
+```
+
+### Diagnostic checks
+
+We will use the scatterplotMatrix function from the car package
+
+```{r }
+scatterplotMatrix(~c3+lat+long+map+mat+jjamap+djfmap, data=paruelo, cex=0.33, regLine=FALSE, diagonal=list(method='boxplot'))
+```
+
+C3 positively skewed but not too bad; no obvious non-linearities
+
+Now check for collinearity among all predictors - correlations and VIFs
+
+```{r }
+cor(paruelo[,c('lat','long','map','mat','jjamap','djfmap')])
+vif(lm(c3~lat+long+map+mat+jjamap+djfmap, data=paruelo))
+```
+
+Obvious collinearity with environmental variables tending to be correlated strongly with lat or long, so we'll split predictors into 2 groups, one with lat and long
+
+## First model c3 against lat and long and lat\*long and check for collinearity
+
+```{r }
+vif(lm(c3~lat+long+lat*long, data=paruelo))
+```
+
+VIFs very high indicating obvious collinearity as expected with interaction term
+
+### Run uncentred model
+
+```{r }
+paruelo.lm <- lm(c3~lat+long+lat*long, data=paruelo)
+```
+
+Get regression diagnostics (residual plot and Cooks D)
+
+```{r }
+plot(paruelo.lm)
+augment(paruelo.lm)
+```
+
+#### Display results of model fitting
+
+```{r }
+glance(paruelo.lm)
+tidy(paruelo.lm, conf.int=TRUE)
+```
+
+Get standardized regression coefficients, use lm.beta function from lm.beta package
+
+```{r }
+lm.beta.paruelo <- lm.beta(paruelo.lm)
+tidy(lm.beta.paruelo, conf.int=TRUE)
+```
+
+### Centre predictors and refit model
+
+```{r }
+paruelo$clat <- scale(paruelo$lat, center=TRUE, scale=FALSE)
+paruelo$clong <- scale(paruelo$long, center=TRUE, scale=FALSE)
+paruelo1.lm <- lm(c3~clat+clong+clat*clong, data=paruelo)
+```
+
+Recheck collinearity
+
+```{r }
+vif(lm(c3~clat+clong+clat*clong, data=paruelo))
+```
+
+Regression diagnostics (residual plot and Cooks D)
+
+```{r }
+plot(paruelo1.lm)
+augment(paruelo1.lm)
+```
+
+Diagnostics look better now
+
+#### Display results of model fitting
+
+```{r }
+glance(paruelo1.lm)
+tidy(paruelo1.lm, conf.int=TRUE)
+```
+
+Get standardized regression coefficients, use lm.beta function from lm.beta package
+
+```{r }
+lm.beta(paruelo1.lm)
+```
+
+### Standardise predictors and refit model
+
+```{r }
+paruelo$slat <- scale(paruelo$lat, center=TRUE, scale=TRUE)
+paruelo$slong <- scale(paruelo$long, center=TRUE, scale=TRUE)
+paruelo2.lm <- lm(c3~slat+slong+slat*slong, data=paruelo)
+```
+
+Recheck collinearity
+
+```{r }
+vif(lm(c3~slat+slong+slat*slong, data=paruelo))
+```
+
+Regression diagnostics (residual plot and Cooks D)
+
+```{r }
+plot(paruelo2.lm)
+augment(paruelo2.lm)
+```
+
+#### Display results of model fitting
+
+```{r }
+glance(paruelo2.lm)
+tidy(paruelo2.lm, conf.int=TRUE)
+```
+
+Get standardised regression coefficients, use lm.beta function from lm.beta package
+
+```{r }
+lm.beta(paruelo2.lm)
+```
+
+### 3d scatterplot with smoothing surface
+
+**Note on mac OS - need xquartz installed.** Graphic opens in separate window in Mac/Xquartz; haven't checked on other operating systems.
+
+Rotate the graph using the mouse or cursor keys
+
+```{r error=TRUE}
+scatter3d(c3~lat+long, grid = FALSE, fit = "smooth", data=paruelo)
+```
+
+### Examine simple slopes using reghelper package
+
+```{r }
+simple_slopes(paruelo.lm)
+```

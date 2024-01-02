@@ -1,0 +1,68 @@
+---
+title: "QK Box 2.5"
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This box continues with the Low et al. example starting in Box 2.2
+
+### Preliminaries
+Use rstanarm and BayesFactor packages; also needs bayestestR
+Add bayesplot for control over plot
+```{r  echo=FALSE, include=FALSE, results='hide'}
+library(rstanarm)
+library(BayesFactor)
+library(bayestestR)
+library(bayesplot)
+
+```
+Load graphics packages (if ggplot version of figures wanted)
+```{r echo=FALSE, include=FALSE, results='hide'}
+source("../R/appearance.R")
+```
+
+Note that iso is reference group so diff between means is -ve
+
+### Uninformative priors
+```{r}
+low <- read_csv("../data/lowco2.csv")
+low1 <- stan_glm(co2~anesth,family = gaussian(link = "identity"),data=low)
+posteriors1 <- describe_posterior(low1)
+print_md(posteriors1, digits = 2)
+# plot posterior distribution for all three parameters (intercept, mean diff, sigma)
+plot(low1,plotfun="mcmc_hist")
+# get Bayes factor for mean diff
+lowx <- as.data.frame(low)
+lmBF(co2~anesth, data=lowx,posterior=FALSE)
+```
+### Informative priors 
+Run three options, mean difference with high and low precision, and a bigger mean difference with high precision
+```{r}
+#for mean difference with high precision
+low2 <- stan_glm(co2~anesth,family = gaussian(link = "identity"),prior=normal(-25,5),data=low)
+posteriors2 <- describe_posterior(low2)
+print_md(posteriors2, digits = 2)
+# informative prior for mean difference with low precision
+low3 <- stan_glm(co2~anesth,family = gaussian(link = "identity"),prior=normal(-25,20),data=low)
+posteriors3 <- describe_posterior(low3)
+print_md(posteriors3, digits = 2)
+# informative prior for bigger mean difference with high precision
+low4 <- stan_glm(co2~anesth,family = gaussian(link = "identity"),prior=normal(-50,5),data=low)
+posteriors4 <- describe_posterior(low4)
+print_md(posteriors4, digits = 2)
+```
+### Generate ggplot-compatible figure for mean difference posterior distribution
+```{r}
+posterior<-as.array(low1)
+color_scheme_set("gray")
+p<-mcmc_hist(posterior, pars = c("anesthiso"))+
+  xlab("Mean difference")
+p
+# ggsave ("QK F2_07.pdf", plot = p, height = ph, width = pw, units='cm')
+
+```
+

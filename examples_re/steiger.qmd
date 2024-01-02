@@ -1,0 +1,150 @@
+---
+title: "QK Box 12.1"
+output:
+  html_notebook:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Steiger et al. (2008) studied the Coolidge effect, the decline in males' interest in mating with the same female compared to novel females, using the burying beetle *Nicrophorus vespilloides*. Eighteen male beetles were presented with the same female beetle four times, and then a novel female on the fifth occasion. This was a repeated measures design as the same individual males were repeatedly presented with females. There was no evidence that physical exhaustion affected time to mating as a separate control group of males were presented with novel, unmated females five times in succession, and there was no change in time to mating. The within-subjects factor was the order of presented females, and while this could have been treated as a continuous covariate, we treated it as a fixed factor with five groups. The response variable recorded on each occasion was time to mating.
+
+![Adult burying beetle. Francisco Welter-Schultes. Wikimedia Commons Creative Commons CC0 1.0 Universal Public Domain Dedication](../media/Nicrophorus-vespilloides-04-fws.jpg){width="392"}
+
+Francisco Welter-Schultes, [CC0](https://creativecommons.org/publicdomain/zero/1.0/deed.en), via Wikimedia Commons
+
+Steiger, S., Franz, R., Eggert, A. K. & Muller, J. K. (2008). The Coolidge effect, individual recognition and selection for distinctive cuticular signatures in a burying beetle. *Proceedings of the Royal Society B*, 275, 1831-8.
+
+Link to the paper: doi: [10.1098/rspb.2008.0375](https://doi.org/10.1098/rspb.2008.0375) and [data](http://rspb.royalsocietypublishing.org/content/suppl/2009/02/20/275.1645.1831.DC1.ht%20ml)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import steiger data file (steiger.csv)
+
+```{r}
+steiger <- read.csv("../data/steiger.csv")
+steiger
+```
+
+Set contrasts from afex. Make individual a factor Rearrange matingnumber order to override default alphabetical order
+
+```{r results='hide'}
+set_sum_contrasts()
+steiger$individual <- factor(steiger$individual)
+steiger$matingnumber <- factor(steiger$matingnumber, levels=c("first","second","third","fourth","fifth"))
+```
+
+Quick boxplot to look at variances for different mating numbers
+
+```{r }
+boxplot(time~matingnumber, data=steiger)
+```
+
+### Fit OLS model with default aov SS
+
+```{r }
+steiger.aov <- aov(time~matingnumber+individual, data=steiger)
+```
+
+Check residuals - some evidence for interaction
+
+```{r }
+plot(steiger.aov)
+```
+
+### Do interaction plot
+
+```{r }
+interaction.plot(steiger$matingnumber, steiger$individual, steiger$time)
+```
+
+The rank order of treatments consistent but the sizes of the differences vary greatly between individuals. Quickly try boxplot with log-transformed data to see if any improvement
+
+```{r }
+boxplot(log10(time)~matingnumber, data=steiger)
+```
+
+### Transform to logs due to variance heterogeneity and to minimise interaction
+
+```{r }
+steiger$ltime <- log10(steiger$time)
+```
+
+Recheck diagnostics - much better with less interaction
+
+```{r }
+boxplot(ltime~matingnumber, data=steiger)
+interaction.plot(steiger$matingnumber, steiger$individual, steiger$ltime)
+```
+
+### Fit OLS model with default aov SS
+
+```{r }
+steiger.aov1 <- aov(ltime~matingnumber+individual, data=steiger)
+```
+
+check residuals - look OK
+
+```{r }
+plot(steiger.aov1)
+```
+
+### Examine results
+
+Once we're happy with the model that we're fitting, we can look at the results.
+
+```{r }
+tidy(steiger.aov1)
+emmeans(steiger.aov1, "matingnumber")
+```
+
+Get Greenhouse Geiser adjusted results
+
+```{r }
+ezsteiger1 <- ezANOVA(data=steiger, dv=ltime, wid=individual, within=matingnumber, type=3, detailed=TRUE)
+print(ezsteiger1)
+```
+
+Use VCA package to get anova var comps (with CIs that can be -ve)
+
+```{r }
+steiger.vca <- anovaMM(ltime~matingnumber+(individual), steiger)
+steiger.vca
+VCAinference(steiger.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+## Fit random intercept model using lme4 and REML
+
+```{r }
+steiger.lmer1 <- lmer(ltime~matingnumber + (1|individual), REML=TRUE, steiger)
+summary(steiger.lmer1, ddf="Kenward-Roger")
+anova(steiger.lmer1, type=3, ddf="Kenward-Roger")
+emmeans(steiger.lmer1, ~matingnumber)
+```
+
+Note different CIs compared to OLS model fitting due to K-R adjustment
+
+CI on variance components (remembering to square CIs from lmer which are in SD units)
+
+```{r }
+steiger.ci1 <- confint.merMod(steiger.lmer1, oldNames=FALSE)
+steiger.vc1 <- (steiger.ci1)^2
+print(steiger.vc1)
+```
+
+### Bar graph for time main effect
+
+```{r }
+steiger_sum <- summarySE(steiger, measurevar= 'ltime', groupvars= 'matingnumber')
+ggplot(steiger_sum, aes(x=matingnumber, y=ltime))+
+  geom_bar(stat="identity", position="dodge", fill="lightblue")+
+  geom_errorbar(aes(ymin=ltime-se, ymax=ltime+se), width=0.3, color="darkblue")
+```

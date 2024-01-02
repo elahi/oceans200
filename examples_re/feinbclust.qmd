@@ -1,0 +1,93 @@
+---
+title: "QK Box 16.4"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Worked example of cluster analysis
+
+We introduced the study of Feinberg et al. (2014), who used morphological, genetic, and acoustic (call) criteria to discriminate five species (one new) of congeneric frogs ([Box 15.4](feinbergLDA.nb.html)). We will use their acoustic data (six variables) to hierarchically cluster their specimens based on a Euclidean dissimilarity matrix calculated from standardized call variables. We used UPGMA.
+
+### Preliminaries
+
+Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+
+```{r results='hide'}
+source("../R/libraries.R")    #loads common set of packages
+source("../R/appearance.R")
+library(ggdendro)
+```
+
+Read data and standardize variables. We use the [feinberg acoustic data](../data/feinacoust.csv)
+
+```{r }
+feinacoust <- read_csv("../data/feinacoust.csv", col_types = cols(frogid = col_skip()))
+# standardize variablesfeinacoust$crt <- scale(feinacoust$crt)
+feinacoust$cdc <- scale(feinacoust$cdc)
+feinacoust$pn <- scale(feinacoust$pn)
+feinacoust$df <- scale(feinacoust$df)
+feinacoust$tcl <- scale(feinacoust$tcl)
+feinacoust$tcr <- scale(feinacoust$tcr)
+```
+
+### create Euclidean dissimilary matrix
+
+```{r}
+#feinacoust.euc <- vegdist(feinacoust,'euclidean')
+feinacoust.euc<-dist(as.matrix(feinacoust),'euclidean')
+```
+
+### Run cluster analysis
+
+```{r}
+feinacoust.hc <- hclust(feinacoust.euc, "ave")
+plot(feinacoust.hc, labels=feinacoust$spp)
+feinacoust.hc$labels <- feinacoust$spp
+plot(feinacoust.hc)
+```
+
+### Better graphics
+
+```{r}
+dhc <- as.dendrogram(feinacoust.hc)
+# Rectangular lines
+ddata <- dendro_data(dhc, type = "rectangle")
+p <- ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + geom_text(data=ddata$labels,aes(x=x,y=0),label=ddata$labels$label, hjust=0, size=2, nudge_y=0.05)+
+  coord_flip() + 
+  scale_y_reverse(expand = c(0.2, 0))+
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    panel.background = element_blank(),
+    )+
+  labs(y="Distance")
+p
+```
+
+#### Colour version
+
+Note: Still needs work; with white b/g, species tags don't show up well when yellow.
+
+```{r}
+ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + geom_text(data=ddata$labels,aes(x=x,y=0,color=label),label=ddata$labels$label, hjust=0, size=2, nudge_y=0.05)+
+  coord_flip() + 
+  scale_y_reverse(expand = c(0.2, 0))+
+  scale_color_viridis_d()+
+  theme(
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.x = element_blank(),
+    panel.background = element_blank(),
+    legend.position = "none"
+    )+
+  labs(y="Distance")
+```

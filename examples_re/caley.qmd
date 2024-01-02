@@ -1,0 +1,77 @@
+---
+title: "QK Box 8.10"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We will use these data to examine the regression of local species richness against regional species richness just for North America and at a sampling scale of 10% of the region. Although there was some evidence that both local and regional species richness were skewed, we will, like the original authors, analyze untransformed variables. Caley and Schluter (1997) forced their models through the origin, but because that can make interpretation more difficult, we will include an intercept in the models.
+
+This example was used in the first edition; the data file is [here](../data/caley.csv)
+
+Caley, M. J. & Schluter, D. (1997). The relationship between local and regional diversity. *Ecology*, 78, 70-80.
+
+### Preliminaries
+
+First, load the required packages (car)
+
+```{r include=FALSE, results='hide', error=TRUE}
+library(car)
+```
+
+Import caley data file (caley.csv)
+
+```{r}
+caley <- read.csv("../data/caley.csv")
+head(caley,10)
+
+```
+### Fit polynomial model
+Create addtional predictor that is regional richness^2^ and fit model with two predictors
+
+```{r }
+caley$rspp10sq <- (caley$rspp10)^2
+caley.lm <- lm(lspp10~rspp10 + rspp10sq, data=caley)
+tidy(caley.lm, conf.int=TRUE)
+```
+
+Check residuals for quadratic model
+
+```{r }
+plot(caley.lm)
+augment(caley.lm)
+```
+
+Check collinearity
+
+```{r }
+vif(lm(lspp10~rspp10 + rspp10sq, data=caley))
+```
+
+### Fit simpler model
+
+```{r }
+caley.lm1 <- lm(lspp10~rspp10, data=caley)
+tidy(caley.lm1)
+```
+
+### Compare fit of two models - test of whether quadratic makes a difference
+
+```{r }
+anova(caley.lm1, caley.lm)
+```
+
+### Now use centred predictor
+
+```{r }
+caley$rspp10c <- scale(caley$rspp10, center=TRUE, scale=FALSE)
+caley$rspp10csq <- (caley$rspp10c)^2
+caley.lm3 <- lm(lspp10~rspp10c + rspp10csq, data=caley)
+tidy(caley.lm3, conf.int=TRUE)
+vif(lm(lspp10~rspp10c + rspp10csq, data=caley))
+```

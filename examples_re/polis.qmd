@@ -1,0 +1,130 @@
+---
+title: "Q & K Box 13.1"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Polis et al. (1998) studied the factors that control spider populations on islands in the Gulf of California. We will use part of their data to model the presence/absence of lizards (*Uta*) against the ratio of perimeter to area (P/A, as a measure of input of marine detritus) for 19 islands in the Gulf of California. We fitted a GLM of the presence of *Uta* (binary) against P/A ratio.
+
+[![](images/Desert_Side-blotched_Lizard_-_Uta_stansburiana_stejnegeri,_White_Sands_National_Monument,_Alamogordo,_New_Mexico.jpg)](https://commons.wikimedia.org/wiki/File:Desert_Side-blotched_Lizard_-_Uta_stansburiana_stejnegeri,_White_Sands_National_Monument,_Alamogordo,_New_Mexico.jpg)
+
+*Uta stansburiana*. Judy Gallagher  [![](images/by-01.png){width="57"}](https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons
+
+The data are in Table 1 of the paper, and our data file is [here](../data/polis.csv).
+
+Polis, G. A., Hurd, S. D., Jackson, C. T. & Sanchez-Pinero, F. (1998). Multifactor population limitation: Variable spatial and temporal control of spiders on Gulf of California islands. *Ecology*, 79, 490-502.
+
+### Preliminaries
+
+First, load the required packages (car, performance, lmtest) + ggplot2
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(performance)
+library(lmtest)
+```
+
+Import polis data file
+
+```{r}
+polis <- read.csv("../data/polis.csv")
+polis
+```
+
+Simple exploratory plot
+
+```{r }
+plot(utanum~paratio, data=polis)
+```
+
+### Fit glm
+
+```{r }
+polis.glm <- glm(utanum ~ paratio,data=polis,family=binomial)
+glance(polis.glm)
+tidy(polis.glm, conf.int=TRUE)
+```
+
+Do LR test on slope
+
+```{r }
+anova(polis.glm, test = 'Chisq')
+```
+
+Get and plot residuals - deviance residuals first then standardized residuals
+
+```{r error=TRUE}
+residualPlots(polis.glm, type="deviance")
+residualPlots(polis.glm, type="rstandard")
+```
+
+Check for overdispersion
+
+```{r }
+c(deviance(polis.glm), df.residual(polis.glm))
+```
+
+Check influence diagnostics
+
+```{r }
+rstandard(polis.glm, infl = influence(polis.glm), do.coef = FALSE,
+          type = c("deviance"))
+augment(polis.glm)
+```
+
+There is one outlier (case 3 - cook D = 0.84) and deleting it changes P value for Wald test but not LR test
+
+```{r }
+polis1 <- subset(polis, island != "Cerraja")
+plot(utanum~paratio, data=polis1)
+polis1.glm <- glm(utanum ~ paratio,data=polis1,family=binomial)
+tidy(polis1.glm)
+glance(polis1.glm)
+anova(polis1.glm, test = 'Chisq')
+```
+
+Create reduced model for lrtest - same as anova result
+
+```{r }
+polis2.glm <- glm(utanum~+1, data=polis, family=binomial)
+lrtest(polis2.glm, polis.glm)
+```
+
+Plot predicted probabilities from original model
+
+```{r }
+plot(polis.glm$fitted.values~polis$paratio)
+```
+
+Get odds ratio with CI
+
+```{r }
+exp(coef(polis.glm))
+exp(confint.default(polis.glm))
+```
+
+Get H-L test and Tjur r^2^
+
+```{r }
+performance_hosmer(polis.glm, n_bins=10)
+r2_tjur(polis.glm)
+```
+
+### Generate figure
+
+```{r echo=FALSE }
+source("../R/appearance.R")   #This is the graphic tweaks for figures in the book
+```
+
+```{r}
+p1<-ggplot(polis.glm,aes(y = polis.glm$fitted.values, x = polis$paratio)) +
+  geom_point(color="grey60", size=2, alpha= 1) +
+  theme_qk()+labs(x = "Perimeter:Area ratio", y = "Probability (lizards present)", 
+       )
+p1
+
+```

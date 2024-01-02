@@ -1,0 +1,205 @@
+---
+title: "QK Box 9.2"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We fitted a model relating species richness of shallow water ostracods to seven environmental predictors: water depth, bottom water temperature, salinity, productivity (particulate organic carbon flux to ocean floor), productivity squared (because of commonly observed hump-shaped relationships between richness and productivity in marine systems), seasonal variation in productivity, and the annual number of ice-free days; n = 129). To be consistent with Yasuhara et al's original analysis, water depth and seasonal variation in productivity were both positively skewed and were log-transformed, although the same argument could have been used for temperature. Additionally, all predictors were centered; note that centering does not affect the recommended measures of relative importance.
+
+[![](../media/1024px-Ostracod.JPG){width="512"}](https://upload.wikimedia.org/wikipedia/commons/9/93/Ostracod.JPG)
+
+Ostracod. Anna Syme, [CC Attribution 2.5 Generic](https://creativecommons.org/licenses/by/2.5/deed.en)
+
+The paper is [here](https://doi.org/10.1111/j.1365-2699.2012.02758.x)
+
+Yasuhara, M., Hunt, G., van Dijken, G., Arrigo, K. R., Cronin, T. M. & Wollenburg, J. E. (2012). Patterns and controlling factors of species diversity in the Arctic Ocean. *Journal of Biogeography*, 39, 2081-88.
+
+### Preliminaries
+
+First, load the required packages (relaimpo, car, hier.part, MuMIn, lm.beta)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("../R/libraries.R")   #This is the common library
+library(hier.part)     #No longer available in CRAN
+library(relaimpo)
+library(lm.beta)
+```
+
+Import yasuhara data file ([yasuhara.csv](../data/yasuhara.csv))
+
+**Note** that yasuhara_salmod is actually the file that's imported for now; it is a subset of the full data set, with some low sal values removed. This is the data used for analysis in the paper.
+
+**Note.** The yasuhara file associated with the paper is the full data set. The analyses of shallow-water ostracods used a subset of that data. Four deep sites (depth \>200m) were excluded, as were three with a freshwater influence (salinity \<21)
+
+```{r}
+yasuhara <- read.csv("../data/yasuhara.csv")
+yasuhara <- subset(yasuhara, salinity>21 & depth <= 200)
+head(yasuhara,10)
+```
+
+## First we repeat shallow-water ostracod analysis as in Table 1 of paper
+
+**Note:** have changed original csv file names to match those in code below
+
+### Scatterplot matrix
+
+```{r }
+scatterplotMatrix(~sprich+depth+temp+salinity+prod+seasprod+icefree, data=yasuhara, cex=.5, regLine=FALSE, diagonal=list(method='boxplot'))
+```
+
+Transform variables as needed, including quadratic for productivity
+
+Center predictors as well
+
+```{r}
+yasuhara$prod2 <- (yasuhara$prod)^2
+yasuhara$ldepth <- log10(yasuhara$depth)
+yasuhara$lseasprod <- log10(yasuhara$seasprod)
+yasuhara$cldepth <- scale(yasuhara$ldepth, center=TRUE, scale=FALSE)
+yasuhara$ctemp <- scale(yasuhara$temp, center=TRUE, scale=FALSE)
+yasuhara$csalinity <- scale(yasuhara$salinity, center=TRUE, scale=FALSE)
+yasuhara$cprod <- scale(yasuhara$prod, center=TRUE, scale=FALSE)
+yasuhara$cprod2 <- scale(yasuhara$prod2, center=TRUE, scale=FALSE)
+yasuhara$clseasprod <- scale(yasuhara$lseasprod, center=TRUE, scale=FALSE)
+yasuhara$cicefree <- scale(yasuhara$icefree, center=TRUE, scale=FALSE)
+```
+
+Get VIFs to check for collinearity issues; also look at correlations Fit regression model to get influence measures
+
+```{r}
+vif(lm(sprich~cldepth+ctemp+csalinity+cprod+cprod2+clseasprod+cicefree, data=yasuhara))
+cor(yasuhara[,c('cldepth','ctemp','csalinity','cprod','cprod2','clseasprod','cicefree')])
+scatterplotMatrix(~sprich+cldepth+ctemp+csalinity+cprod+cprod2+clseasprod+cicefree, data=yasuhara, cex=.5, regLine=FALSE, diagonal=list(method='boxplot'))
+yasuhara.lm <- lm(sprich~cldepth+ctemp+csalinity+cprod+cprod2+clseasprod+cicefree, data=yasuhara)
+plot(yasuhara.lm)
+augment(yasuhara.lm)
+
+```
+
+Examine model output
+
+```{r}
+tidy(yasuhara.lm, conf.int=TRUE)
+```
+
+### Standardized coefficients (usual)
+
+```{r }
+lm.beta.yasuhara <- lm.beta(yasuhara.lm)
+lm.beta.yasuhara
+```
+
+### standardized coefficients (both usual and partial sd)
+
+```{r }
+std.coef(yasuhara.lm, partial.sd=FALSE)
+std.coef(yasuhara.lm, partial.sd=TRUE)
+```
+
+## Relative importance metrics
+
+```{r }
+calc.relimp(yasuhara.lm, type = c("lmg", "pmvd", "last", "first", "betasq", "pratt"), rela=FALSE)
+yasuhara.boot <- boot.relimp(yasuhara.lm, b=1000, type = c("lmg", "pmvd"))
+booteval.relimp(yasuhara.boot)
+```
+
+### Compare to uncentered predictors - no change in conclusions
+
+```{r }
+yasuhara.lm1 <- lm(sprich~ldepth+temp+salinity+prod+lseasprod+icefree, data=yasuhara)
+vif(lm(sprich~ldepth+temp+salinity+prod+lseasprod+icefree, data=yasuhara))
+summary(yasuhara.lm1)
+calc.relimp(yasuhara.lm, type = c("lmg", "pmvd", "last", "first", "betasq", "pratt"), rela=FALSE)
+```
+
+## Now hierarchical partitioning
+
+This step uses the subsets of the original dataframe into response and predictors.
+
+```{r error=TRUE}
+yasuhara_sprich<-yasuhara$sprich
+yasuhara_pred<-subset(yasuhara, select = c("cldepth","ctemp","csalinity","clseasprod","cicefree","cprod", "cprod2"))
+hier.part(yasuhara_sprich, yasuhara_pred, family="gaussian", gof="Rsqu")
+```
+
+The package hier.part was removed from CRAN in March 2023. The code above will work if you have hier.part installed already. An alternative is to use the package *glmm.hp*, which is done in the next code chunk.
+
+Hier.part can also be installed from Github, though there may be issues with M1/M2 Macs. The quick way from Github is using devtools: devtools::install_github("cjbwalsh/hier.part")
+
+```{r}
+library (glmm.hp)
+glmm.hp(yasuhara.lm, type="R2")
+```
+
+## Model selection
+
+```{r }
+options(na.action = "na.fail")
+yasuhara.dredge <-dredge(yasuhara.lm, beta="none", evaluate=TRUE)
+yasuhara.dredge
+```
+
+above results match table 1 in paper
+
+## Model averaging
+
+```{r }
+yasuhara.ma<-model.avg(yasuhara.dredge)
+summary(yasuhara.ma)
+confint(yasuhara.ma)
+```
+
+### Get standardized model averaged estimates
+
+```{r error=TRUE}
+yasuhara.ma1<-model.avg(yasuhara.dredge, beta="sd")  #Code not running at moment
+summary(yasuhara.ma1)
+confint(yasuhara.ma1)
+yasuhara.ma2<-model.avg(yasuhara.dredge, beta="partial.sd")
+summary(yasuhara.ma2)
+confint(yasuhara.ma2)
+```
+
+### Sum of akaike weights
+
+```{r }
+sw(yasuhara.dredge)
+#importance(yasuhara.dredge)   #importance is Decunct
+```
+
+## Redo analysis by reducing collinearity
+
+**- omit prod squared and ice-free days**
+
+```{r error=TRUE}
+vif(lm(sprich~cldepth+ctemp+csalinity+cprod+clseasprod, data=yasuhara))
+cor(yasuhara[,c('cldepth','ctemp','csalinity','cprod','clseasprod')])
+scatterplotMatrix(~sprich+cldepth+ctemp+csalinity+cprod+clseasprod, data=yasuhara, cex=0.25, regLine=FALSE, diagonal=list(method='boxplot'))
+yasuhara.lm1 <- lm(sprich~cldepth+ctemp+csalinity+cprod+clseasprod, data=yasuhara)
+plot(yasuhara.lm1)
+influence.measures(yasuhara.lm1)
+summary(yasuhara.lm1)
+confint(yasuhara.lm1)
+std.coef(yasuhara.lm1, partial.sd=FALSE)
+std.coef(yasuhara.lm1, partial.sd=TRUE)
+calc.relimp(yasuhara.lm1, type = c("lmg", "pmvd", "last", "first", "betasq", "pratt"), rela=FALSE)
+yasuhara.boot1 <- boot.relimp(yasuhara.lm1, b=1000, type = c("lmg", "pmvd"))
+booteval.relimp(yasuhara.boot1)
+options(na.action = "na.fail")
+yasuhara.dredge1 <-dredge(yasuhara.lm1, beta="none", evaluate=TRUE)
+yasuhara.dredge1
+sw(yasuhara.dredge1)
+#importance(yasuhara.dredge1)
+yasuhara.ma3<-model.avg(yasuhara.dredge1, beta="sd")
+summary(yasuhara.ma3)
+confint(yasuhara.ma3)
+yasuhara.ma4<-model.avg(yasuhara.dredge1, beta="partial.sd")
+summary(yasuhara.ma4)
+confint(yasuhara.ma4)
+```

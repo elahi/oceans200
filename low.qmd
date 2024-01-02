@@ -9,23 +9,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include = FALSE}
-# This code block sets up the r session when the page is rendered to html
-
-# Change general options
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE, 
-                      message = FALSE, warning = FALSE, 
-                      cache = FALSE, par = FALSE)
-
-# Set up figure options
-knitr::opts_chunk$set(fig.align = 'center', fig.show = 'asis', 
-                      fig.width = 3.5, fig.height = 4) 
-
-# Set the web address where R will look for files from this repository
-repo_url <- "https://raw.githubusercontent.com/elahi/qk2_examples/master/"
-
-# Set working directory
-knitr::opts_knit$set(root.dir = "../")
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO~2~ levels were recorded after 120 minutes. The *H*~0~ was that there is no difference between the anesthetics in the mean blood CO~2~ level. This is an independent comparison because individual mice were only given one of the two anesthetics.
@@ -35,9 +20,6 @@ Low et al (2016) examined the effects of two different anesthetics on aspects of
 First, load the required packages (tidyverse, RMisc, MKinfer, car, emmeans)
 
 ```{r include=FALSE, results='hide'}
-# source("../R/libraries.R")
-# source("../R/appearance.R")
-
 source("R/libraries.R")
 source("R/appearance.R")
 ```
@@ -57,9 +39,31 @@ low_stats
 low %>% dplyr::count(anesth)
 low %>%  
   group_by(anesth) %>% 
-  dplyr::summarise(median = median(co2),
-            mean = mean(co2))
+  dplyr::summarise(n = n(), 
+            mean = mean(co2),
+            median = median(co2),
+            sd = sd(co2), 
+            variance = var(co2), 
+            se = sd / sqrt(n), 
+            CI_upper = mean + se * qt(p = 0.975, df = n-1), 
+            CI_lower = mean + se * qt(p = 0.025, df = n-1), 
+            CI = se * qt(p = 0.975, df = n-1), 
+            upper = mean + CI, 
+            lower = mean - CI
+            )
 ```
+
+Play around with df to see how the z-multiplier changes when using the T-distribution to calculate the 95% confidence interval. 
+
+```{r}
+# Standard normal distribution
+qnorm(p = 0.025)
+qnorm(p = 0.975)
+# Student-t distribution
+qt(p = 0.025, df = 100)
+qt(p = 0.975, df = 100)
+```
+
 
 ## Plot data
 

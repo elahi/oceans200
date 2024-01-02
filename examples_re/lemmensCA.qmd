@@ -1,0 +1,118 @@
+---
+title: "Q & K Box 15.2"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Lemmens et al. (2015) did a detailed study of various biotic communities in artificial ponds in Belgium. They sampled 28 ponds that represented different types of management, a combination of fish farming strategies (no fish, farming young fish, low intensity management, no management), and drainage frequencies (\> 10 years ago, occasional, annual). They also quantified taxon abundances for fish, zooplankton, and macro-invertebrates (different families and species within some groups) and covers of submerged, floating, and emergent vegetation. The macroinvertebrate dataset only included 23 ponds and we will use these data to illustrate CA by examining the ordination of the macroinvertebrate community (abundances of families).
+
+The paper is [here](https://doi.org/10.1371/journal.pone.0139371) and the pond subset for this example is [lemminvert2.csv](../data/lemminvert2.csv)
+
+Lemmens, P., Mergeay, J., Van Wichelen, J., De Meester, L. & Declerck, S. A. (2015). The impact of conservation management on the community composition of multiple organism groups in eutrophic interconnected man-made ponds. *PLoS One*, 10, e0139371.
+
+### Preliminaries
+
+Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+
+```{r}
+source("../R/appearance.R")
+```
+
+packages: vegan
+
+```{r echo=FALSE, include=FALSE, results='hide'}
+source("../R/libraries.R")
+library(vegan)
+```
+
+## do CA using vegan
+Convert data to contingency table
+
+Get chi-square test of independence
+```{r}
+lemminvert <- read_csv("../data/lemminvert2.csv")
+lemminvert1.tab <- as.table(as.matrix(lemminvert[,-(1:3)]))
+chisq.test(lemminvert1.tab,correct=F)
+```
+
+Very low P value
+
+```{r}
+lemminvert1 <- lemminvert[,-(1:3)]
+lemmens1.ca <- cca(lemminvert1)
+summary(lemmens1.ca, scaling=1)
+summary(lemmens1.ca, scaling=2)
+```
+
+```{r}
+ordiplot(lemmens1.ca, scaling=1, type="text")
+ordiplot(lemmens1.ca, scaling=2, type="text")
+```
+
+Get broken stick graphs
+
+```{r}
+lemmens1.ca.eig <- lemmens1.ca$CA$eig
+evplot(lemmens1.ca.eig)
+screeplot(lemmens1.ca,bstick=TRUE)
+```
+
+Do nice biplots
+
+```{r}
+library(ggrepel)
+#extract scores into smaller file.show
+a<-as.data.frame(lemmens1.ca$CA$u) #u is sites
+b<-as.data.frame(lemmens1.ca$CA$v)    #v is variables
+b$fam<-row.names(b)    #add family names for plotting
+a<-cbind(lemminvert[c(1:3)],a)   #Add site names & symbols from original data file
+br=c("nm","li","nf","yf")
+la=c("None", "Light", "No fish", "Young fish")
+p1a<-ggplot(data=b, aes(x=CA1, y=CA2))+
+  geom_point()+
+  geom_text_repel(aes(label=fam), size=2, max.overlaps=25)+
+  theme_qk()+
+  xlim(-2,3)+
+  ylim(-2,10)
+p2<-ggplot(data=a, aes(x=CA1, y=CA2, shape=manag, ) )+
+  geom_point()+
+  labs(y=NULL)+
+  scale_shape_manual(values=sym4,
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  xlim(-2,3)+
+  ylim(-2,10)+
+  theme_qk()
+p3<-p1a+p2
+p3
+```
+
+Colour version of RH panel
+
+```{r}
+p2a<-ggplot(data=a, aes(x=CA1, y=CA2, color=manag, ) )+
+  geom_point()+
+  labs(y=NULL)+
+  scale_color_viridis_d(
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+    xlim(-2,3)+
+  ylim(-2,10)+
+  theme_qk()
+p3c<-p1a+p2a
+p3c
+```

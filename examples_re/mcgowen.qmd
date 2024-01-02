@@ -1,0 +1,101 @@
+---
+title: "QK Box 13.7"
+
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+As part of a phylogenetic study on the adaptation of cetaceans to an aquatic lifestyle, McGowen et al (2020) counted the number of genes in each cell of three cross-classified variables: sensory (e.g. sight, vision etc.) vs nonsensory genes, ingroup (whales, dolphins etc.) vs outgroup (e.g. non-aquatic like hippopotamuses) lineages from their phylogenetic tree, and whether the genes were under positive selection (PSG) or not. The research question was primarily about the association of whether genes were under positive selection or not with both phylogenetic group (ingroup vs outgroup) and sensory role (sensory vs non-sensory) and. We will focus just on the analysis of vision genes.
+
+The paper is [here](https://doi.org/10.1093/molbev/msaa070)
+
+McGowen, M. R., Tsagkogeorga, G., Williamson, J., Morin, P. A. & Rossiter, A. S. J. (2020). Positive selection and inactivation in the vision and hearing genes of cetaceans. *Mol Biol Evol*, 37, 2069-83.
+
+### Preliminaries
+
+First, load the required packages (epitools, vcd, DescTools)
+
+```{r include=FALSE, results='hide'}
+library(epitools)
+library(vcd)
+library(DescTools)
+```
+
+Import mcgowen data file ([mcgowen.csv](../data/mcgowen.csv)) and select vision genes only
+
+```{r}
+mcgowen <- read.csv("../data/mcgowen.csv")
+mcgvision<-mcgowen[mcgowen$group %in% c("vision","control"),]
+head(mcgvision,10)
+```
+
+```{r echo=FALSE}
+mcgvision.tab<-xtabs(count~psg + lineage + genetype, data=mcgvision)
+mcgvision.tab
+```
+
+### Glm test for 3 way interaction
+
+```{r}
+mcgvision1.glm <- glm(count~psg*lineage*genetype, data=mcgvision, family=poisson)
+mcgvision2.glm <- glm(count~psg+lineage+genetype+psg*lineage+psg*genetype+lineage*genetype, data=mcgvision, family=poisson)
+lrtest(mcgvision1.glm,mcgvision2.glm)
+```
+
+No evidence for 3 way interaction - ORs for each 2x2 consistent across 3rd variable
+
+#### Confirm with Breslow-Day test
+
+```{r}
+BreslowDayTest(mcgvision.tab, correct = FALSE)
+```
+
+### Test each 2 way interaction to see if conditional independence applies
+
+```{r}
+# First PSG*lineage (these two are independent)
+mcgvision3.glm <- glm(count~psg+lineage+genetype+psg*genetype+lineage*genetype, data=mcgvision, family=poisson)
+lrtest(mcgvision2.glm,mcgvision3.glm)
+# Second, PSG * genetype (these two are associated)
+mcgvision4.glm <- glm(count~psg+lineage+genetype+psg*lineage+lineage*genetype, data=mcgvision, family=poisson)
+lrtest(mcgvision2.glm,mcgvision4.glm)
+residuals(mcgvision4.glm,type=c("pearson"))
+# Third lineage*genetype (these two are independent)
+mcgvision5.glm <- glm(count~psg+lineage+genetype+psg*lineage+psg*genetype, data=mcgvision, family=poisson)
+lrtest(mcgvision2.glm,mcgvision5.glm)
+# Try complete independence model
+mcgvision6.glm <- glm(count~psg+lineage+genetype, data=mcgvision, family=poisson)
+```
+
+### compare model fits
+
+```{r}
+AIC(mcgvision1.glm,mcgvision2.glm,mcgvision3.glm,mcgvision4.glm,mcgvision5.glm, mcgvision6.glm)
+```
+
+### Estimate ORs for PSG x genetype for each lineage and overall
+
+Overall
+
+```{r}
+mcgvision_simp.tab <- xtabs(count~psg + genetype, data=mcgvision, drop.unused.levels=TRUE)
+mcgvision_simp.tab
+loddsratio(mcgvision_simp.tab, log = FALSE)
+
+```
+
+Separately
+
+```{r}
+mcgvision1 <- subset(mcgvision,subset = lineage %in% 'in')
+mcgvision1
+mcgvision1.tab <- xtabs(count~psg + genetype, data=mcgvision1, drop.unused.levels=TRUE)
+loddsratio(mcgvision1.tab, log = FALSE)
+mcgvision2 <- subset(mcgvision,subset = lineage %in% 'out')
+mcgvision2
+mcgvision2.tab <- xtabs(count~psg + genetype, data=mcgvision2, drop.unused.levels=TRUE)
+loddsratio(mcgvision2.tab, log = FALSE)
+```

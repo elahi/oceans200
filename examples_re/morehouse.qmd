@@ -1,0 +1,76 @@
+---
+title: "Q & K Box 13.5"
+output:
+    html_notebook:
+      theme:flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Morehouse et al. (2016) used genetic analysis to determine the parentage of bear cubs, and cross-classified cubs and their parents as causing problems around humans (see Table 4.2)
+
+The data are [here](../data/morehouse.csv)
+
+Morehouse, A. T., Graves, T. A., Mikle, N. & Boyce, M. S. (2016). Nature vs. Nurture: Evidence for social learning of conflict behaviour in Grizzly Bears. *PLoS One*, 11.
+
+### Preliminaries
+
+First, load the required packages (vcd)
+
+```{r include=FALSE, results='hide'}
+library(vcd)
+library(lmtest)
+library(epitools)
+```
+
+Import morehouse data file
+
+```{r}
+morehouse <- read.csv("../data/morehouse.csv")
+head(morehouse)
+```
+
+Tabulate the data
+
+```{r }
+morehouse.tab<-xtabs(count~mother + offspring, data=morehouse)
+morehouse.tab
+```
+
+### Calculate chi-sq. test and odds ratios
+
+Output odds and odds ratio on raw, rather than log, scale
+
+```{r}
+chisq.test(morehouse.tab, correct=F)$exp
+morehouse.chi<- chisq.test(morehouse.tab, correct=F)
+morehouse.chi
+morehouse.chi$residuals
+
+#Get odds
+lodds(morehouse.tab, log = FALSE)
+morehouse.odds <- loddsratio(morehouse.tab, log = FALSE)
+summary(morehouse.odds)
+confint(morehouse.odds)
+```
+### Run exact tests
+
+```{r}
+fisher.test(morehouse.tab)
+oddsratio.midp(morehouse.tab)
+```
+
+### Do loglinear model
+
+```{r }
+morehouse.glm <- glm(count~mother*offspring, family=poisson, data=morehouse)
+summary(morehouse.glm)
+anova(morehouse.glm)
+morehouse1.glm <- glm(count~mother+offspring, family=poisson, data=morehouse)
+summary(morehouse1.glm)
+anova(morehouse.glm, morehouse1.glm, test="Chisq")
+lrtest(morehouse.glm, morehouse1.glm)
+plot(morehouse1.glm)
+```

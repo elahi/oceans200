@@ -1,0 +1,122 @@
+---
+title: "QK Box 11.5"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Hey et al. (2020) studied the effect of artificial light at night (ALAN) on the growth of a wildflower species (*Asclepias syriaca*) in an outdoor field experiment. The plant, a species of milkweed, is an important host plant for caterpillars of the monarch butterfly.
+
+They used a split-plot design for their experiment. The between-plots factor was ALAN, with five plots receiving artificial light and five control plots with the same set-up but only receiving ambient light. The sub-plots were 11 L small pots and there were two within-plot factors arranged in a crossed design; planting density (one or three plants per pot) and soil moisture (weekly addition of water vs no watering). There were four pots in each plot, so each combination of density and moisture had a single pot; the design is unreplicated at the sub-plot level. The response variable was total biomass (root and shoot) per pant in each pot, averaged across the plants within the higher density pots.
+
+[![](images/Asclepias_syriaca,_2021-07-04,_Bethel_Park,_02.jpg){width="800"}](https://commons.wikimedia.org/wiki/File:Asclepias_syriaca,_2021-07-04,_Bethel_Park,_02.jpg)
+
+*Asclepias syriaca*. Cbaile19, CC0, via Wikimedia Commons
+
+The paper is [here](https://doi.org/10.1007/s00442-020-04679-9)
+
+Hey, M. H., DiBiase, E., Roach, D. A., Carr, D. E. & Haynes, K. J. (2020). Interactions between artificial light at night, soil moisture, and plant density affect the growth of a perennial wildflower. *Oecologia*, 193, 503-10.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import heymean data file ([heymean.csv](../data/heymean.csv))
+
+```{r}
+heymean <- read.csv("../data/heymean.csv")
+heymean
+```
+
+Set contrasts from afex
+
+Make plot a factor
+
+```{r results='hide'}
+set_sum_contrasts()
+heymean$plot <- factor(heymean$plot)
+```
+
+Check residuals by leaving out error term
+
+```{r }
+hey1.aov <- aov(dwtotal~light*density*water, heymean)
+plot(hey1.aov)
+```
+
+See if transformation improves the residuals
+
+```{r }
+hey2.aov <- aov(log10(dwtotal)~light*density*water, heymean)
+plot(hey2.aov)
+```
+
+Some improvement in plot; outliers still present but transform response
+
+**Note** Biomass is always positive, so we don't really need to add anything before transforming. Hey et al. used a log(x+1) transformation, so we'll do the same here for consistency. As an exercise, you could modify the next line of code to remove the +1 and rerun the model-fitting to see how much difference there is.
+
+```{r }
+heymean$ldwtotal <- log10(heymean$dwtotal+1)
+```
+
+## Fit factorial split-plot with separate within-plot error terms
+
+```{r }
+hey3.aov <- aov(ldwtotal~light*density*water+Error(plot/(density*water)), heymean)
+summary(hey3.aov)
+```
+
+## Fit equivalent mixed effects model
+
+```{r }
+hey1.lmer <- lmer(ldwtotal~light+density+water+light*density+light*water+density*water+light*density*water+(1|plot)+(1|plot:density)+(1|plot:water), REML=TRUE, heymean)
+plot(hey1.lmer)
+```
+
+residuals OK
+
+```{r }
+summary(hey1.lmer, ddf="Kenward-Roger")
+anova(hey1.lmer, ddf="Kenward-Roger")
+```
+
+### Get variance components
+
+```{r }
+hey1.ci <- confint.merMod(hey1.lmer, oldNames=FALSE)
+hey1.vc <- (hey1.ci)^2
+print(hey1.vc)
+```
+
+### Compare this model to model with no plot by density and moisture interactions
+
+```{r }
+hey1a.lmer <- lmer(ldwtotal~light+density+water+light*density+light*water+density*water+light*density*water+(1|plot)+(1|plot:density)+(1|plot:water), REML=FALSE, heymean)
+hey2.lmer <- lmer(ldwtotal~light*density*water+(1|plot), REML=FALSE, heymean)
+anova(hey1a.lmer, hey2.lmer)
+AICc(hey1a.lmer, hey2.lmer)
+```
+
+Simpler model fits equally well
+
+```{r }
+hey2a.lmer <- lmer(ldwtotal~light*density*water+(1|plot), REML=TRUE, heymean)
+summary(hey2a.lmer, ddf="Kenward-Roger")
+anova(hey2a.lmer, ddf="Kenward-Roger")
+```
+
+### Compare to factorial OLS split-plot pooling within-plot error terms
+
+Same as above for fixed effects
+
+```{r }
+hey4.aov <- aov(ldwtotal~light*density*water+Error(plot), heymean)
+summary(hey4.aov)
+```

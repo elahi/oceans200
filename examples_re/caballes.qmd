@@ -1,0 +1,112 @@
+---
+title: "QK Box 10.6"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Caballes et al. (2016) examined the effects of maternal nutrition (three treatments: starved or fed one of two coral genera: *Acropora* or *Porites*) on the larval biology of crown-of-thorns seastars. There were three female seastars nested within each treatment, 50 larvae reared from each female were placed into each of three glass culture jars and the lengths of ten larvae from each jar after four days were measured after 4 days. This fully balanced design has maternal nutrition as a fixed factor with three random levels of nesting: females within nutrition treatment, jars within females and individual larvae within jars.
+
+![Crown of thorns seastar, Acanthaster planci. Mick Keough, [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)](../media/Crown_of_thorns.jpg){width="686"}
+
+![Larval cycle of crown-of-thorns. [AIMS](www.aims.gov.au), [CC BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)](../media/Larval%20cycle%20of%20crown-of-thorns.png)
+
+The paper is [here](doi:10.1371/journal.pone.0158007)
+
+Caballes, C. F., Pratchett, M. S., Kerr, A. M. & Rivera-Posada, J. A. (2016). The role of maternal nutrition on oocyte size and quality, with respect to early larval development in the coral-eating starfish, *Acanthaster planci*. *PLoS One*, 11, e0158007.
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import caballes data file (caballes_length.csv)
+
+```{r}
+caballes_length <- read.csv("../data/caballes_length.csv")
+head(caballes_length,10)
+```
+
+```{r }
+set_sum_contrasts()
+```
+
+Make female and jar factors
+
+```{r }
+caballes_length$female <- factor(caballes_length$female)
+caballes_length$jar <- factor(caballes_length$jar)
+```
+
+Reorder nutrition treatments so starved is first for default lm contrasts
+
+```{r }
+caballes_length$diet <- factor(caballes_length$diet, levels = c("starved","aa","pr"))
+```
+
+## Run model
+
+**Note:** can't get the aov commands to work for 3 level nested design
+
+```{r error=TRUE}
+caballes.aov <- aov(length~diet+Error(female/jar), caballes_length)
+```
+
+### Fit as lm using OLS estimation
+
+```{r }
+caballes.lm <- lm(length ~ diet/female/jar, caballes_length)
+plot(caballes.lm)
+summary(caballes.lm)
+anova(caballes.lm)
+```
+
+Get F and P values using correct denominators
+
+```{r }
+#Diet F
+f <- 1.26668/0.06224
+pf(f, df1 = 2, df2 = 6, lower.tail = FALSE)
+#Females F
+f <- 0.06224/0.02925
+pf(f, df1 = 6, df2 = 18, lower.tail = FALSE)
+#Jars F
+f <- 0.02925/0.01755
+pf(f, df1 = 18, df2 = 243, lower.tail = FALSE)
+```
+
+Variance components from VCA
+
+```{r }
+caballes.vca <- anovaMM(length ~ diet/(female)/(jar), caballes_length)
+caballes.vca
+VCAinference(caballes.vca, alpha = 0.05, VarVC = TRUE, ci.method = "satterthwaite")
+```
+
+### Fit mixed effects model using REML/ML
+
+```{r }
+caballes.lmer <- lmer(length ~ diet + (1|female/jar), caballes_length)
+summary(caballes.lmer)
+```
+
+Get F-ratio for diet test using lmerTest
+
+```{r }
+anova(caballes.lmer, ddf = "Kenward-Roger")
+```
+
+CI on variance components (remembering to square CIs from lmer which are in SD units)
+
+```{r }
+caballes.ci <- confint.merMod(caballes.lmer)
+caballes.vc <- (caballes.ci)^2
+print(caballes.vc)
+```

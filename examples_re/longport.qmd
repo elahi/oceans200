@@ -1,0 +1,195 @@
+---
+title: "QK Box 7.5"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Long and Porturas (2014) examined the effect of multiple stressors on the performance of a saltmarsh plant that is important for ecological restoration. Their focus was the potential for salinity stress to modify the herbivory coming from scale insects, and they experimentally removed scale insects or left them intact (Factor: Scale), on plots with salinity at ambient levels or elevated (Factor: Salinity). The experiment was repeated at two sites chosen to be very different in overall elevation (Factor: Site, a fixed effect in this context) within a marsh in southern California. These three factors form a three-way factorial design, and from each replicate experimental plot (of which there were 7 and 8 at the two sites). Their response variable was the time to senescence of a single stem of the cordgrass *Spartina foliosa*.
+
+[![Spartina foliosa. Pacific Southwest Region U.S. Fish and Wildlife Service, Public domain, via Wikimedia Commons](../media/640px-Spartina_foliosa.jpg)](https://commons.wikimedia.org/wiki/File:Spartina_foliosa.jpg)
+
+*Spartina foliosa*. Pacific Southwest Region U.S. Fish and Wildlife Service, Public domain, via Wikimedia Commons
+
+The paper is [here](https:doi.org/10.1371/journal.pone.0110419)
+
+Long, J. D. & Porturas, L. D. (2014). Herbivore impacts on marsh production depend upon a compensatory continuum mediated by salinity stress. *PLoS One*, 9, e110419.
+
+### Preliminaries
+
+First, load the required packages (car, sjstats, afex, pwr); apaTables added for cleaner output
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(pwr)
+```
+
+Import longport data file (longport.csv)
+
+```{r}
+longport <- read.csv("../data/longport.csv")
+head(longport,10)
+```
+
+### Fit model to untransformed data and check residuals
+
+```{r }
+longport.aov <- aov(days~site*salinity*scale, data=longport)
+plot(longport.aov)
+```
+
+Residuals fine so examine analysis with untransformed data
+
+```{r }
+summary(longport.aov)
+```
+
+### Get Type III SS
+
+```{r }
+longport2 <- Anova(lm(longport.aov), type=3)
+longport2
+```
+
+Get effect size measures (sjstats package) - point estimates match SPSS
+
+```{r }
+effectsize(longport2)
+```
+
+### Simple interaction effects - salinity x scale at North
+
+One way to approach this 3-factor interaction is to look at the interaction between two predictors at each level of the third. For this experiment, salinity and scale are biological effects of interest, and site measures whether those effects are stable across space, so it makes sense to examine each site separately.
+
+One way to do this is to analyze each site separately using, e.g. aov:
+
+```{r }
+longportN.aov <- aov(days~salinity*scale, data=longport, subset=c(site=='North'))
+summary(longportN.aov)
+```
+
+This approach creates a residual MS specific to this data subset. An alternative approach is to use the the original error term from the 3 factor model. Anova() function from car package tests simple main effect against whole model residual.
+
+```{r }
+longportN1.aov <- Anova(lm(longportN.aov), lm(longport.aov), type=3)
+longportN1.aov
+effectsize(longportN1.aov)
+```
+
+### Simple interaction effects - salinity x scale at South
+
+```{r }
+longportS.aov <- aov(days~salinity*scale, data=longport, subset=c(site=='South'))
+longportS1.aov <- Anova(lm(longportS.aov), lm(longport.aov), type=3)
+longportS1.aov
+effectsize(longportS1.aov)
+```
+
+## Generate figure
+```{r include=FALSE, results='hide'}
+source("../R/appearance.R")   #This is the common library of graphics tweaks, defining the qk theme
+```
+
+### Residual plot
+
+```{r}
+p1<-ggplot(longport.aov, aes(x = longport.aov$fitted.values, y = longport.aov$residuals)) +
+geom_point(color=sc, alpha=0.5) +
+theme_classic(base_size = 10)+
+theme(
+axis.text = element_text(colour = ac),
+axis.line = element_line(color = ac),
+axis.ticks = element_line(color = ac),
+)+labs(x = "Predicted", y = "Residuals"
+)
+
+p1
+
+```
+
+### Interaction plots
+
+Use emmeans to make file of means and se
+
+```{r}
+emm1<-emmeans(longport.aov, ~site|salinity|scale)
+emm2<-as.data.frame(emm1)
+emm2
+```
+
+Separate interaction plots for N and S Means and error bars Use filter to subset data for ggplot
+
+```{r}
+emm3<-subset(emm2,site=="North")
+pd=position_dodge(width=0)
+p2<-ggplot(emm3,aes(x=salinity,y=emmean,shape=scale, group=scale, color=scale))+
+  geom_point(position=pd,aes(shape=scale), size=3,show.legend = FALSE)+
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=0, position = pd,show.legend = FALSE)+
+  geom_line(aes(color=scale), position=pd, size=1.5, show.legend = FALSE)+
+  scale_color_uchicago(labels = c("No scale", "Scale"))+
+    scale_linetype_manual(values=c("solid", "solid"))+
+  labs(x = "Salinity", y = "Days to senescence", title="North Site"
+       )+
+  ylim(50,150)+
+  scale_x_discrete(labels=c("Ambient", "Enhanced"))+
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text.x = element_text(color="black"),
+    axis.text.y= element_text(color=ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac),
+        )+
+  theme(
+  legend.position = c(.9, .50),
+  legend.justification = c("right", "top"),
+  legend.box.just = "right",
+  legend.margin = margin(6, 6, 6, 6),
+  plot.title = element_text(hjust=0.5),
+  legend.title=element_blank()
+)
+  
+p2
+```
+
+Now S site
+
+```{r}
+emm4<-subset(emm2, site=="South")
+pd=position_dodge(width=0)
+p3<-ggplot(emm4, aes(x=salinity,y=emmean,shape=scale, group=scale, color=scale))+
+  geom_point(position=pd,aes(shape=scale), size=3,show.legend = FALSE)+
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=0, position = pd,show.legend = FALSE)+
+  geom_line(aes(color=scale), position=pd, size=1.5)+
+  scale_color_uchicago(labels = c("No scale", "Scale"))+
+    scale_linetype_manual(values=c("solid", "solid"))+
+  labs(x = "Salinity", y = NULL, title="South Site"
+       )+
+  ylim(50,150)+
+  scale_x_discrete(labels=c("Ambient", "Enhanced"))+
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text.x = element_text(color="black"),
+    axis.text.y= element_text(color=ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac),
+        )+
+  theme(
+  legend.position = c(.8, .4),
+  legend.justification = c("right", "top"),
+  legend.box.just = "right",
+  legend.margin = margin(6, 6, 6, 6),
+  plot.title = element_text(hjust=0.5),
+  legend.title=element_blank()
+)
+  
+p3
+```
+
+```{r}
+p1+p2+p3
+```

@@ -1,0 +1,93 @@
+---
+title: "QK Box 16.1"
+output:
+  html_notebook
+---
+
+title: "Q & K Box 16.1" output: html_notebook ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Worked example of PCoA: invertebrates in artificial ponds This example continues with the pond invertebrate example used in Boxes [15.2](lemmensCA.nb.html) and [15.3](lemmensRDA.nb.html) and uses the data file [lemminvert.csv](../data/lemminvert.csv).
+
+### Preliminaries
+
+Load core set of packages and vegan, ape
+
+```{r results='hide'}
+source("../R/libraries.R")
+library(vegan)
+library(ape)
+```
+
+Read data
+
+```{r}
+lemminvert <- read.csv("../data/lemminvert.csv")
+```
+
+## Do PCoA on lemmens invert data
+
+Use B-C matrix on raw abundances
+
+```{r}
+# Remove pond classification variables
+lemminvert.bc <- vegdist(lemminvert[,4:32],method="bray")
+# do PCoA
+lemminvert.pco <- pcoa(lemminvert.bc)
+print(lemminvert.pco)
+biplot(lemminvert.pco,lab=lemminvert$manag)
+```
+
+### Improve plot
+
+Plots used for QK use the ggplot classic theme, with some tweaks. Tweaks are consolidated into theme_QK; use this theme for figures and tweak the theme to avoid repetitive code changes.
+
+```{r}
+source("../R/appearance.R")
+```
+
+Get labels back on
+
+```{r}
+# extract coordinates
+a<-as.data.frame(lemminvert.pco$vectors)
+# Need to get management types on this plot
+a<-cbind(lemminvert[c(1:3)],a)   #Add site names & symbols from original data file
+br=c("nm","li","nf","yf")     #Categories from original file; define as object to avoid retyping
+la=c("None", "Light", "No fish", "Young fish")   #Labels; define here to avoid retyping
+p2<-ggplot(data=a, aes(x=Axis.1, y=Axis.2, shape=manag, ) )+
+  geom_point()+
+  labs(y="MDS2", x="MDS1")+
+  scale_shape_manual(values=sym4,
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()+
+  theme(legend.position = "top")
+p2
+```
+
+```{r}
+# colour version using viridis palette d
+p2a<-ggplot(data=a, aes(x=Axis.1, y=Axis.2, color=manag, ) )+
+  geom_point()+
+  labs(y="MDS2", x="MDS1")+
+  scale_color_viridis_d(
+                     name="Management",
+                     breaks=br,
+                     labels=la,
+                     guide =
+                         guide_legend(label.theme = element_text(size=6),
+                                    title=NULL)
+                     )+
+  theme_qk()+
+  theme(legend.position = "top")
+p2a
+```

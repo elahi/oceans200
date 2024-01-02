@@ -1,0 +1,119 @@
+---
+title: "QK Box 11.3"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The rat pup dataset from Pinheiro and Bates (2000) was introduced in Chapter 10. The between-plots factor was drug treatment (fixed with three doses: control, low dose, high dose) and the plots were ten female rats, and their subsequent litters (level 2), assigned to each treatment. The pups from a litter produced by each female were sexed and weighed, so pups were the sub-plots (level 1) with sex (fixed: male vs females) as the within-plots factor and pup weight as the response variable. Litter size (number of pups) was recorded as a continuous covariate for each litter (level 2) as we might reasonably expect larger litters to have smaller pups on average. The design was unbalanced for both plots (only seven out of ten rats survived in the high dose group) and subplots (litter size ranged between two and 18 pups). Additionally, one litter (number 12) only had female pups so this litter was omitted from the analysis to avoid a missing cell.
+
+This analysis uses a subset of the data - it's [here](../data/ratpupno12.csv)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import ratpupno12 data file (ratpupno12.csv)
+
+```{r}
+ratpupno12 <- read.csv("../data/ratpupno12.csv")
+ratpupno12
+```
+
+Set contrasts from afex
+Make litter a factor
+```{r }
+set_sum_contrasts()
+ratpupno12$litter <- factor(ratpupno12$litter)
+```
+
+Check boxplots - some variance difference but not related to mean
+
+```{r }
+boxplot(weight~treatment*sex, ratpupno12)
+```
+
+Not suited to OLS fit because of imbalance
+
+## Without covariate
+
+First, model using lmer without litter size as covariate - this model includes litter(treatment) x sex interaction
+
+```{r }
+ratpup.lmer1 <- lmer(weight~treatment+sex+treatment*sex+(1|litter)+(1|litter:sex), REML=TRUE, ratpupno12)
+plot(ratpup.lmer1)
+summary(ratpup.lmer1, ddf="Kenward-Roger")
+anova (ratpup.lmer1, ddf="Kenward-Roger")
+```
+
+Get variance components with profile CIs
+
+```{r }
+ratpup.ci <- confint.merMod(ratpup.lmer1,oldNames=FALSE)
+ratpup.vc <- (ratpup.ci)^2
+print(ratpup.vc)
+```
+
+Now simplify model by testing if litter(treatment) x sex term should be retained
+
+```{r error=TRUE}
+ratpup.lmer1a <- lmer(weight~treatment+sex+treatment*sex+(1|litter)+(1|litter:sex), REML=FALSE, ratpupno12)
+ratpup.lmer2 <- lmer(weight~treatment+sex+treatment*sex+(1|litter), REML=FALSE, ratpupno12)
+anova(ratpup.lmer1a, ratpup.lmer2)
+AICc(ratpup.lmer1a, ratpup.lmer2)
+```
+
+### Use simpler model
+
+```{r }
+ratpup.lmer2a <- lmer(weight~treatment+sex+treatment*sex+(1|litter), REML=TRUE, ratpupno12)
+summary(ratpup.lmer2a, ddf="Kenward-Roger")
+anova(ratpup.lmer2a, ddf="Kenward-Roger")
+```
+
+Get var comps
+
+```{r }
+ratpup.ci <- confint.merMod(ratpup.lmer2,oldNames=FALSE)
+ratpup.vc <- (ratpup.ci)^2
+print(ratpup.vc)
+```
+
+## Fit ratpup.lmer2 model including covariate with simple effect
+
+```{r }
+ratpup.lmer4 <- lmer(weight~treatment+sex+treatment*sex+lsize+(1|litter), REML=TRUE, ratpupno12)
+summary(ratpup.lmer4, ddf="Kenward-Roger")
+anova(ratpup.lmer4, type="3", ddf="Kenward-Roger")
+```
+
+## Fit ratpup.lmer2 model including covariate (match West analysis)
+
+```{r }
+ratpup.lmer3 <- lmer(weight~treatment+sex+treatment*sex+lsize+treatment*lsize+(1|litter), REML=TRUE, ratpupno12)
+summary(ratpup.lmer3, ddf="Kenward-Roger")
+anova(ratpup.lmer3, type="3", ddf="Kenward-Roger")
+```
+
+Contrast control to other 2 groups
+
+```{r }
+ratpup3.emm <- emmeans(ratpup.lmer3, ~treatment)
+ratpup3.con <- contrast(ratpup3.emm, "trt.vs.ctrl", ref="Control")
+summary(ratpup3.con, adjust="none")
+```
+
+Get var comps
+
+```{r }
+ratpup.ci <- confint.merMod(ratpup.lmer3,oldNames=FALSE)
+ratpup.vc <- (ratpup.ci)^2
+print(ratpup.vc)
+```

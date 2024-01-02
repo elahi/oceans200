@@ -1,0 +1,70 @@
+---
+title: "QK Box 7.3"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Tartu et al. (2016) collected data on blood mercury concentrations in male and female Arctic black-legged kittiwakes (*Rissa tridactyla*) (Factor Sex, with two levels) that were collected during the incubation period and while chicks were being reared (Factor Breeding Stage, 2 levels). During incubation, they collected 48 females and 44 males, with 17 and 21, respectively, during chick rearing. The authors analyzed these data with a generalized linear model based on a normal distribution and identity link. In contrast, keeping with the theme for this chapter, we fitted a two-factor OLS linear model including the fixed main effects of site and season and their interaction. With these unequal sample sizes, we have the options of Type I, II or III SS.
+
+[![](../media/512px-Black-legged_Kittiwake_and_Chick.jpg)](https://commons.wikimedia.org/wiki/File:Black-legged_Kittiwake_and_Chick.jpg)
+
+Anderson, Brian, Public domain, via Wikimedia Commons
+
+The paper is [here](https://doi.org/2010.1111/1365-2435.12534)
+
+Tartu, S., Bustamante, P., Angelier, F., Lendvai, A. Z., Moe, B., Blevin, P., Bech, C., Gabrielsen, G. W., Bustnes, J. O. & Chastel, O. (2016). Mercury exposure, stress and prolactin secretion in an Arctic seabird: an experimental study. *Functional Ecology*, 30, 596-604.
+
+### Preliminaries
+
+First, load the required packages (car)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import tartu_hg data file (tartu_hg.csv)
+
+```{r}
+tartu_hg <- read.csv("../data/tartu_hg.csv")
+head(tartu_hg,10)
+```
+
+### Examine boxplots by cell
+
+```{r }
+boxplot(hg~sex*stage,data=tartu_hg)
+```
+
+No particular issues here, so happy to proceed
+
+## Fit OLS model (Type I SS) to untransformed data
+
+```{r }
+tartu.aov <- aov(hg~sex*stage, data=tartu_hg)
+summary(tartu.aov)
+plot(tartu.aov)
+```
+
+Note pattern in residuals but untransformed data will be analysed
+
+### Refit model so stage goes first (still Type I SS)
+
+```{r }
+tartu1.aov <- aov(hg~stage*sex, data=tartu_hg)
+summary(tartu1.aov)
+plot(tartu1.aov)
+```
+
+### Now get Type II and Type III SS using car package
+
+```{r }
+tartu.lm1 <- lm(hg~stage*sex, data=tartu_hg, contrasts=list(stage=contr.sum, sex=contr.sum))
+Anova(tartu.lm1, type='III')
+Anova(tartu.lm1, type='II')
+```

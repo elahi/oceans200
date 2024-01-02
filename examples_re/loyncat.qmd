@@ -1,0 +1,74 @@
+---
+title: "QK Box 8.11"
+
+output: 
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+We re-analysed the data from Loyn (1987; see Box 8.2 ) by fitting a simpler model that just included grazing and log patch area (based on our model selection criteria -- see Box 9.1). First we treated grazing as a continuous variable like we did in the original analysis by fitting the following model:
+
+(bird abundance)~*i*~ = *β~0~* + *β~1~*(log~10~ area)~*i*~ + *β*~2~(grazing)~*i*~ *+ ε~i~*
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta)
+
+```{r include=FALSE, results='hide', error=TRUE}
+source("../R/libraries.R")   #This is the common library
+library(lm.beta)
+```
+
+Import [loyncat](data/loyncat.csv) data file
+
+This file is the loyn data, with grazing classified into five categories ("grazecat"). We could have simply turned the numerical grazing level into a factor, but this way the grazing levels have meaningful names
+
+```{r}
+loyncat <- read.csv("../data/loyncat.csv")
+head(loyncat,10)
+loyncat$grazecat<-factor(loyncat$grazecat)
+```
+
+### Fit linear model with grazing as continuous variable
+
+```{r }
+loyncat1.lm <- lm(abund~log10(area)+graze, data=loyncat)
+tidy(loyncat1.lm, conf.int=TRUE)
+```
+
+Get standardized coefficients
+
+```{r }
+lm.beta(loyncat1.lm)
+```
+
+### Fit linear model with grazing as a categorical predictor
+
+Use zero grazing as the reference category
+
+```{r }
+loyncat2.lm <- lm(abund~log10(area)+relevel(grazecat,ref="zero"), data=loyncat)
+tidy(loyncat2.lm, conf.int=TRUE)
+```
+
+Check residuals - look fine
+
+```{r }
+plot(loyncat2.lm)
+```
+
+Get standardised coefficients
+
+```{r }
+lm.beta(loyncat2.lm)
+```
+
+### Get added variable plots
+
+```{r }
+avPlots(loyncat2.lm, ask=F)
+```

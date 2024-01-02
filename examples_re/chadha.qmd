@@ -1,0 +1,161 @@
+---
+title: "QK Box 12.2"
+output:
+  html_notebook:
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Chadha et al. (2019) set up a completely randomized experiment studying the effects of different soil water holding capacities (WHCs) on various characteristics of the agronomic weed *Lactuca serriola*. Plants were grown individually in pots allocated to one of four WHCs (100%, 75%, 50% and 25%). There were seven plants for each WHC, although we just use a subset of the data from the 100% treatment group so there was no between-subjects factor. The number of leaves on each of the seven plants in 100% WHC soil was recorded weekly for nine weeks (counts at the start of the experiment, week 0, were omitted). Time was the within-subjects (repeated measures) fixed factor and individual plants were the random subjects. With nine weeks and reasonably linear trends through time for each plant (Figure 12.2), it made sense to treat time as a continuous covariate for analysis. Although week 0 was not included in the analysis, we did not centre time for analysis, so intercepts represent the number of leaves for week 0.
+
+![](../media/PB181025.JPG)
+
+Prickly lettuce or Milk thistle. Mick Keough, [CC SA-BY 4.0](https://creativecommons.org/licenses/by-sa/4.0)
+
+Chadha, A., Florentine, S., Chauhan, B. S., Long, B. & Jayasundera, M. (2019). Influence of soil moisture regimes on growth, photosynthetic capacity, leaf biochemistry and reproductive capabilities of the invasive agronomic weed; *Lactuca serriola*. *PLoS One*, 14, e0218191.
+
+Link to [paper](https://doi.org/10.1371/journal.pone.0218191)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+```
+
+Import chadha data file
+
+```{r}
+chadha <- read.csv("../data/chadha.csv")
+chadha
+```
+
+set contrasts from afex
+
+```{r }
+set_sum_contrasts()
+```
+
+select 100%WHC
+
+```{r }
+chadha1 <- subset(chadha, treat=="100WHC")
+```
+
+make individual a factor
+
+```{r }
+chadha1$plant <- factor(chadha1$plant)
+```
+
+plot slopes - very consistent
+
+```{r }
+xyplot(noleaves~week|plant, type=c("p","r"), auto.key=T, chadha1)
+```
+
+## Fit OLS "ancova" model
+
+```{r }
+chadha1.aov <- aov(noleaves~week*plant, data=chadha1)
+plot(chadha1.aov)
+summary(chadha1.aov)
+```
+
+### Get Type III SS)
+
+```{r }
+Anova(lm(chadha1.aov), type='III')
+```
+
+### Get correct F-ratio and P value for week (tested against week by plant)
+
+```{r }
+4999.050/18.400
+1-pf(4999.050/18.400, 1, 6, lower.tail = TRUE, log.p = FALSE)
+```
+
+no GG and HF adjustments as week is continuous with 1 df
+
+### Get variance components
+
+```{r }
+chadha1.vca <- anovaMM(noleaves~week+(plant)+(week*plant), chadha1)
+chadha1.vca
+VCAinference(chadha1.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+### Drop interaction
+
+```{r }
+chadha2.aov <- aov(noleaves~week+plant, data=chadha1)
+Anova(lm(chadha2.aov), type='III')
+```
+
+get new variance components
+
+```{r }
+chadha2.vca <- anovaMM(noleaves~week+(plant), chadha1)
+chadha2.vca
+VCAinference(chadha2.vca, alpha=0.05, VarVC=TRUE, excludeNeg=FALSE, constrainCI=FALSE)
+```
+
+## Now mixed effects modelcomparing random slopes and random intercepts using ML
+
+```{r }
+chadha.lmer1 <- lmer(noleaves~week + (week|plant), REML=FALSE, chadha1)
+ # singular fit so set correlation between random effects to zero
+chadha.lmer1 <- lmer(noleaves~week + (week||plant), REML=FALSE, chadha1)
+chadha.lmer2 <- lmer(noleaves~week + (1|plant), REML=FALSE, chadha1)
+```
+
+## Compare models
+
+```{r }
+anova(chadha.lmer1, chadha.lmer2)
+AICc(chadha.lmer1, chadha.lmer2)
+```
+
+### Focus on random intercept model - refit with REML
+
+```{r }
+chadha.lmer3 <- lmer(noleaves~week + (1|plant), REML=TRUE, chadha1)
+summary(chadha.lmer3, ddf="Kenward-Roger")
+anova(chadha.lmer3, type=3, ddf="Kenward-Roger")
+```
+
+Get variance components
+
+```{r }
+chadha.ci3 <- confint.merMod(chadha.lmer3, oldNames=FALSE)
+chadha.vc3 <- (chadha.ci3)^2
+print(chadha.vc3)
+```
+
+### Random slopes output for comparison - refit using REML
+
+```{r }
+chadha.lmer4 <- lmer(noleaves~week + (week||plant), REML=TRUE, chadha1)
+summary(chadha.lmer4, ddf="Kenward-Roger")
+anova(chadha.lmer4, type=3, ddf="Kenward-Roger")
+```
+
+### Check whether AR(1) covariance structure would improve the fit using nlme
+
+```{r }
+chadha.lme1 <- lme(noleaves~week, random=~1|plant, method="ML", chadha1)
+chadha.lme2 <- lme(noleaves~week, random=~1|plant, method="ML", correlation=corAR1(form=~1|plant), chadha1)
+anova(chadha.lme1, chadha.lme2)
+AICc(chadha.lme1, chadha.lme2)
+```
+
+no improvement with AR(1)
+
+```{r }
+chadha <- lm(noleaves~week, chadha1)
+summary(chadha)
+```

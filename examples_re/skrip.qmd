@@ -1,0 +1,106 @@
+---
+title: "QK Box 12.4"
+output:
+  html_notebook
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Skrip et al (2016) studied the effects of dietary antioxidants and exercise on the allocation of nutrients to eggs in zebra finches (*Taeniopygia guttata*). We will focus on one aspect of their study, how the order of egg laying affected the mass of the eggs. Mating pairs of finches were allocated randomly to two diet groups (supplemented with high antioxidant food, no supplement) and two exercise groups (additional flight exercise, no additional exercise). The finches laid between one and nine eggs but few laid more than five and pairs that laid only one egg don't provide enough information for fitting a regression between order and egg mass. So we will analyze egg mass as the response variable from pairs that laid between two and five eggs. The between-subjects component was a two factor (diet and exercise) crossed design with pairs as subjects, and egg order (within each pair) was the within-subjects factor.
+
+[![](../media/512px-Zebra_finch_group.png){width="800"}](https://commons.wikimedia.org/wiki/File:Zebra_finch_group.png)
+
+A pair of Australian zebra finches. PotMart186, [![](../media/by.png){width="57"}](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons.
+
+Link to [paper](http://doi.org/10.1242/jeb.137802)
+
+### Preliminaries
+
+First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+source("../R/appearance.R")  #Graphics tweaks
+```
+
+Import skrip data file
+
+```{r}
+skrip <- read.csv("../data/skrip.csv")
+skrip
+```
+
+set contrasts using afex
+
+```{r }
+set_sum_contrasts()
+```
+
+### Diagnostics
+
+check individual regressions
+
+```{r error=TRUE}
+xyplot(wmass~order|pair, groups=group, type=c("p","r"), auto.key=T, skrip)
+list_skrip <- lmList(wmass~order|pair, skrip, na.action=na.omit)
+summary(list_skrip)
+```
+
+some evidence of different slopes
+
+### First model with random slopes and intercepts
+
+```{r }
+skrip1.lmer <- lmer(wmass~diet*exercise*order+(order|pair), REML=FALSE, skrip, na.action=na.omit)
+```
+
+### Second just random intercepts
+
+```{r }
+skrip2.lmer <- lmer(wmass~diet*exercise*order+(1|pair), REML=FALSE, skrip, na.action=na.omit)
+```
+
+### Test random slopes term
+
+```{r }
+rand(skrip1.lmer)
+anova(skrip2.lmer,skrip1.lmer)
+AICc(skrip2.lmer,skrip1.lmer)
+```
+
+No strong evidence for random slopes so use random intercepts.
+
+### Refit model with REML
+
+```{r }
+skrip3.lmer <- lmer(wmass~diet*exercise*order+(1|pair), REML=TRUE, skrip, na.action=na.omit)
+```
+
+Check residual plot - OK
+
+```{r }
+plot(skrip3.lmer)
+summary(skrip3.lmer, ddf="Kenward-Roger")
+anova(skrip3.lmer, ddf="Kenward-Roger")
+```
+
+Get var comps with CIs
+
+```{r }
+skrip3.ci <- confint.merMod(skrip3.lmer, oldNames=FALSE)
+skrip3.vc <- (skrip3.ci)^2
+print(skrip3.vc)
+```
+
+#### Draw line plot
+
+```{r }
+skrip_stats <- summarySE(skrip,measurevar='wmass', groupvars= c('group','order'), na.rm=TRUE)
+skrip_stats
+ggplot(skrip_stats, aes(x=order, y=wmass, fill=group, colour=group))+
+  geom_line()+
+  theme_qk()+
+  scale_colour_uchicago()
+```

@@ -1,0 +1,73 @@
+---
+title: "QK Box 6.2"
+
+output: 
+  html_notebook:
+    theme: flatly
+bibliography: web_ex.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+@shibao2004 studied whether the density of aphids in a colony affected the proportion of soldiers in that colony. They collected galls formed by the aphid *Tuberaphis styraci* from host trees in Japan, and recorded several characteristics of the galls (diameter, height, inner surface area, number of holes) and of the aphids using that gall (number of aphids, proportion of soldier individuals, and aphid density -- no. aphids/surface area). The variables of interest here are the % soldiers and the aphid density (aphids/mm^2^).
+
+You can find images of the castes of this aphid species from another paper, @shibao2010 and some videos in the supplementary material of the 2004 paper [here](https://doi.%20org/10.1186/s40851-021-00184-w).
+
+### Preliminaries
+
+First, load the required packages (car, lm.beta, Rmisc) +ggplot2
+
+```{r include=FALSE, results='hide'}
+source("../R/libraries.R")   #This is the common library
+library(lm.beta)
+library(bibtex)
+library(citr)
+```
+
+Import shibao data file (shibao.csv)
+
+```{r}
+shibao <- read.csv("../data/shibao.csv")
+head(shibao,10)
+```
+
+### Look at diagnostics
+
+Do initial scatterplot, then we need to fit the model to generate residuals, measures of influence. You'll see here that the linear model is quite straightforward. It is equivalent to the models we describe in the text:
+
+```{r echo=FALSE, results='asis'}
+shibao.lm <- lm(soldiers~aphiddens, data=shibao)
+equatiomatic::extract_eq(shibao.lm)
+```
+
+```{r }
+scatterplot (soldiers~aphiddens, data=shibao)
+shibao.lm <- lm(soldiers~aphiddens, data=shibao)
+plot(shibao.lm)
+# influence.measures(shibao.lm)
+augment(shibao.lm,data=shibao)
+```
+
+### Examine model output
+
+We're comfortable with the diagnostics, so we can now assess the parameters and their confidence intervals:
+
+```{r echo=FALSE, results='asis'}
+equatiomatic::extract_eq(shibao.lm, use_coefs = TRUE)
+```
+
+```{r }
+tidy(shibao.lm, conf.int = TRUE)
+glance(shibao.lm)
+anova(shibao.lm)
+```
+
+Get standardized coefficients
+
+```{r }
+lm.beta(shibao.lm)
+```
+
+## Bibliography
