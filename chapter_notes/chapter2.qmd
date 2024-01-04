@@ -151,7 +151,21 @@ Compare and contrast these frequentist estimation methods:
 
 -   resampling (bootstrap)
 
-[Box 2.2](low.html)
+Population parameters and sample statistics
+
+-   Box 2.2
+
+-   What is a sampling distribution?
+
+-   What does the central limit theorem tell us about the shape of a sampling distribution (e.g., a distribution of sample means)?
+
+-   What happens to the standard error of the mean as you increase sample size?
+
+-   When calculating the confidence interval for $\mu$, should you use a Normal distribution or a $t$ distribution? Why? How do these two approaches compare?
+
+-   In the frequentist world, parameters are fixed (but unknowable). In this context, how do you interpret a frequentist confidence interval?
+
+-   Bootstrap methods and Box 2.3
 
 ## 2.5
 

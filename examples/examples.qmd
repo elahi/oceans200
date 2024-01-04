@@ -1,0 +1,12 @@
+---
+title: "Examples"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+## Contents

@@ -3,18 +3,38 @@ project:
   output-dir: docs
   render: 
     - "*.qmd"
-    - "!examples/"
-    - "!examples_re/"
-
+    - "!examples_qk/"
+    - "!examples_qmd/"
 
 website:
-  title: "qk2_examples"
+  title: "qk2e"
   navbar:
+    background: primary
+    search: true
     left:
-      - href: index.qmd
-        text: Home
-      - chapter_notes/chapter2.qmd
-      - low.qmd
+      - text: "Home"
+        file: index.qmd
+      - text: "Chapter notes"
+        file: chapter_notes/chapter_notes.qmd
+      - text: "Examples"
+        file: examples/examples.qmd
+
+  sidebar:
+    - title: "Chapter notes"
+      style: "docked"
+      background: light
+      contents:
+        - chapter_notes/chapter_notes.qmd
+        - chapter_notes/chapter2.qmd
+        - chapter_notes/chapter3.qmd
+        
+    - title: "Examples"
+      style: "docked"
+      background: light
+      contents: 
+        - examples/examples.qmd
+        - examples/low.qmd
+        - examples/lowboot.qmd
 
 format:
   html:

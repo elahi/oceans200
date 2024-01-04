@@ -1,49 +1,49 @@
 [
   {
-    "objectID": "low.html",
-    "href": "low.html",
+    "objectID": "examples/low.html",
+    "href": "examples/low.html",
     "title": "QK Box 2.2",
     "section": "",
     "text": "Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO2 levels were recorded after 120 minutes. The H0 was that there is no difference between the anesthetics in the mean blood CO2 level. This is an independent comparison because individual mice were only given one of the two anesthetics."
   },
   {
-    "objectID": "low.html#preliminaries",
-    "href": "low.html#preliminaries",
+    "objectID": "examples/low.html#preliminaries",
+    "href": "examples/low.html#preliminaries",
     "title": "QK Box 2.2",
     "section": "Preliminaries",
     "text": "Preliminaries\nFirst, load the required packages (tidyverse, RMisc, MKinfer, car, emmeans)\nImport low data file\n\nlow &lt;- read.csv(\"data/lowco2.csv\")\nlow\n\n   anesth co2\n1     iso  43\n2     iso  35\n3     iso  50\n4     iso  39\n5     iso  56\n6     iso  54\n7     iso  39\n8     iso  51\n9     iso  49\n10    iso  54\n11    iso  51\n12    iso  79\n13     ac  60\n14     ac  53\n15     ac  54\n16     ac  73\n17     ac  64\n18     ac  95\n19     ac  57\n20     ac  80\n21     ac 115\n22     ac  79\n23     ac  50"
   },
   {
-    "objectID": "low.html#get-summary-statistics-by-anesthetic",
-    "href": "low.html#get-summary-statistics-by-anesthetic",
+    "objectID": "examples/low.html#get-summary-statistics-by-anesthetic",
+    "href": "examples/low.html#get-summary-statistics-by-anesthetic",
     "title": "QK Box 2.2",
     "section": "Get summary statistics by anesthetic",
     "text": "Get summary statistics by anesthetic\n\nlow_stats &lt;- summarySE(data=low,measurevar=\"co2\", groupvars=\"anesth\")\nlow_stats\n\n  anesth  N      co2       sd       se        ci\n1     ac 11 70.90909 20.20126 6.090909 13.571391\n2    iso 12 50.00000 11.39378 3.289100  7.239261\n\nlow %&gt;% dplyr::count(anesth)\n\n  anesth  n\n1     ac 11\n2    iso 12\n\nlow %&gt;%  \n  group_by(anesth) %&gt;% \n  dplyr::summarise(n = n(), \n            mean = mean(co2),\n            median = median(co2),\n            sd = sd(co2), \n            variance = var(co2), \n            se = sd / sqrt(n), \n            CI_upper = mean + se * qt(p = 0.975, df = n-1), \n            CI_lower = mean + se * qt(p = 0.025, df = n-1), \n            CI = se * qt(p = 0.975, df = n-1), \n            upper = mean + CI, \n            lower = mean - CI\n            )\n\n# A tibble: 2 × 12\n  anesth     n  mean median    sd variance    se CI_upper CI_lower    CI upper\n  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 ac        11  70.9   64    20.2     408.  6.09     84.5     57.3 13.6   84.5\n2 iso       12  50     50.5  11.4     130.  3.29     57.2     42.8  7.24  57.2\n# ℹ 1 more variable: lower &lt;dbl&gt;\n\n\nPlay around with df to see how the z-multiplier changes when using the T-distribution to calculate the 95% confidence interval.\n\n# Standard normal distribution\nqnorm(p = 0.025)\n\n[1] -1.959964\n\nqnorm(p = 0.975)\n\n[1] 1.959964\n\n# Student-t distribution\nqt(p = 0.025, df = 100)\n\n[1] -1.983972\n\nqt(p = 0.975, df = 100)\n\n[1] 1.983972"
   },
   {
-    "objectID": "low.html#plot-data",
-    "href": "low.html#plot-data",
+    "objectID": "examples/low.html#plot-data",
+    "href": "examples/low.html#plot-data",
     "title": "QK Box 2.2",
     "section": "Plot data",
     "text": "Plot data\n\nlow %&gt;% \n  ggplot(aes(anesth, co2)) + \n  geom_point(alpha = 0.5) + \n  theme_qk()"
   },
   {
-    "objectID": "low.html#fit-model-and-get-effect-size",
-    "href": "low.html#fit-model-and-get-effect-size",
+    "objectID": "examples/low.html#fit-model-and-get-effect-size",
+    "href": "examples/low.html#fit-model-and-get-effect-size",
     "title": "QK Box 2.2",
     "section": "Fit model and get effect size",
     "text": "Fit model and get effect size\n\nlow.aov &lt;- aov(co2~anesth,data=low)\ntidy(low.aov, conf.int=TRUE)\n\n# A tibble: 2 × 6\n  term         df sumsq meansq statistic  p.value\n  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1 anesth        1 2509.  2509.      9.56  0.00552\n2 Residuals    21 5509.   262.     NA    NA      \n\nlow.emm &lt;- emmeans(low.aov,\"anesth\")\neff_size(low.emm, sigma=sigma(low.aov), edf=df.residual(low.aov))\n\n contrast effect.size    SE df lower.CL upper.CL\n ac - iso        1.29 0.463 21    0.329     2.25\n\nsigma used for effect sizes: 16.2 \nConfidence level used: 0.95 \n\n\nNote that we’ve chosen to show a standardized effect size, using the pooled variance from the analysis of variance - Residual MS = 262.44, and √262.44 = 16.2"
   },
   {
-    "objectID": "low.html#test-variances",
-    "href": "low.html#test-variances",
+    "objectID": "examples/low.html#test-variances",
+    "href": "examples/low.html#test-variances",
     "title": "QK Box 2.2",
     "section": "Test variances",
     "text": "Test variances\n\nleveneTest(co2 ~ anesth, low)\n\nWarning in leveneTest.default(y = y, group = group, ...): group coerced to\nfactor.\n\n\nLevene's Test for Homogeneity of Variance (center = median)\n      Df F value Pr(&gt;F)\ngroup  1   2.604 0.1215\n      21               \n\n\n\nt-test for equal variances\n\nt.test(co2~anesth,var.equal=TRUE, data=low)\n\n\n    Two Sample t-test\n\ndata:  co2 by anesth\nt = 3.0927, df = 21, p-value = 0.005515\nalternative hypothesis: true difference in means between group ac and group iso is not equal to 0\n95 percent confidence interval:\n  6.849172 34.969010\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000 \n\n\n\n\nt-test for separate variances\n\nt.test(co2~anesth,data=low)\n\n\n    Welch Two Sample t-test\n\ndata:  co2 by anesth\nt = 3.0206, df = 15.485, p-value = 0.008362\nalternative hypothesis: true difference in means between group ac and group iso is not equal to 0\n95 percent confidence interval:\n  6.194866 35.623316\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000"
   },
   {
-    "objectID": "low.html#wilcoxon-mann-whitney",
-    "href": "low.html#wilcoxon-mann-whitney",
+    "objectID": "examples/low.html#wilcoxon-mann-whitney",
+    "href": "examples/low.html#wilcoxon-mann-whitney",
     "title": "QK Box 2.2",
     "section": "Wilcoxon-Mann-Whitney",
     "text": "Wilcoxon-Mann-Whitney\n\nwilcox.test(co2~anesth,data=low)\n\nWarning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot\ncompute exact p-value with ties\n\n\n\n    Wilcoxon rank sum test with continuity correction\n\ndata:  co2 by anesth\nW = 114, p-value = 0.003398\nalternative hypothesis: true location shift is not equal to 0\n\nsum(rank(low$co2)[low$anesth==\"ac\"])\n\n[1] 180\n\nsum(rank(low$co2)[low$anesth==\"iso\"])\n\n[1] 96"
@@ -81,7 +81,7 @@
     "href": "chapter_notes/chapter2.html#section-3",
     "title": "Chapter 2",
     "section": "2.4",
-    "text": "2.4\nWhat is estimation?\nWhat makes a good estimator?\nCompare and contrast these frequentist estimation methods:\n\nordinary least squares\nmaximum likelihood\nresampling (bootstrap)\n\nBox 2.2"
+    "text": "2.4\nWhat is estimation?\nWhat makes a good estimator?\nCompare and contrast these frequentist estimation methods:\n\nordinary least squares\nmaximum likelihood\nresampling (bootstrap)\n\nPopulation parameters and sample statistics\n\nBox 2.2\nWhat is a sampling distribution?\nWhat does the central limit theorem tell us about the shape of a sampling distribution (e.g., a distribution of sample means)?\nWhat happens to the standard error of the mean as you increase sample size?\nWhen calculating the confidence interval for \\(\\mu\\), should you use a Normal distribution or a \\(t\\) distribution? Why? How do these two approaches compare?\nIn the frequentist world, parameters are fixed (but unknowable). In this context, how do you interpret a frequentist confidence interval?\nBootstrap methods and Box 2.3"
   },
   {
     "objectID": "chapter_notes/chapter2.html#section-4",
@@ -103,5 +103,19 @@
     "title": "Chapter 2",
     "section": "2.7",
     "text": "2.7\nBayesian inference"
+  },
+  {
+    "objectID": "chapter_notes/chapter3.html",
+    "href": "chapter_notes/chapter3.html",
+    "title": "Chapter 3",
+    "section": "",
+    "text": "Questions for review and discussion, based on chapter 3 from Quinn and Keough 2023."
+  },
+  {
+    "objectID": "examples/lowboot.html",
+    "href": "examples/lowboot.html",
+    "title": "QK Box 2.3",
+    "section": "",
+    "text": "This box continues with the Low et al. anesthetic example from Box 2.2\n\nPreliminaries\npackages: MKinfer, resample\n\nlibrary(MKinfer)\nlibrary(resample)\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.2     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.3     ✔ tibble    3.2.1\n✔ lubridate 1.9.2     ✔ tidyr     1.3.0\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\n\nuse low data\n\nlow &lt;- read_csv(\"data/lowco2.csv\")\n\nRows: 23 Columns: 2\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (1): anesth\ndbl (1): co2\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\n\nGet jackknife SE for two groups\n\nlow1 &lt;- subset(low,anesth==\"iso\")\njackknife(low1$co2,mean)\n\nCall:\njackknife(data = low1$co2, statistic = mean)\nReplications: 12\n\nSummary Statistics:\n     Observed     SE Mean Bias\nmean       50 3.2891   50    0\n\nlow2 &lt;- subset(low,anesth==\"ac\")\njackknife(low2$co2,mean)\n\nCall:\njackknife(data = low2$co2, statistic = mean)\nReplications: 11\n\nSummary Statistics:\n     Observed       SE     Mean         Bias\nmean 70.90909 6.090909 70.90909 1.421085e-13\n\n\n\n\nGet bootstrap SE and 95%CI\n\nlow1boot &lt;- bootstrap(low1$co2,mean,R=9999)\nlow1boot\n\nCall:\nbootstrap(data = low1$co2, statistic = mean, R = 9999)\nReplications: 9999\n\nSummary Statistics:\n     Observed       SE     Mean        Bias\nmean       50 3.121413 50.00362 0.003617028\n\nCI.percentile(low1boot, probs=c(0.025,0.975))\n\n         2.5%    97.5%\nmean 43.58333 58.03615\n\nCI.bca(low1boot, probs=c(0.025,0.975))\n\n         2.5%    97.5%\nmean 44.41155 59.83333\n\nlow2boot &lt;- bootstrap(low2$co2,mean,R=9999)\nlow2boot\n\nCall:\nbootstrap(data = low2$co2, statistic = mean, R = 9999)\nReplications: 9999\n\nSummary Statistics:\n     Observed       SE     Mean      Bias\nmean 70.90909 5.819101 71.03789 0.1287947\n\nCI.percentile(low2boot, probs=c(0.025,0.975))\n\n         2.5%    97.5%\nmean 58.81818 85.54545\n\nCI.bca(low2boot, probs=c(0.025,0.975))\n\n         2.5%    97.5%\nmean 59.83505 87.96304\n\n\n\n\nGet bootstrap SE and CI on difference\n\nlowboot &lt;- bootstrap2(low$co2,mean,treatment=low$anesth,R=9999,ratio=FALSE)\nlowboot\n\nCall:\nbootstrap2(data = low$co2, statistic = mean, treatment = low$anesth, \n    R = 9999, ratio = FALSE)\nReplications: 9999\nTwo samples, sample sizes are 11 12\n\nSummary Statistics for the difference between samples 1 and 2:\n             Observed       SE     Mean       Bias\nmean: ac-iso 20.90909 6.538298 20.92356 0.01446508\n\nCI.percentile(lowboot, probs=c(0.025,0.975))\n\n                 2.5%    97.5%\nmean: ac-iso 6.139759 37.07406\n\n\n\n\nRandomization test\n\nperm.t.test(co2~anesth, data=low, R=9999, paired= FALSE)\n\n\n    Permutation Welch Two Sample t-test\n\ndata:  co2 by anesth\n(Monte-Carlo) permutation p-value = 0.0041 \npermutation difference of means (SE) = 20.8527 (7.962239) \n95 percent (Monte-Carlo) permutation percentile confidence interval:\n  5.575758 36.242424\n\nResults without permutation:\nt = 3.0206, df = 15.485, p-value = 0.008362\nalternative hypothesis: true difference in means is not equal to 0\n95 percent confidence interval:\n  6.194866 35.623316\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000"
   }
 ]

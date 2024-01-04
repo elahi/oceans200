@@ -1529,7 +1529,7 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
@@ -1555,7 +1555,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Show');
+      showCodeText.text('Code');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -1779,15 +1779,29 @@ display: none;
 <p>packages: MKinfer, resample</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShNS2luZmVyKVxubGlicmFyeShyZXNhbXBsZSlcbmBgYCJ9 -->
+<pre class="r"><code>library(MKinfer)
+library(resample)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>use low data</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93IDwtIHJlYWRfY3N2KFwiLi4vZGF0YS9sb3djbzIuY3N2XCIpXG5cbmBgYCJ9 -->
-<pre class="r"><code>low &lt;- read_csv(&quot;../data/lowco2.csv&quot;)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93IDwtIHJlYWRfY3N2KFwiLi4vZGF0YS9sb3djbzIuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>low &lt;- read_csv(&quot;../data/lowco2.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMjMgQ29sdW1uczogMuKUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMSk6IGFuZXN0aFxuZGJsICgxKTogY28yXG7ihLkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG7ihLkgU3BlY2lmeSB0aGUgY29sdW1uIHR5cGVzIG9yIHNldCBgc2hvd19jb2xfdHlwZXMgPSBGQUxTRWAgdG8gcXVpZXQgdGhpcyBtZXNzYWdlLlxuIn0= -->
+<pre><code>Rows: 23 Columns: 2── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): anesth
+dbl (1): co2
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1795,12 +1809,42 @@ display: none;
 <h3>Get jackknife SE for two groups</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MSA8LSBzdWJzZXQobG93LGFuZXN0aD09XCJpc29cIilcbmphY2trbmlmZShsb3cxJGNvMixtZWFuKVxubG93MiA8LSBzdWJzZXQobG93LGFuZXN0aD09XCJhY1wiKVxuamFja2tuaWZlKGxvdzIkY28yLG1lYW4pXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MSA8LSBzdWJzZXQobG93LGFuZXN0aD09XCJpc29cIilcbmphY2trbmlmZShsb3cxJGNvMixtZWFuKVxuYGBgIn0= -->
 <pre class="r"><code>low1 &lt;- subset(low,anesth==&quot;iso&quot;)
-jackknife(low1$co2,mean)
-low2 &lt;- subset(low,anesth==&quot;ac&quot;)
+jackknife(low1$co2,mean)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmphY2trbmlmZShkYXRhID0gbG93MSRjbzIsIHN0YXRpc3RpYyA9IG1lYW4pXG5SZXBsaWNhdGlvbnM6IDEyXG5cblN1bW1hcnkgU3RhdGlzdGljczpcbiJ9 -->
+<pre><code>Call:
+jackknife(data = low1$co2, statistic = mean)
+Replications: 12
+
+Summary Statistics:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUEzVlFTMDdETUJSOGNaMUFMYlVnOVJ6SnBwc3VFUUtrTGhDSWo5U3RtNWcySXJVcjIyMDVBeEpYNGpnY28vQ2MyRld4SUZLVW1mR2JjZVk5WE0zR2JNWUFvQWVVRU9pbENDRjlmcnJKSjRBS2tnUW85TjMzRFlkR0NDaStReWRjVENFOEhXZjNvNi8zejQvL3pnL3NkM0FxK1VvWUJPZHRlQ2VlM3MyTjBGdFJlVTRlcnoyaXQ0TExnQzlyYnFLNHZsYTc0amd5SE5DVk0wWjNsdzAzOFNDcnVPWEZpOFlNWlB2SWNxTFd0bFlTVGNSdEkzTUczeTZKZ2hJZENXY2I2ZjZzeXN2bFJyN200OGc3K0FQVDducnk3YU95MEVhVVMrVnhKdVNpbGlKMGF2aGNOSjRNY1J2dE1vcTFycVVORFZFMWhWV1doemxXcWlZb2JXZlkvd0E1RVRtTUhBSUFBQT09In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Observed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Bias"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"50","2":"3.2891","3":"50","4":"0","_rn_":"mean"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MiA8LSBzdWJzZXQobG93LGFuZXN0aD09XCJhY1wiKVxuamFja2tuaWZlKGxvdzIkY28yLG1lYW4pXG5gYGAifQ== -->
+<pre class="r"><code>low2 &lt;- subset(low,anesth==&quot;ac&quot;)
 jackknife(low2$co2,mean)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmphY2trbmlmZShkYXRhID0gbG93MiRjbzIsIHN0YXRpc3RpYyA9IG1lYW4pXG5SZXBsaWNhdGlvbnM6IDExXG5cblN1bW1hcnkgU3RhdGlzdGljczpcbiJ9 -->
+<pre><code>Call:
+jackknife(data = low2$co2, statistic = mean)
+Replications: 11
+
+Summary Statistics:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJoWW1KZ1pnVXlHVmhEUTl4MExSaUFJa0FPSXdNTEF5ZUlyZ0FxRWdZeVdJQ1lEeVRnRUxoTHIzdlJpMTF3dmtTc3VPdkZrbWcwK2Qwd3ZxMExBeFNnR015YWw1aWJXZ3hrQ0lBTmh3aHkrQ2NWcHhhVnBhWkErVXpCcmxBV2kyOXFZaDZNN1pTWldJeG1IR2RSZnJrZXNwRXdDWlpja0VZMHU1TnpFb3ZSRlhLbEpKWWs2cVVWQWMwQTh2NmhhV0hQTHlqSnpNOERhbUlDaFFZYlNBTllHb0tSRFdJc1FoUGdMODBEdVN4Rk56bWpOQzliMXhoTkx5OFdOZ3ZFZXFiL1VLUFlZTDVKVGM3SWg3TFpVdlBTTS9OU1lYN0tTVXhLellGeStJQ2hBUTRNdllLaXpMd1NtQStCb3NWNkpma2xpVEIxWE1uNU9UQVJzSjhaL2dFQTluVXUwQndDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Observed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Bias"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"70.90909","2":"6.090909","3":"70.90909","4":"1.421085e-13","_rn_":"mean"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1808,16 +1852,70 @@ jackknife(low2$co2,mean)</code></pre>
 <h3>Get bootstrap SE and 95%CI</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MWJvb3QgPC0gYm9vdHN0cmFwKGxvdzEkY28yLG1lYW4sUj05OTk5KVxubG93MWJvb3RcbkNJLnBlcmNlbnRpbGUobG93MWJvb3QsIHByb2JzPWMoMC4wMjUsMC45NzUpKVxuQ0kuYmNhKGxvdzFib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSlcbmxvdzJib290IDwtIGJvb3RzdHJhcChsb3cyJGNvMixtZWFuLFI9OTk5OSlcbmxvdzJib290XG5DSS5wZXJjZW50aWxlKGxvdzJib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSlcbkNJLmJjYShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MWJvb3QgPC0gYm9vdHN0cmFwKGxvdzEkY28yLG1lYW4sUj05OTk5KVxubG93MWJvb3RcbmBgYCJ9 -->
 <pre class="r"><code>low1boot &lt;- bootstrap(low1$co2,mean,R=9999)
-low1boot
-CI.percentile(low1boot, probs=c(0.025,0.975))
-CI.bca(low1boot, probs=c(0.025,0.975))
-low2boot &lt;- bootstrap(low2$co2,mean,R=9999)
-low2boot
-CI.percentile(low2boot, probs=c(0.025,0.975))
-CI.bca(low2boot, probs=c(0.025,0.975))</code></pre>
+low1boot</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmJvb3RzdHJhcChkYXRhID0gbG93MSRjbzIsIHN0YXRpc3RpYyA9IG1lYW4sIFIgPSA5OTk5KVxuUmVwbGljYXRpb25zOiA5OTk5XG5cblN1bW1hcnkgU3RhdGlzdGljczpcbiJ9 -->
+<pre><code>Call:
+bootstrap(data = low1$co2, statistic = mean, R = 9999)
+Replications: 9999
+
+Summary Statistics:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJoWW1KZ1pnVXlHVmhEUTl4MExSaUFJa0FPSXdNTEF5ZUlyZ0FxRWdZeVdJQ1lEeVRnNE1rQUF4QStwNEZILzVkNEo0UTg0eW1IdkFlZU1MNTl6eEsyZHl3VEdOQU1aczFMekUwdEJqSUV3SVpEQkRuOGs0cFRpOHBTVTZCOHBtQlhLSXZGTnpVeEQ4WjJ5a3dzUmpPT3N5aS9YQS9aU0pnRVN5NUlJNXJkeVRtSnhlZ0t1VklTU3hMMTBvcUFaZ0I1LzlDMHNPY1hsR1RtNXdFMU1ZRkNndzJrQVN3TndjZ0dNUmFoQ2ZDWDVvRmNscUtibkZHYWw2MXJncWFYRnd1YkJXSTkwMytvVVd3dzM2UW1aK1JEMld5cGVlbVplYWt3UCtVa0pxWG1RRGw4d05BQUI0WmVRVkZtWGduTWgwRFJZcjJTL0pKRW1EcXU1UHdjbUFqWXp3ei9BR1VOZ1k4Y0FnQUEifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Observed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Bias"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"50","2":"3.148576","3":"50.01398","4":"0.01398473","_rn_":"mean"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ0kucGVyY2VudGlsZShsb3cxYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpXG5gYGAifQ== -->
+<pre class="r"><code>CI.percentile(low1boot, probs=c(0.025,0.975))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgMi41JSAgICA5Ny41JVxubWVhbiA0My40MTY2NyA1OC4xNjY2N1xuIn0= -->
+<pre><code>         2.5%    97.5%
+mean 43.41667 58.16667</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ0kuYmNhKGxvdzFib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSlcbmBgYCJ9 -->
+<pre class="r"><code>CI.bca(low1boot, probs=c(0.025,0.975))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgMi41JSA5Ny41JVxubWVhbiA0NC40MTY2NyAgICA2MFxuIn0= -->
+<pre><code>         2.5% 97.5%
+mean 44.41667    60</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93MmJvb3QgPC0gYm9vdHN0cmFwKGxvdzIkY28yLG1lYW4sUj05OTk5KVxubG93MmJvb3RcbmBgYCJ9 -->
+<pre class="r"><code>low2boot &lt;- bootstrap(low2$co2,mean,R=9999)
+low2boot</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmJvb3RzdHJhcChkYXRhID0gbG93MiRjbzIsIHN0YXRpc3RpYyA9IG1lYW4sIFIgPSA5OTk5KVxuUmVwbGljYXRpb25zOiA5OTk5XG5cblN1bW1hcnkgU3RhdGlzdGljczpcbiJ9 -->
+<pre><code>Call:
+bootstrap(data = low2$co2, statistic = mean, R = 9999)
+Replications: 9999
+
+Summary Statistics:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJoWW1KZ1pnVXlHVmhEUTl4MExSaUFJa0FPSXdNTEF5ZUlyZ0FxRWdZeVdJQ1lEeVRnRUxoTHIzdlJpMTF3dnJqWFM2ZVB5M0lSOHZ0bXF2Y0ZzOFA0OWh0WDVhOWRhY0tBWmpCclhtSnVhakdRSVFBMkhDTEk0WjlVbkZwVWxwb0M1VE1GdTBKWkxMNnBpWGt3dGxObVlqR2FjWnhGK2VWNnlFYkNKRmh5UVJyUjdFN09TU3hHVjhpVmtsaVNxSmRXQkRRRHlQdUhwb1U5djZBa016OFBxSWtKRkJwc0lBMWdhUWhHTm9peENFMkF2elFQNUxJVTNlU00wcnhzWFJNMHZieFkyQ3dRNjVuK1E0MWlnL2ttTlRrakg4cG1TODFMejh4TGhma3BKekVwTlFmSzRRT0dCamd3OUFxS012TktZRDRFaWhicmxlU1hKTUxVY1NYbjU4QkV3SDVtK0FjQTk4dTdsQndDQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Observed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Bias"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"70.90909","2":"5.823155","3":"70.9781","4":"0.0690069","_rn_":"mean"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ0kucGVyY2VudGlsZShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpXG5gYGAifQ== -->
+<pre class="r"><code>CI.percentile(low2boot, probs=c(0.025,0.975))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAyLjUlICAgIDk3LjUlXG5tZWFuICAgNTkgODYuMDcwNTRcbiJ9 -->
+<pre><code>     2.5%    97.5%
+mean   59 86.07054</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ0kuYmNhKGxvdzJib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSlcbmBgYCJ9 -->
+<pre class="r"><code>CI.bca(low2boot, probs=c(0.025,0.975))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgMi41JSAgICA5Ny41JVxubWVhbiA2MC4xODE4MiA4OC41OTM5OVxuIn0= -->
+<pre><code>         2.5%    97.5%
+mean 60.18182 88.59399</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1825,11 +1923,33 @@ CI.bca(low2boot, probs=c(0.025,0.975))</code></pre>
 <h3>Get bootstrap SE and CI on difference</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93Ym9vdCA8LSBib290c3RyYXAyKGxvdyRjbzIsbWVhbix0cmVhdG1lbnQ9bG93JGFuZXN0aCxSPTk5OTkscmF0aW89RkFMU0UpXG5sb3dib290XG5DSS5wZXJjZW50aWxlKGxvd2Jvb3QsIHByb2JzPWMoMC4wMjUsMC45NzUpKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubG93Ym9vdCA8LSBib290c3RyYXAyKGxvdyRjbzIsbWVhbix0cmVhdG1lbnQ9bG93JGFuZXN0aCxSPTk5OTkscmF0aW89RkFMU0UpXG5sb3dib290XG5gYGAifQ== -->
 <pre class="r"><code>lowboot &lt;- bootstrap2(low$co2,mean,treatment=low$anesth,R=9999,ratio=FALSE)
-lowboot
-CI.percentile(lowboot, probs=c(0.025,0.975))</code></pre>
+lowboot</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiQ2FsbDpcbmJvb3RzdHJhcDIoZGF0YSA9IGxvdyRjbzIsIHN0YXRpc3RpYyA9IG1lYW4sIHRyZWF0bWVudCA9IGxvdyRhbmVzdGgsIFxuICAgIFIgPSA5OTk5LCByYXRpbyA9IEZBTFNFKVxuUmVwbGljYXRpb25zOiA5OTk5XG5Ud28gc2FtcGxlcywgc2FtcGxlIHNpemVzIGFyZSAxMSAxMlxuXG5TdW1tYXJ5IFN0YXRpc3RpY3MgZm9yIHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gc2FtcGxlcyAxIGFuZCAyOlxuIn0= -->
+<pre><code>Call:
+bootstrap2(data = low$co2, statistic = mean, treatment = low$anesth, 
+    R = 9999, ratio = FALSE)
+Replications: 9999
+Two samples, sample sizes are 11 12
+
+Summary Statistics for the difference between samples 1 and 2:</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6MSwibmNvbCI6NCwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbMSDDlyA0XSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUF3dHlpVERtaXVCaVlHQmdabUJoWW1KZ1pnVXlHVmhEUTl4MExSaUFJa0FPSXdNTEF5ZUlyZ0FxRWdZeVdJQ1lEeVRnWVBKaWwxNzNvaGR3dnRSYXR4d1dyV3NJK1V2UnhqY083NGZ4OTIrTCs3WHB2aVlEbXNHc2VZbTVxY1ZBaGdEWWNJZ2doMzlTY1dwUldXb0tsTThVN0FwbHNmaW1KdWJCMkU2WmljVm94bkVXNVpmcklSc0prK0RKQldxMFVraE0xczBzemtkM1EzSk9Zakc2QnE2VXhKSkV2YlFpb0ZsQTNqODBMZXo1QlNXWitYbEFUVXlnVUdFRGFRQkxRekN5UVl4RmFBTDhwWGtnRjZib0ptZVU1bVhybXFMcDVjWENab0ZZei9RZmFoUWJMQWhTa3pQeW9XeTIxTHowekx4VW1KOXlFcE5TYzZBY1BtQ29nQU5GcjZBb002OEU1a09nYUxGZVNYNUpJa3dkVjNKK0Rrd0U3R2VHZndCZlFTNVZKQUlBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Observed"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["SE"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Mean"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Bias"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"20.90909","2":"6.669214","3":"20.8217","4":"-0.08738677","_rn_":"mean: ac-iso"}],"options":{"columns":{"min":{},"max":[10],"total":[4]},"rows":{"min":[10],"max":[10],"total":[1]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQ0kucGVyY2VudGlsZShsb3dib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSlcbmBgYCJ9 -->
+<pre class="r"><code>CI.percentile(lowboot, probs=c(0.025,0.975))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICAyLjUlICAgIDk3LjUlXG5tZWFuOiBhYy1pc28gNi4wNTA1NDcgMzYuODI0MDZcbiJ9 -->
+<pre><code>                 2.5%    97.5%
+mean: ac-iso 6.050547 36.82406</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -1840,10 +1960,31 @@ CI.percentile(lowboot, probs=c(0.025,0.975))</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGVybS50LnRlc3QoY28yfmFuZXN0aCwgZGF0YT1sb3csIFI9OTk5OSwgcGFpcmVkPSBGQUxTRSlcbmBgYCJ9 -->
 <pre class="r"><code>perm.t.test(co2~anesth, data=low, R=9999, paired= FALSE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5cdFBlcm11dGF0aW9uIFdlbGNoIFR3byBTYW1wbGUgdC10ZXN0XG5cbmRhdGE6ICBjbzIgYnkgYW5lc3RoXG4oTW9udGUtQ2FybG8pIHBlcm11dGF0aW9uIHAtdmFsdWUgPSAwLjAwNDIgXG5wZXJtdXRhdGlvbiBkaWZmZXJlbmNlIG9mIG1lYW5zIChTRSkgPSAyMC44MDQ5OSAoNy45NjA0NjYpIFxuOTUgcGVyY2VudCAoTW9udGUtQ2FybG8pIHBlcm11dGF0aW9uIHBlcmNlbnRpbGUgY29uZmlkZW5jZSBpbnRlcnZhbDpcbiAgNS41NzU3NTggMzYuMjUxMTM2XG5cblJlc3VsdHMgd2l0aG91dCBwZXJtdXRhdGlvbjpcbnQgPSAzLjAyMDYsIGRmID0gMTUuNDg1LCBwLXZhbHVlID0gMC4wMDgzNjJcbmFsdGVybmF0aXZlIGh5cG90aGVzaXM6IHRydWUgZGlmZmVyZW5jZSBpbiBtZWFucyBpcyBub3QgZXF1YWwgdG8gMFxuOTUgcGVyY2VudCBjb25maWRlbmNlIGludGVydmFsOlxuICA2LjE5NDg2NiAzNS42MjMzMTZcbnNhbXBsZSBlc3RpbWF0ZXM6XG4gbWVhbiBpbiBncm91cCBhYyBtZWFuIGluIGdyb3VwIGlzbyBcbiAgICAgICAgIDcwLjkwOTA5ICAgICAgICAgIDUwLjAwMDAwIFxuIn0= -->
+<pre><code>
+    Permutation Welch Two Sample t-test
+
+data:  co2 by anesth
+(Monte-Carlo) permutation p-value = 0.0042 
+permutation difference of means (SE) = 20.80499 (7.960466) 
+95 percent (Monte-Carlo) permutation percentile confidence interval:
+  5.575758 36.251136
+
+Results without permutation:
+t = 3.0206, df = 15.485, p-value = 0.008362
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+  6.194866 35.623316
+sample estimates:
+ mean in group ac mean in group iso 
+         70.90909          50.00000 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUUsgQm94IDIuMyIKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICBkZl9wcmludDogcGFnZWQKICBodG1sX25vdGVib29rOgogICAgdGhlbWU6IGZsYXRseQplZGl0b3Jfb3B0aW9uczoKICBjaHVua19vdXRwdXRfdHlwZTogY29uc29sZQotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYAoKVGhpcyBib3ggY29udGludWVzIHdpdGggdGhlIExvdyBldCBhbC4gYW5lc3RoZXRpYyBleGFtcGxlIGZyb20gQm94IDIuMgoKIyMjIFByZWxpbWluYXJpZXMKCnBhY2thZ2VzOiBNS2luZmVyLCByZXNhbXBsZQoKYGBge3IgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoTUtpbmZlcikKbGlicmFyeShyZXNhbXBsZSkKbGlicmFyeSh0aWR5dmVyc2UpCmBgYAoKdXNlIGxvdyBkYXRhCgpgYGB7ciB9CmxvdyA8LSByZWFkX2NzdigiLi4vZGF0YS9sb3djbzIuY3N2IikKCmBgYAoKIyMjIEdldCBqYWNra25pZmUgU0UgZm9yIHR3byBncm91cHMKCmBgYHtyfQpsb3cxIDwtIHN1YnNldChsb3csYW5lc3RoPT0iaXNvIikKamFja2tuaWZlKGxvdzEkY28yLG1lYW4pCmxvdzIgPC0gc3Vic2V0KGxvdyxhbmVzdGg9PSJhYyIpCmphY2trbmlmZShsb3cyJGNvMixtZWFuKQpgYGAKCiMjIyBHZXQgYm9vdHN0cmFwIFNFIGFuZCA5NSVDSQoKYGBge3J9CmxvdzFib290IDwtIGJvb3RzdHJhcChsb3cxJGNvMixtZWFuLFI9OTk5OSkKbG93MWJvb3QKQ0kucGVyY2VudGlsZShsb3cxYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCkNJLmJjYShsb3cxYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCmxvdzJib290IDwtIGJvb3RzdHJhcChsb3cyJGNvMixtZWFuLFI9OTk5OSkKbG93MmJvb3QKQ0kucGVyY2VudGlsZShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCkNJLmJjYShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCmBgYAoKIyMjIEdldCBib290c3RyYXAgU0UgYW5kIENJIG9uIGRpZmZlcmVuY2UKCmBgYHtyfQpsb3dib290IDwtIGJvb3RzdHJhcDIobG93JGNvMixtZWFuLHRyZWF0bWVudD1sb3ckYW5lc3RoLFI9OTk5OSxyYXRpbz1GQUxTRSkKbG93Ym9vdApDSS5wZXJjZW50aWxlKGxvd2Jvb3QsIHByb2JzPWMoMC4wMjUsMC45NzUpKQpgYGAKCiMjIyBSYW5kb21pemF0aW9uIHRlc3QKCmBgYHtyfQpwZXJtLnQudGVzdChjbzJ+YW5lc3RoLCBkYXRhPWxvdywgUj05OTk5LCBwYWlyZWQ9IEZBTFNFKQpgYGAK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUUsgQm94IDIuMyIKb3V0cHV0OiAKICBodG1sX25vdGVib29rOgogICAgdGhlbWU6IGZsYXRseQotLS0KCmBgYHtyIHNldHVwLCBpbmNsdWRlPUZBTFNFfQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCmBgYApUaGlzIGJveCBjb250aW51ZXMgd2l0aCB0aGUgTG93IGV0IGFsLiBhbmVzdGhldGljIGV4YW1wbGUgZnJvbSBCb3ggMi4yCgojIyMgUHJlbGltaW5hcmllcwpwYWNrYWdlczogTUtpbmZlciwgcmVzYW1wbGUKYGBge3IgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoTUtpbmZlcikKbGlicmFyeShyZXNhbXBsZSkKbGlicmFyeSh0aWR5dmVyc2UpCmBgYAp1c2UgbG93IGRhdGEKYGBge3IgfQpsb3cgPC0gcmVhZF9jc3YoIi4uL2RhdGEvbG93Y28yLmNzdiIpCgpgYGAKIyMjIEdldCBqYWNra25pZmUgU0UgZm9yIHR3byBncm91cHMKYGBge3J9CmxvdzEgPC0gc3Vic2V0KGxvdyxhbmVzdGg9PSJpc28iKQpqYWNra25pZmUobG93MSRjbzIsbWVhbikKbG93MiA8LSBzdWJzZXQobG93LGFuZXN0aD09ImFjIikKamFja2tuaWZlKGxvdzIkY28yLG1lYW4pCmBgYAojIyMgR2V0IGJvb3RzdHJhcCBTRSBhbmQgOTUlQ0kKYGBge3J9CmxvdzFib290IDwtIGJvb3RzdHJhcChsb3cxJGNvMixtZWFuLFI9OTk5OSkKbG93MWJvb3QKQ0kucGVyY2VudGlsZShsb3cxYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCkNJLmJjYShsb3cxYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCmxvdzJib290IDwtIGJvb3RzdHJhcChsb3cyJGNvMixtZWFuLFI9OTk5OSkKbG93MmJvb3QKQ0kucGVyY2VudGlsZShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCkNJLmJjYShsb3cyYm9vdCwgcHJvYnM9YygwLjAyNSwwLjk3NSkpCmBgYAojIyMgR2V0IGJvb3RzdHJhcCBTRSBhbmQgQ0kgb24gZGlmZmVyZW5jZQpgYGB7cn0KbG93Ym9vdCA8LSBib290c3RyYXAyKGxvdyRjbzIsbWVhbix0cmVhdG1lbnQ9bG93JGFuZXN0aCxSPTk5OTkscmF0aW89RkFMU0UpCmxvd2Jvb3QKQ0kucGVyY2VudGlsZShsb3dib290LCBwcm9icz1jKDAuMDI1LDAuOTc1KSkKYGBgCiMjIyBSYW5kb21pemF0aW9uIHRlc3QKYGBge3J9CnBlcm0udC50ZXN0KGNvMn5hbmVzdGgsIGRhdGE9bG93LCBSPTk5OTksIHBhaXJlZD0gRkFMU0UpCmBgYAoK</div>
 
 
 
@@ -1890,7 +2031,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("lowboot.qmd");
+  window.initializeSourceEmbed("lowboot.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

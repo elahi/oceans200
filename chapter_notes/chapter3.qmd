@@ -1,0 +1,13 @@
+---
+title: "Chapter 3"
+author: "Robin Elahi"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+Questions for review and discussion, based on chapter 3 from Quinn and Keough 2023.
