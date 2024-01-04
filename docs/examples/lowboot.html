@@ -124,7 +124,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Chapter notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="../examples/examples.html" rel="" target="" aria-current="page">
+    <a class="nav-link active" href="../examples/low.html" rel="" target="" aria-current="page">
  <span class="menu-text">Examples</span></a>
   </li>  
 </ul>
@@ -152,12 +152,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../examples/examples.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Examples</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../examples/low.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">QK Box 2.2</span></a>
   </div>
@@ -166,6 +160,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../examples/lowboot.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">QK Box 2.3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/lowbayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 2.5</span></a>
   </div>
 </li>
     </ul>
@@ -209,159 +209,116 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This box continues with the Low et al.&nbsp;anesthetic example from Box 2.2</p>
 <section id="preliminaries" class="level3">
 <h3 class="anchored" data-anchor-id="preliminaries">Preliminaries</h3>
-<p>packages: MKinfer, resample</p>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-1_71c9c7e0d79c7f0649ef9eb95ef3a258">
+<p>Packages: MKinfer, resample</p>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-1_39e57338f588bbef473832d23de5fdf0">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MKinfer)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(resample)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.2     ✔ readr     2.1.4
-✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.3     ✔ tibble    3.2.1
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-</div>
-<p>use low data</p>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-2_3aed9e110921dfde457521d44192b8ef">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>low <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/lowco2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 23 Columns: 2
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (1): anesth
-dbl (1): co2
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
+<p>Use low data:</p>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-2_a5ba957533de844645cf528c6addbec8">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>low <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/lowco2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="get-jackknife-se-for-two-groups" class="level3">
 <h3 class="anchored" data-anchor-id="get-jackknife-se-for-two-groups">Get jackknife SE for two groups</h3>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-3_b64230d677e4d837ae67d0c86abd8caa">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>low1 <span class="ot">&lt;-</span> <span class="fu">subset</span>(low,anesth<span class="sc">==</span><span class="st">"iso"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jackknife</span>(low1<span class="sc">$</span>co2,mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-jackknife(data = low1$co2, statistic = mean)
-Replications: 12
-
-Summary Statistics:
-     Observed     SE Mean Bias
-mean       50 3.2891   50    0</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>low2 <span class="ot">&lt;-</span> <span class="fu">subset</span>(low,anesth<span class="sc">==</span><span class="st">"ac"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jackknife</span>(low2<span class="sc">$</span>co2,mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-jackknife(data = low2$co2, statistic = mean)
-Replications: 11
-
-Summary Statistics:
-     Observed       SE     Mean         Bias
-mean 70.90909 6.090909 70.90909 1.421085e-13</code></pre>
-</div>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-3_865e65e72f27ecaf543b0274cc79a15e">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>low1 <span class="ot">&lt;-</span> <span class="fu">subset</span>(low,anesth<span class="sc">==</span><span class="st">"iso"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jackknife</span>(low1<span class="sc">$</span>co2,mean)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## jackknife(data = low1$co2, statistic = mean)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Replications: 12</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Summary Statistics:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="do">##      Observed     SE Mean Bias</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="do">## mean       50 3.2891   50    0</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>low2 <span class="ot">&lt;-</span> <span class="fu">subset</span>(low,anesth<span class="sc">==</span><span class="st">"ac"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">jackknife</span>(low2<span class="sc">$</span>co2,mean)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="do">## jackknife(data = low2$co2, statistic = mean)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="do">## Replications: 11</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="do">## Summary Statistics:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="do">##      Observed       SE     Mean         Bias</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="do">## mean 70.90909 6.090909 70.90909 1.421085e-13</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="get-bootstrap-se-and-95ci" class="level3">
 <h3 class="anchored" data-anchor-id="get-bootstrap-se-and-95ci">Get bootstrap SE and 95%CI</h3>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-4_93207cfdbafe71d3e3f31ee29db3d7c4">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>low1boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(low1<span class="sc">$</span>co2,mean,<span class="at">R=</span><span class="dv">9999</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>low1boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-bootstrap(data = low1$co2, statistic = mean, R = 9999)
-Replications: 9999
-
-Summary Statistics:
-     Observed       SE     Mean        Bias
-mean       50 3.121413 50.00362 0.003617028</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(low1boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         2.5%    97.5%
-mean 43.58333 58.03615</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.bca</span>(low1boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         2.5%    97.5%
-mean 44.41155 59.83333</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>low2boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(low2<span class="sc">$</span>co2,mean,<span class="at">R=</span><span class="dv">9999</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>low2boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-bootstrap(data = low2$co2, statistic = mean, R = 9999)
-Replications: 9999
-
-Summary Statistics:
-     Observed       SE     Mean      Bias
-mean 70.90909 5.819101 71.03789 0.1287947</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(low2boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         2.5%    97.5%
-mean 58.81818 85.54545</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.bca</span>(low2boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         2.5%    97.5%
-mean 59.83505 87.96304</code></pre>
-</div>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-4_460acbcdb43c4e4033e0c73595ba5708">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>low1boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(low1<span class="sc">$</span>co2,mean,<span class="at">R=</span><span class="dv">9999</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>low1boot</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## bootstrap(data = low1$co2, statistic = mean, R = 9999)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Replications: 9999</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Summary Statistics:</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="do">##      Observed       SE    Mean       Bias</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="do">## mean       50 3.188776 50.0104 0.01040104</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(low1boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="do">##      2.5% 97.5%</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="do">## mean 43.5    58</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.bca</span>(low1boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="do">##          2.5%    97.5%</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="do">## mean 44.33333 60.16667</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>low2boot <span class="ot">&lt;-</span> <span class="fu">bootstrap</span>(low2<span class="sc">$</span>co2,mean,<span class="at">R=</span><span class="dv">9999</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>low2boot</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="do">## bootstrap(data = low2$co2, statistic = mean, R = 9999)</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Replications: 9999</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Summary Statistics:</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="do">##      Observed       SE     Mean        Bias</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="do">## mean 70.90909 5.860237 70.89403 -0.01505605</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(low2boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="do">##          2.5%    97.5%</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="do">## mean 58.72727 86.16145</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.bca</span>(low2boot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="do">##      2.5%    97.5%</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="do">## mean   60 88.36364</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="get-bootstrap-se-and-ci-on-difference" class="level3">
 <h3 class="anchored" data-anchor-id="get-bootstrap-se-and-ci-on-difference">Get bootstrap SE and CI on difference</h3>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-5_c6614d45c8e1b08f9caa8a3d4b811ad4">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>lowboot <span class="ot">&lt;-</span> <span class="fu">bootstrap2</span>(low<span class="sc">$</span>co2,mean,<span class="at">treatment=</span>low<span class="sc">$</span>anesth,<span class="at">R=</span><span class="dv">9999</span>,<span class="at">ratio=</span><span class="cn">FALSE</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>lowboot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Call:
-bootstrap2(data = low$co2, statistic = mean, treatment = low$anesth, 
-    R = 9999, ratio = FALSE)
-Replications: 9999
-Two samples, sample sizes are 11 12
-
-Summary Statistics for the difference between samples 1 and 2:
-             Observed       SE     Mean       Bias
-mean: ac-iso 20.90909 6.538298 20.92356 0.01446508</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(lowboot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                 2.5%    97.5%
-mean: ac-iso 6.139759 37.07406</code></pre>
-</div>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-5_6fb062f461cbfd578e829059f52fbb00">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lowboot <span class="ot">&lt;-</span> <span class="fu">bootstrap2</span>(low<span class="sc">$</span>co2,mean,<span class="at">treatment=</span>low<span class="sc">$</span>anesth,<span class="at">R=</span><span class="dv">9999</span>,<span class="at">ratio=</span><span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>lowboot</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## bootstrap2(data = low$co2, statistic = mean, treatment = low$anesth, </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">##     R = 9999, ratio = FALSE)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Replications: 9999</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Two samples, sample sizes are 11 12</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Summary Statistics for the difference between samples 1 and 2:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="do">##              Observed       SE     Mean       Bias</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="do">## mean: ac-iso 20.90909 6.492549 20.91318 0.00408753</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">CI.percentile</span>(lowboot, <span class="at">probs=</span><span class="fu">c</span>(<span class="fl">0.025</span>,<span class="fl">0.975</span>))</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="do">##                  2.5%    97.5%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="do">## mean: ac-iso 6.212121 37.08751</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="randomization-test" class="level3">
 <h3 class="anchored" data-anchor-id="randomization-test">Randomization test</h3>
-<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-6_a4d238a7262091f1422cfeb2f0ca8b43">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perm.t.test</span>(co2<span class="sc">~</span>anesth, <span class="at">data=</span>low, <span class="at">R=</span><span class="dv">9999</span>, <span class="at">paired=</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Permutation Welch Two Sample t-test
-
-data:  co2 by anesth
-(Monte-Carlo) permutation p-value = 0.0041 
-permutation difference of means (SE) = 20.8527 (7.962239) 
-95 percent (Monte-Carlo) permutation percentile confidence interval:
-  5.575758 36.242424
-
-Results without permutation:
-t = 3.0206, df = 15.485, p-value = 0.008362
-alternative hypothesis: true difference in means is not equal to 0
-95 percent confidence interval:
-  6.194866 35.623316
-sample estimates:
- mean in group ac mean in group iso 
-         70.90909          50.00000 </code></pre>
-</div>
+<div class="cell" data-hash="lowboot_cache/html/unnamed-chunk-6_88ebd7637f651ce5a7f4ff5a2e3f4842">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perm.t.test</span>(co2<span class="sc">~</span>anesth, <span class="at">data=</span>low, <span class="at">R=</span><span class="dv">9999</span>, <span class="at">paired=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="do">##  Permutation Welch Two Sample t-test</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="do">## data:  co2 by anesth</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="do">## (Monte-Carlo) permutation p-value = 0.0038 </span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="do">## permutation difference of means (SE) = 20.9089 (7.966646) </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="do">## 95 percent (Monte-Carlo) permutation percentile confidence interval:</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="do">##   5.924242 36.251136</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Results without permutation:</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="do">## t = 3.0206, df = 15.485, p-value = 0.008362</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="do">## alternative hypothesis: true difference in means is not equal to 0</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="do">## 95 percent confidence interval:</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="do">##   6.194866 35.623316</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="do">## sample estimates:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  mean in group ac mean in group iso </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="do">##          70.90909          50.00000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

@@ -7,11 +7,17 @@ output:
     theme: flatly
 editor_options:
   chunk_output_type: console
+execute: 
+  cache: true
+knitr:
+  opts_chunk: 
+    collapse: true
+    echo: true
+    warning: false
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
-
+```{r setup}
+#| include: false
 # Set working directory
 knitr::opts_knit$set(root.dir = "../")
 ```
@@ -20,19 +26,20 @@ This box continues with the Low et al. anesthetic example from Box 2.2
 
 ### Preliminaries
 
-packages: MKinfer, resample
+Packages: MKinfer, resample
 
-```{r results='hide'}
+```{r}
 library(MKinfer)
 library(resample)
 library(tidyverse)
 ```
 
-use low data
+Use low data:
 
-```{r }
+```{r}
+#| results: hide
+#| warning: false
 low <- read_csv("data/lowco2.csv")
-
 ```
 
 ### Get jackknife SE for two groups
@@ -51,6 +58,7 @@ low1boot <- bootstrap(low1$co2,mean,R=9999)
 low1boot
 CI.percentile(low1boot, probs=c(0.025,0.975))
 CI.bca(low1boot, probs=c(0.025,0.975))
+
 low2boot <- bootstrap(low2$co2,mean,R=9999)
 low2boot
 CI.percentile(low2boot, probs=c(0.025,0.975))

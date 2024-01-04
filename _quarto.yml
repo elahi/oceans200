@@ -17,7 +17,7 @@ website:
       - text: "Chapter notes"
         file: chapter_notes/chapter_notes.qmd
       - text: "Examples"
-        file: examples/examples.qmd
+        file: examples/low.qmd
 
   sidebar:
     - title: "Chapter notes"
@@ -32,9 +32,9 @@ website:
       style: "docked"
       background: light
       contents: 
-        - examples/examples.qmd
         - examples/low.qmd
         - examples/lowboot.qmd
+        - examples/lowbayes.qmd
 
 format:
   html:
