@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Imagine you have counted rockfish along transects in the kelp forest. You are an avid diver, so you completed 1000 transects. Because these are count data, we will use a Poisson distribution (the <em>support</em> for the Poisson is non-negative integers). The average number of fish is 2 per transect. Note that in the Poisson, one parameter (<span class="math inline">\(\lambda\)</span>), governs the central tendency and the spread of the distribution (unlike, e.g., the Normal). This means the single parameter of the Poisson distribution is <span class="math inline">\(\lambda = 2\)</span>.</p>
 <p>Here, we generate data according to our data story:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-1_11966713fb5b05e2226dac76fd9ca5fb">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">lambda =</span> <span class="dv">2</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x, <span class="at">xlab =</span> <span class="st">"Rockfish per transect"</span>,</span>
@@ -261,20 +261,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Now run these two lines of code. Why do these two expressions give you the same answer? (To force you to dig into the help files for these functions, I am not writing explicit code).</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-2_ba6fb6179685e9cc40b8e74590e39c04">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dpois</span>(<span class="dv">0</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">dpois</span>(<span class="dv">1</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">dpois</span>(<span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ppois</span>(<span class="dv">2</span>, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The above code tells us that ~67% of the probability mass of a Poisson(2) distribution lies at or below 2. Returning to our random samples, let’s use <code>quantile</code> to figure out which of our values is at the 67th percentile in our data:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-3_7a273a88d0e6cbf59c5fa0a4064a77c2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(<span class="at">x =</span> x, <span class="at">probs =</span> <span class="fl">0.67</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s use <code>qpois</code> to identify the value at which we have 67% of the observations:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-4_ba55a6610e4e3af6c77a8c14f43fb443">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qpois</span>(<span class="at">p =</span> <span class="fl">0.67</span>, <span class="at">lambda =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally, let’s just tabulate the data to see if this all makes sense:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-5_754befc5fdf0262a37934a6c0a39310f">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(x)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">table</span>(x)[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]) <span class="sc">/</span> <span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -282,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="plotting-distributions" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-distributions">Plotting distributions</h3>
 <p>Let’s plot a Normal distribution centered at 0, with different standard deviations:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-6_1adaf6d568d2a5cc0db0029119b58846">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.01</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x_grid, <span class="fu">dnorm</span>(x_grid, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">0.5</span>), <span class="at">type =</span> <span class="st">"l"</span>, </span>
@@ -298,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Let’s compare with a Student t-distribution:</p>
-<div class="cell">
+<div class="cell" data-hash="chapter2_cache/html/unnamed-chunk-7_2fa7580e25d8899330ab090cf61a5c8d">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="fl">0.01</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x_grid, <span class="fu">dt</span>(x_grid, <span class="at">df =</span> <span class="dv">40</span>), <span class="at">type =</span> <span class="st">"l"</span>, </span>
