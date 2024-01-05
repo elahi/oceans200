@@ -5,6 +5,7 @@ project:
     - "*.qmd"
     - "!examples_qk/"
     - "!examples_qmd/"
+    - "!slides/"
 
 website:
   title: "qk2e"
