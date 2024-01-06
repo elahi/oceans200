@@ -1,5 +1,5 @@
 ---
-title: "review(topic = intro_stats, language = R)"
+title: "Reviewing some essentials"
 author: "Robin Elahi"
 format: revealjs
 ---
@@ -11,7 +11,75 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 knitr::opts_knit$set(root.dir = "../")
 ```
 
-# Data story
+## Course overview
+
+## Prerequisites
+
+You have some familiarity with R computing and statistics. 
+
+. . .
+
+For instance, you should be able to figure out what this means:
+```{r intro}
+x <- c(2, 4, 3, 6)
+y <- c(5, 12, 4, 10, 2)
+t.test(x, y)
+```
+
+
+## Statistics vs parameters
+
+. . .
+
+A **statistic** is
+
+:   a numerical description of a sample
+
+. . .
+
+A **parameter** is
+
+:   a numerical attribute of a population
+
+. . .
+
+Often, *statistics* are used to estimate *parameters*.
+
+
+## The two heads of classical statistics
+
+estimating parameters, with uncertainty *(confidence intervals)*
+
+evaluating (in-)consistency with a particular situation *($p$-values)*
+
+. . .
+
+1. What do these data tell us about the world?
+2. How strongly do we believe it?
+
+
+. . .
+
+*This week:* digging in, with simple examples.
+
+
+## Lurking, behind everything:
+
+is *uncertainty*
+
+. . .
+
+thanks to *randomness*.
+
+. . .
+
+How do we understand randomness, concretely and quantitatively?
+
+. . .
+
+With *models*.
+
+## Data story
 
 Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO~2~ levels were recorded after 120 minutes. The H~0~ was that there was no difference between the anesthetics in the mean blood CO~2~ level. This is an independent comparison because individual mice were only given one of the two anesthetics.
 
@@ -19,6 +87,7 @@ Low et al (2016) examined the effects of two different anesthetics on aspects of
 
 ```{r packages}
 library(tidyverse)
+library(car)
 
 theme_set(theme_bw(base_size = 16) + 
             theme(panel.grid.minor = element_blank(), 
@@ -33,9 +102,9 @@ Describe what is happening in these lines of code.
 low <- read.csv("data/lowco2.csv")
 ```
 
-\ 
+ 
 
-. . . 
+. . .
 
 ```{r}
 names(low)
@@ -51,12 +120,11 @@ dim(low)
 
 \
 
-. . . 
+. . .
 
 ```{r}
 str(low)
 ```
-
 
 ## Visualize data
 
@@ -68,24 +136,7 @@ low %>%
   theme_bw(base_size = 24)
 ```
 
-## Statistics vs parameters
 
-. . . 
-
-A **statistic** is
-
-: a numerical description of a sample
-
-. . .
-
-A **parameter** is 
-
-: a numerical attribute of a population
-
-. . .
-
-Often, *statistics* are used to estimate *parameters*. 
-  
 
 ## Summarizing data: point estimates and variability
 
@@ -101,8 +152,8 @@ low %>%
             )
 ```
 
-**Your turn**.  
-Add to the `summarise` function to calculate the 95% confidence interval for each treatment using `qt`. Interpret the CI. You should get the same answer as in the book. 
+**Your turn**.\
+Add to the `summarise` function to calculate the 95% confidence interval for each treatment using `qt`. Interpret the CI. You should get the same answer as in the book.
 
 ## Confidence intervals
 
@@ -121,7 +172,80 @@ low %>%
             )
 ```
 
-In a frequentist world, parameters are fixed (but unknowable). Interpret the CI in this context. 
+In a frequentist world, parameters are fixed (but unknowable). Interpret the CI in this context.
 
 ## Hypothesis testing
+
+A. Construct a null hypothesis (H~O~)
+
+B. Derive a test statistic from the data
+
+C. Compare the obtained test statistic to one derived from values obtained under the H~O~. 
+
+## A $p$-value is
+
+. . .
+
+> the probability of seeing a result at least as surprising
+> as what was observed in the data,
+> if the null hypothesis is true.
+
+. . .
+
+Usually, this means
+
+- *a result* - numerical value of a statistic
+- *surprising* - big
+- *null hypothesis* - the model we use to calculate the $p$-value
+
+which can all be defined to suit the situation.
+
+## What does a small $p$-value mean?
+
+*If* the null hypothesis *was* true,
+then you'd be really unlikely to see something like what you actually *did*.
+
+. . .
+
+So, either the "null hypothesis" is not a good description of reality
+or something surprising happened.
+
+. . .
+
+How useful this is depends on the null hypothesis.
+
+
+## ANOVA
+
+```{r}
+low.aov <- aov(co2~anesth,data=low)
+summary(low.aov)
+```
+
+## Test variances
+
+```{r}
+leveneTest(co2 ~ anesth, low)
+```
+
+## T-test: equal variances
+
+```{r}
+t.test(co2 ~ anesth, var.equal = TRUE, data = low)
+```
+
+## T-test: separate variances
+
+```{r}
+t.test(co2 ~ anesth, data = low)
+```
+
+## Wilcoxon-Mann-Whitney
+
+```{r}
+wilcox.test(co2~anesth,data=low)
+sum(rank(low$co2)[low$anesth=="ac"])
+sum(rank(low$co2)[low$anesth=="iso"])
+```
+
 

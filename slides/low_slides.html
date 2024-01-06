@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.3.450">
 
   <meta name="author" content="Robin Elahi">
-  <title>review(topic = intro_stats, language = R)</title>
+  <title>Reviewing the fundmamentals</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -390,7 +390,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">review(topic = intro_stats, language = R)</h1>
+  <h1 class="title">Reviewing the fundmamentals</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -401,70 +401,34 @@ Robin Elahi
 </div>
 
 </section>
-<section>
-<section id="data-story" class="title-slide slide level1 center">
-<h1>Data story</h1>
-<p>Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO<sub>2</sub> levels were recorded after 120 minutes. The H<sub>0</sub> was that there was no difference between the anesthetics in the mean blood CO<sub>2</sub> level. This is an independent comparison because individual mice were only given one of the two anesthetics.</p>
+<section id="course-overview" class="slide level2">
+<h2>Course overview</h2>
 </section>
-<section id="r" class="slide level2">
-<h2>R</h2>
-<div class="cell" data-hash="low_slides_cache/revealjs/packages_8525b68eda2f22937a8bda757615adc7">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span> </span>
-<span id="cb1-4"><a href="#cb1-4"></a>            <span class="fu">theme</span>(<span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(), </span>
-<span id="cb1-5"><a href="#cb1-5"></a>                  <span class="at">strip.background =</span> <span class="fu">element_blank</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="the-data" class="slide level2">
-<h2>The data</h2>
-<p>Describe what is happening in these lines of code.</p>
-<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-1_975abcc7c67b559474d4471cf278a32b">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>low <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lowco2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>&nbsp;</p>
+<section id="prerequisites" class="slide level2">
+<h2>Prerequisites</h2>
+<p>You have some familiarity with R computing and statistics.</p>
 <div class="fragment">
-<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-2_b91be898796131a2b1729a41f8e8bb4c">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">names</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For instance, you should be able to figure out what this means:</p>
+<div class="cell" data-hash="low_slides_cache/revealjs/intro_f18f166f50ab0592f1e046f0c616b83c">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">6</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">12</span>, <span class="dv">4</span>, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">t.test</span>(x, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "anesth" "co2"   </code></pre>
-</div>
-</div>
-<p><br>
-</p>
-</div>
-<div class="fragment">
-<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-3_1d333dc7b960cb9a17b5fbb466667a05">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">dim</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 23  2</code></pre>
-</div>
-</div>
-<p><br>
-</p>
-</div>
-<div class="fragment">
-<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-4_4889e8a03c6ce26e682be13b6feb29e8">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">str</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>'data.frame':   23 obs. of  2 variables:
- $ anesth: chr  "iso" "iso" "iso" "iso" ...
- $ co2   : int  43 35 50 39 56 54 39 51 49 54 ...</code></pre>
-</div>
-</div>
-</div>
-</section>
-<section id="visualize-data" class="slide level2">
-<h2>Visualize data</h2>
-<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-5_b98536d04d71c42b1d3336bb610da4b6">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>low <span class="sc">%&gt;%</span> </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(anesth, co2)) <span class="sc">+</span> </span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span> </span>
-<span id="cb9-4"><a href="#cb9-4"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Anesthetic"</span>, <span class="at">y =</span> <span class="st">"CO2"</span>) <span class="sc">+</span> </span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">24</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>
+    Welch Two Sample t-test
 
+data:  x and y
+t = -1.3761, df = 5.4988, p-value = 0.2222
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -8.031728  2.331728
+sample estimates:
+mean of x mean of y 
+     3.75      6.60 </code></pre>
 </div>
-<img data-src="low_slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+</div>
+</div>
+</section>
 <section id="statistics-vs-parameters" class="slide level2">
 <h2>Statistics vs parameters</h2>
 <div class="fragment">
@@ -487,18 +451,109 @@ Robin Elahi
 <p>Often, <em>statistics</em> are used to estimate <em>parameters</em>.</p>
 </div>
 </section>
+<section id="the-two-heads-of-classical-statistics" class="slide level2">
+<h2>The two heads of classical statistics</h2>
+<p>estimating parameters, with uncertainty <em>(confidence intervals)</em></p>
+<p>evaluating (in-)consistency with a particular situation <em>(<span class="math inline">\(p\)</span>-values)</em></p>
+<div class="fragment">
+<ol type="1">
+<li>What do these data tell us about the world?</li>
+<li>How strongly do we believe it?</li>
+</ol>
+</div>
+<div class="fragment">
+<p><em>This week:</em> digging in, with simple examples.</p>
+</div>
+</section>
+<section id="lurking-behind-everything" class="slide level2">
+<h2>Lurking, behind everything:</h2>
+<p>is <em>uncertainty</em></p>
+<div class="fragment">
+<p>thanks to <em>randomness</em>.</p>
+</div>
+<div class="fragment">
+<p>How do we understand randomness, concretely and quantitatively?</p>
+</div>
+<div class="fragment">
+<p>With <em>models</em>.</p>
+</div>
+</section>
+<section id="data-story" class="slide level2">
+<h2>Data story</h2>
+<p>Low et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO<sub>2</sub> levels were recorded after 120 minutes. The H<sub>0</sub> was that there was no difference between the anesthetics in the mean blood CO<sub>2</sub> level. This is an independent comparison because individual mice were only given one of the two anesthetics.</p>
+</section>
+<section id="r" class="slide level2">
+<h2>R</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/packages_a57a172332038fe3f6146536cb0efd03">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">library</span>(car)</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span> </span>
+<span id="cb3-5"><a href="#cb3-5"></a>            <span class="fu">theme</span>(<span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb3-6"><a href="#cb3-6"></a>                  <span class="at">strip.background =</span> <span class="fu">element_blank</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-data" class="slide level2">
+<h2>The data</h2>
+<p>Describe what is happening in these lines of code.</p>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-1_975abcc7c67b559474d4471cf278a32b">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>low <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/lowco2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>&nbsp;</p>
+<div class="fragment">
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-2_b91be898796131a2b1729a41f8e8bb4c">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">names</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "anesth" "co2"   </code></pre>
+</div>
+</div>
+<p><br>
+</p>
+</div>
+<div class="fragment">
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-3_1d333dc7b960cb9a17b5fbb466667a05">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">dim</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 23  2</code></pre>
+</div>
+</div>
+<p><br>
+</p>
+</div>
+<div class="fragment">
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-4_4889e8a03c6ce26e682be13b6feb29e8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">str</span>(low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   23 obs. of  2 variables:
+ $ anesth: chr  "iso" "iso" "iso" "iso" ...
+ $ co2   : int  43 35 50 39 56 54 39 51 49 54 ...</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="visualize-data" class="slide level2">
+<h2>Visualize data</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-5_b98536d04d71c42b1d3336bb610da4b6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>low <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(anesth, co2)) <span class="sc">+</span> </span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb11-4"><a href="#cb11-4"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Anesthetic"</span>, <span class="at">y =</span> <span class="st">"CO2"</span>) <span class="sc">+</span> </span>
+<span id="cb11-5"><a href="#cb11-5"></a>  <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">24</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+</div>
+<img data-src="low_slides_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
 <section id="summarizing-data-point-estimates-and-variability" class="slide level2">
 <h2>Summarizing data: point estimates and variability</h2>
 <div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-6_96cad0b71b55106a10b16d7ca0420b71">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>low <span class="sc">%&gt;%</span>  </span>
-<span id="cb10-2"><a href="#cb10-2"></a>  <span class="fu">group_by</span>(anesth) <span class="sc">%&gt;%</span> </span>
-<span id="cb10-3"><a href="#cb10-3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), </span>
-<span id="cb10-4"><a href="#cb10-4"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(co2),</span>
-<span id="cb10-5"><a href="#cb10-5"></a>            <span class="at">median =</span> <span class="fu">median</span>(co2),</span>
-<span id="cb10-6"><a href="#cb10-6"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(co2), </span>
-<span id="cb10-7"><a href="#cb10-7"></a>            <span class="at">variance =</span> <span class="fu">var</span>(co2), </span>
-<span id="cb10-8"><a href="#cb10-8"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
-<span id="cb10-9"><a href="#cb10-9"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>low <span class="sc">%&gt;%</span>  </span>
+<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">group_by</span>(anesth) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), </span>
+<span id="cb12-4"><a href="#cb12-4"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(co2),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>            <span class="at">median =</span> <span class="fu">median</span>(co2),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(co2), </span>
+<span id="cb12-7"><a href="#cb12-7"></a>            <span class="at">variance =</span> <span class="fu">var</span>(co2), </span>
+<span id="cb12-8"><a href="#cb12-8"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb12-9"><a href="#cb12-9"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   anesth     n  mean median    sd variance    se
@@ -513,18 +568,18 @@ Add to the <code>summarise</code> function to calculate the 95% confidence inter
 <section id="confidence-intervals" class="slide level2">
 <h2>Confidence intervals</h2>
 <div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-7_ccd6cc27963df8c1c80f0c0d5c317e27">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>low <span class="sc">%&gt;%</span>  </span>
-<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">group_by</span>(anesth) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-3"><a href="#cb12-3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), </span>
-<span id="cb12-4"><a href="#cb12-4"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(co2),</span>
-<span id="cb12-5"><a href="#cb12-5"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(co2), </span>
-<span id="cb12-6"><a href="#cb12-6"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n), </span>
-<span id="cb12-7"><a href="#cb12-7"></a>            <span class="at">CI_upper =</span> mean <span class="sc">+</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
-<span id="cb12-8"><a href="#cb12-8"></a>            <span class="at">CI_lower =</span> mean <span class="sc">+</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.025</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
-<span id="cb12-9"><a href="#cb12-9"></a>            <span class="at">CI =</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
-<span id="cb12-10"><a href="#cb12-10"></a>            <span class="at">upper =</span> mean <span class="sc">+</span> CI, </span>
-<span id="cb12-11"><a href="#cb12-11"></a>            <span class="at">lower =</span> mean <span class="sc">-</span> CI</span>
-<span id="cb12-12"><a href="#cb12-12"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>low <span class="sc">%&gt;%</span>  </span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">group_by</span>(anesth) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), </span>
+<span id="cb14-4"><a href="#cb14-4"></a>            <span class="at">mean =</span> <span class="fu">mean</span>(co2),</span>
+<span id="cb14-5"><a href="#cb14-5"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(co2), </span>
+<span id="cb14-6"><a href="#cb14-6"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n), </span>
+<span id="cb14-7"><a href="#cb14-7"></a>            <span class="at">CI_upper =</span> mean <span class="sc">+</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
+<span id="cb14-8"><a href="#cb14-8"></a>            <span class="at">CI_lower =</span> mean <span class="sc">+</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.025</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
+<span id="cb14-9"><a href="#cb14-9"></a>            <span class="at">CI =</span> se <span class="sc">*</span> <span class="fu">qt</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">df =</span> n<span class="dv">-1</span>), </span>
+<span id="cb14-10"><a href="#cb14-10"></a>            <span class="at">upper =</span> mean <span class="sc">+</span> CI, </span>
+<span id="cb14-11"><a href="#cb14-11"></a>            <span class="at">lower =</span> mean <span class="sc">-</span> CI</span>
+<span id="cb14-12"><a href="#cb14-12"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 10
   anesth     n  mean    sd    se CI_upper CI_lower    CI upper lower
@@ -537,10 +592,126 @@ Add to the <code>summarise</code> function to calculate the 95% confidence inter
 </section>
 <section id="hypothesis-testing" class="slide level2">
 <h2>Hypothesis testing</h2>
+<p>A. Construct a null hypothesis (H<sub>O</sub>)</p>
+<p>B. Derive a test statistic from the data</p>
+<p>C. Compare the obtained test statistic to one derived from values obtained under the H<sub>O</sub>.</p>
+</section>
+<section id="a-p-value-is" class="slide level2">
+<h2>A <span class="math inline">\(p\)</span>-value is</h2>
+<div class="fragment">
+<blockquote>
+<p>the probability of seeing a result at least as surprising as what was observed in the data, if the null hypothesis is true.</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p>Usually, this means</p>
+<ul>
+<li><em>a result</em> - numerical value of a statistic</li>
+<li><em>surprising</em> - big</li>
+<li><em>null hypothesis</em> - the model we use to calculate the <span class="math inline">\(p\)</span>-value</li>
+</ul>
+<p>which can all be defined to suit the situation.</p>
+</div>
+</section>
+<section id="what-does-a-small-p-value-mean" class="slide level2">
+<h2>What does a small <span class="math inline">\(p\)</span>-value mean?</h2>
+<p><em>If</em> the null hypothesis <em>was</em> true, then you’d be really unlikely to see something like what you actually <em>did</em>.</p>
+<div class="fragment">
+<p>So, either the “null hypothesis” is not a good description of reality or something surprising happened.</p>
+</div>
+<div class="fragment">
+<p>How useful this is depends on the null hypothesis.</p>
+</div>
+</section>
+<section id="anova" class="slide level2">
+<h2>ANOVA</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-8_100ae48eb60e34922b7b014dfc17b69c">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>low.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(co2<span class="sc">~</span>anesth,<span class="at">data=</span>low)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">summary</span>(low.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+anesth       1   2509  2509.1   9.565 0.00552 **
+Residuals   21   5509   262.3                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="test-variances" class="slide level2">
+<h2>Test variances</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-9_2fb09f229aceecfd303231945c480109">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">leveneTest</span>(co2 <span class="sc">~</span> anesth, low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(&gt;F)
+group  1   2.604 0.1215
+      21               </code></pre>
+</div>
+</div>
+</section>
+<section id="t-test-equal-variances" class="slide level2">
+<h2>T-test: equal variances</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-10_f22fde65ec90f5c7313a85c6719dc8d6">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">t.test</span>(co2 <span class="sc">~</span> anesth, <span class="at">var.equal =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  co2 by anesth
+t = 3.0927, df = 21, p-value = 0.005515
+alternative hypothesis: true difference in means between group ac and group iso is not equal to 0
+95 percent confidence interval:
+  6.849172 34.969010
+sample estimates:
+ mean in group ac mean in group iso 
+         70.90909          50.00000 </code></pre>
+</div>
+</div>
+</section>
+<section id="t-test-separate-variances" class="slide level2">
+<h2>T-test: separate variances</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-11_86b45814d62129464c6e1e7790b214bb">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">t.test</span>(co2 <span class="sc">~</span> anesth, <span class="at">data =</span> low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  co2 by anesth
+t = 3.0206, df = 15.485, p-value = 0.008362
+alternative hypothesis: true difference in means between group ac and group iso is not equal to 0
+95 percent confidence interval:
+  6.194866 35.623316
+sample estimates:
+ mean in group ac mean in group iso 
+         70.90909          50.00000 </code></pre>
+</div>
+</div>
+</section>
+<section id="wilcoxon-mann-whitney" class="slide level2">
+<h2>Wilcoxon-Mann-Whitney</h2>
+<div class="cell" data-hash="low_slides_cache/revealjs/unnamed-chunk-12_96ff216af227ef03348c6d1cd1b628fe">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">wilcox.test</span>(co2<span class="sc">~</span>anesth,<span class="at">data=</span>low)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  co2 by anesth
+W = 114, p-value = 0.003398
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="fu">sum</span>(<span class="fu">rank</span>(low<span class="sc">$</span>co2)[low<span class="sc">$</span>anesth<span class="sc">==</span><span class="st">"ac"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 180</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">sum</span>(<span class="fu">rank</span>(low<span class="sc">$</span>co2)[low<span class="sc">$</span>anesth<span class="sc">==</span><span class="st">"iso"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 96</code></pre>
+</div>
+</div>
 <div class="footer footer-default">
 
 </div>
-</section></section>
+</section>
     </div>
   </div>
 
