@@ -5,7 +5,6 @@ project:
     - "*.qmd"
     - "!examples_qk/"
     - "!examples_qmd/"
-    - "!slides/"
 
 website:
   title: "qk2e"
@@ -16,7 +15,9 @@ website:
       - text: "Home"
         file: index.qmd
       - text: "Chapter notes"
-        file: chapter_notes/chapter_notes.qmd
+        file: chapter_notes/chapter2.qmd
+      - text: "Slides"
+        file: slides/slides.qmd
       - text: "Examples"
         file: examples/low.qmd
 
@@ -25,7 +26,7 @@ website:
       style: "docked"
       background: light
       contents:
-        - chapter_notes/chapter_notes.qmd
+        # - chapter_notes/chapter_notes.qmd
         - chapter_notes/chapter2.qmd
         - chapter_notes/chapter3.qmd
         
@@ -36,7 +37,7 @@ website:
         - examples/low.qmd
         - examples/lowboot.qmd
         - examples/lowbayes.qmd
-
+        
 format:
   html:
     theme: cosmo

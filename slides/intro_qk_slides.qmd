@@ -44,11 +44,11 @@ Expectations (everyone)
 
 . . .
 
-Challenge (should you choose to accept it):
+Programming challenge (should you choose to accept it):
 
 > If you are going to use slides, create them in [Quarto](https://quarto.org/docs/presentations/) (.qmd) or [Rmarkdown](https://bookdown.org/yihui/rmarkdown/revealjs.html) (.Rmd)
 
-Totally optional. Either way, please share your developed materials with the group.
+Totally optional. In any case, please share your ppt slides, R code, other relevant materials with the group in the [Gdrive](https://drive.google.com/drive/folders/1723s12LW6__s98KIVJmLaks06S1bX73m?usp=sharing).
 
 ## Prerequisites
 
@@ -274,7 +274,7 @@ t.test(co2 ~ anesth, var.equal = TRUE, data = low)
 
 ## Your turn
 
-Work through some questions to refresh your R and probability skills.
+With a partner, go to the [website](https://elahi.github.io/qk2e/), check out the [source code](https://github.com/elahi/qk2e), and work though the [Chapter 2 notes](chapter2.qmd) together.
 
 <!-- ## Test variances -->
 

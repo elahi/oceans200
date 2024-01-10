@@ -1,10 +1,17 @@
 [
   {
+    "objectID": "slides/slides.html",
+    "href": "slides/slides.html",
+    "title": "Slides",
+    "section": "",
+    "text": "Week 1: Intro to Quinn and Keough, 2nd edition"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "qk2e",
     "section": "",
-    "text": "This website is a space for working through Quinn and Keough’s 2nd edition textbook on data analysis for biologists. The Chapter notes are intended for review and discussion in a seminar (Oceans 200). The Examples are reproduced and occasionally lightly modified from the original worked examples."
+    "text": "This website is a space for working through Quinn and Keough’s 2nd edition textbook on data analysis for biologists. The Chapter notes are intended for review and discussion in a seminar (Oceans 200). The Slides are intended as a short primer on the topic by the discussion leader. The Examples are reproduced and lightly modified from the original worked examples.\nOceans 200 schedule\n\n\n\n\n\n\n\n\n\n\n\nWeek\nDate\nTopic\nQK chapter\nPre-class box example\nIn-class box example\n\n\n\n\n1\nJan. 17th 2023\nIntro to seminar and review of intro stats\n2\n2.2\n\n\n\n2\nJan. 10th 2023\nSampling and experimental design\n3\n\n\n\n\n3\nJan. 24th 2023\nOne-way designs\n6\n6.7\n6.11\n\n\n4\nJan. 31st 2023\nFactorial designs\n7\n7.1\n7.3\n\n\n5\nFeb. 7th 2023\nNested designs\n10\n10.6\n10.7\n\n\n6\nFeb 14th 2023\nSplit-plot designs\n11\n11.1\n11.2\n\n\n7\nFeb. 21st 2023\nRepeated measures designs\n12\n12.1\n12.2\n\n\n8\nFeb. 28th 2023\nStudents’ choice / presentations\ntbd\n\n\n\n\n9\nMar. 6th 2023\nStudents’ choice / presentations\ntbd\n\n\n\n\n10\nMar. 13th 2023\nStudents’ choice / presentations\ntbd"
   },
   {
     "objectID": "examples/lowbayes.html",
@@ -131,5 +138,145 @@
     "title": "QK Box 2.3",
     "section": "",
     "text": "This box continues with the Low et al. anesthetic example from Box 2.2\n\nPreliminaries\nPackages: MKinfer, resample\n\nlibrary(MKinfer)\nlibrary(resample)\nlibrary(tidyverse)\n\nUse low data:\n\nlow &lt;- read_csv(\"data/lowco2.csv\")\n\n\n\nGet jackknife SE for two groups\n\nlow1 &lt;- subset(low,anesth==\"iso\")\njackknife(low1$co2,mean)\n## Call:\n## jackknife(data = low1$co2, statistic = mean)\n## Replications: 12\n## \n## Summary Statistics:\n##      Observed     SE Mean Bias\n## mean       50 3.2891   50    0\nlow2 &lt;- subset(low,anesth==\"ac\")\njackknife(low2$co2,mean)\n## Call:\n## jackknife(data = low2$co2, statistic = mean)\n## Replications: 11\n## \n## Summary Statistics:\n##      Observed       SE     Mean         Bias\n## mean 70.90909 6.090909 70.90909 1.421085e-13\n\n\n\nGet bootstrap SE and 95%CI\n\nlow1boot &lt;- bootstrap(low1$co2,mean,R=9999)\nlow1boot\n## Call:\n## bootstrap(data = low1$co2, statistic = mean, R = 9999)\n## Replications: 9999\n## \n## Summary Statistics:\n##      Observed       SE    Mean       Bias\n## mean       50 3.188776 50.0104 0.01040104\nCI.percentile(low1boot, probs=c(0.025,0.975))\n##      2.5% 97.5%\n## mean 43.5    58\nCI.bca(low1boot, probs=c(0.025,0.975))\n##          2.5%    97.5%\n## mean 44.33333 60.16667\n\nlow2boot &lt;- bootstrap(low2$co2,mean,R=9999)\nlow2boot\n## Call:\n## bootstrap(data = low2$co2, statistic = mean, R = 9999)\n## Replications: 9999\n## \n## Summary Statistics:\n##      Observed       SE     Mean        Bias\n## mean 70.90909 5.860237 70.89403 -0.01505605\nCI.percentile(low2boot, probs=c(0.025,0.975))\n##          2.5%    97.5%\n## mean 58.72727 86.16145\nCI.bca(low2boot, probs=c(0.025,0.975))\n##      2.5%    97.5%\n## mean   60 88.36364\n\n\n\nGet bootstrap SE and CI on difference\n\nlowboot &lt;- bootstrap2(low$co2,mean,treatment=low$anesth,R=9999,ratio=FALSE)\nlowboot\n## Call:\n## bootstrap2(data = low$co2, statistic = mean, treatment = low$anesth, \n##     R = 9999, ratio = FALSE)\n## Replications: 9999\n## Two samples, sample sizes are 11 12\n## \n## Summary Statistics for the difference between samples 1 and 2:\n##              Observed       SE     Mean       Bias\n## mean: ac-iso 20.90909 6.492549 20.91318 0.00408753\nCI.percentile(lowboot, probs=c(0.025,0.975))\n##                  2.5%    97.5%\n## mean: ac-iso 6.212121 37.08751\n\n\n\nRandomization test\n\nperm.t.test(co2~anesth, data=low, R=9999, paired= FALSE)\n## \n##  Permutation Welch Two Sample t-test\n## \n## data:  co2 by anesth\n## (Monte-Carlo) permutation p-value = 0.0038 \n## permutation difference of means (SE) = 20.9089 (7.966646) \n## 95 percent (Monte-Carlo) permutation percentile confidence interval:\n##   5.924242 36.251136\n## \n## Results without permutation:\n## t = 3.0206, df = 15.485, p-value = 0.008362\n## alternative hypothesis: true difference in means is not equal to 0\n## 95 percent confidence interval:\n##   6.194866 35.623316\n## sample estimates:\n##  mean in group ac mean in group iso \n##          70.90909          50.00000"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#course-overview",
+    "href": "slides/intro_qk_slides.html#course-overview",
+    "title": "Intro to QK2E",
+    "section": "Course overview",
+    "text": "Course overview\n1 or 2 presenters per week\nExpectations (everyone)\n\nRead the chapter\nWork through the suggested examples in R"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#expectations-presenter",
+    "href": "slides/intro_qk_slides.html#expectations-presenter",
+    "title": "Intro to QK2E",
+    "section": "Expectations (presenter)",
+    "text": "Expectations (presenter)\n\nlead a discussion of the reading\nprepare a group / break-out activity\nbe creative and focus on what you want, in the context of the chapter\nupload relevant materials to Canvas / Gdrive"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#qk2e",
+    "href": "slides/intro_qk_slides.html#qk2e",
+    "title": "Intro to QK2E",
+    "section": "QK2E",
+    "text": "QK2E"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#sign-up-to-lead-a-week",
+    "href": "slides/intro_qk_slides.html#sign-up-to-lead-a-week",
+    "title": "Intro to QK2E",
+    "section": "Sign up to lead a week",
+    "text": "Sign up to lead a week\nLink to Google sign up is on Canvas\n\n\n\nProgramming challenge (should you choose to accept it):\n\nIf you are going to use slides, create them in Quarto (.qmd) or Rmarkdown (.Rmd)\n\nTotally optional. In any case, please share your ppt slides, R code, other relevant materials with the group in the Gdrive."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#prerequisites",
+    "href": "slides/intro_qk_slides.html#prerequisites",
+    "title": "Intro to QK2E",
+    "section": "Prerequisites",
+    "text": "Prerequisites\nYou have some familiarity with R computing and statistics.\n\nDo you know what all this means?\n\nx &lt;- c(2, 4, 3, 6)\ny &lt;- c(5, 12, 4, 10, 2)\nt.test(x, y)\n\n\n    Welch Two Sample t-test\n\ndata:  x and y\nt = -1.3761, df = 5.4988, p-value = 0.2222\nalternative hypothesis: true difference in means is not equal to 0\n95 percent confidence interval:\n -8.031728  2.331728\nsample estimates:\nmean of x mean of y \n     3.75      6.60"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#statistics-vs-parameters",
+    "href": "slides/intro_qk_slides.html#statistics-vs-parameters",
+    "title": "Intro to QK2E",
+    "section": "Statistics vs parameters",
+    "text": "Statistics vs parameters\n\n\nA statistic is\n\na numerical description of a sample\n\n\n\n\n\nA parameter is\n\na numerical attribute of a population\n\n\n\n\nOften, statistics are used to estimate parameters."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#the-two-heads-of-classical-statistics",
+    "href": "slides/intro_qk_slides.html#the-two-heads-of-classical-statistics",
+    "title": "Intro to QK2E",
+    "section": "The two heads of classical statistics",
+    "text": "The two heads of classical statistics\n\nestimating parameters, with uncertainty (confidence intervals)\nevaluating (in-)consistency with a particular situation (\\(p\\)-values)\n\n\n\nWhat do these data tell us about the world?\nHow strongly do we believe it?"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#lurking-behind-everything",
+    "href": "slides/intro_qk_slides.html#lurking-behind-everything",
+    "title": "Intro to QK2E",
+    "section": "Lurking, behind everything:",
+    "text": "Lurking, behind everything:\nis uncertainty, thanks to:\n\n\nactual differences of biological interest (process uncertainty)\n\n\n\n\nuninteresting differences due to sampling variation and measurement error (observation uncertainty)\n\n\n\nHow do we understand uncertainty, concretely and quantitatively?\n\n\n\nwith models."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#break",
+    "href": "slides/intro_qk_slides.html#break",
+    "title": "Intro to QK2E",
+    "section": "Break",
+    "text": "Break\nStand up! Stretch! Get a drink, use the restroom.\nThen, with a partner(s), go to a board and discuss the following:\n\nWhat is hypothesis testing?\nWhat is a p-value?"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#data-story",
+    "href": "slides/intro_qk_slides.html#data-story",
+    "title": "Intro to QK2E",
+    "section": "Data story",
+    "text": "Data story\nLow et al (2016) examined the effects of two different anesthetics on aspects of the physiology of the mouse. Twelve mice were anesthetized with isoflurane and eleven mice were anesthetized with alpha chloralose and blood CO2 levels were recorded after 120 minutes. The H0 was that there was no difference between the anesthetics in the mean blood CO2 level. This is an independent comparison because individual mice were only given one of the two anesthetics."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#r",
+    "href": "slides/intro_qk_slides.html#r",
+    "title": "Intro to QK2E",
+    "section": "R",
+    "text": "R\n\nlibrary(tidyverse)\nlibrary(car)\n\ntheme_set(theme_bw(base_size = 16) + \n            theme(panel.grid.minor = element_blank(), \n                  strip.background = element_blank()))"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#the-data",
+    "href": "slides/intro_qk_slides.html#the-data",
+    "title": "Intro to QK2E",
+    "section": "The data",
+    "text": "The data\nDescribe what is happening in these lines of code.\n\nlow &lt;- read.csv(\"data/lowco2.csv\")\n\n \n\n\nnames(low)\n\n[1] \"anesth\" \"co2\"   \n\n\n\n\n\n\n\ndim(low)\n\n[1] 23  2\n\n\n\n\n\n\n\nstr(low)\n\n'data.frame':   23 obs. of  2 variables:\n $ anesth: chr  \"iso\" \"iso\" \"iso\" \"iso\" ...\n $ co2   : int  43 35 50 39 56 54 39 51 49 54 ..."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#visualize-data",
+    "href": "slides/intro_qk_slides.html#visualize-data",
+    "title": "Intro to QK2E",
+    "section": "Visualize data",
+    "text": "Visualize data\n\nlow %&gt;% \n  ggplot(aes(anesth, co2)) + \n  geom_point(alpha = 0.5, size = 5) + \n  labs(x = \"Anesthetic\", y = \"CO2\") + \n  theme_bw(base_size = 24)"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#summarizing-data-point-estimates-and-variability",
+    "href": "slides/intro_qk_slides.html#summarizing-data-point-estimates-and-variability",
+    "title": "Intro to QK2E",
+    "section": "Summarizing data: point estimates and variability",
+    "text": "Summarizing data: point estimates and variability\n\nlow %&gt;%  \n  group_by(anesth) %&gt;% \n  summarise(n = n(), \n            mean = mean(co2),\n            median = median(co2),\n            sd = sd(co2), \n            variance = var(co2), \n            se = sd / sqrt(n)\n            )\n\n# A tibble: 2 × 7\n  anesth     n  mean median    sd variance    se\n  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;\n1 ac        11  70.9   64    20.2     408.  6.09\n2 iso       12  50     50.5  11.4     130.  3.29"
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#confidence-intervals",
+    "href": "slides/intro_qk_slides.html#confidence-intervals",
+    "title": "Intro to QK2E",
+    "section": "Confidence intervals",
+    "text": "Confidence intervals\n\nlow %&gt;%  \n  group_by(anesth) %&gt;% \n  summarise(n = n(), \n            mean = mean(co2),\n            sd = sd(co2), \n            se = sd / sqrt(n), \n            CI_upper = mean + se * qt(p = 0.975, df = n-1), \n            CI_lower = mean + se * qt(p = 0.025, df = n-1), \n            CI = se * qt(p = 0.975, df = n-1), \n            upper = mean + CI, \n            lower = mean - CI\n            )\n\n# A tibble: 2 × 10\n  anesth     n  mean    sd    se CI_upper CI_lower    CI upper lower\n  &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 ac        11  70.9  20.2  6.09     84.5     57.3 13.6   84.5  57.3\n2 iso       12  50    11.4  3.29     57.2     42.8  7.24  57.2  42.8\n\n\nIn a frequentist world, parameters are fixed (but unknowable). Interpret the CI in this context."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#hypothesis-testing",
+    "href": "slides/intro_qk_slides.html#hypothesis-testing",
+    "title": "Intro to QK2E",
+    "section": "Hypothesis testing",
+    "text": "Hypothesis testing\nA. Construct a null hypothesis (HO)\nB. Derive a test statistic from the data\nC. Compare the obtained test statistic to one derived from values obtained under the HO."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#a-p-value-is",
+    "href": "slides/intro_qk_slides.html#a-p-value-is",
+    "title": "Intro to QK2E",
+    "section": "A \\(p\\)-value is",
+    "text": "A \\(p\\)-value is\n\n\nthe probability of seeing a result at least as surprising as what was observed in the data, if the null hypothesis is true.\n\n\n\nUsually, this means\n\na result - numerical value of a statistic\nsurprising - big\nnull hypothesis - the model we use to calculate the \\(p\\)-value\n\nwhich can all be defined to suit the situation."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#what-does-a-small-p-value-mean",
+    "href": "slides/intro_qk_slides.html#what-does-a-small-p-value-mean",
+    "title": "Intro to QK2E",
+    "section": "What does a small \\(p\\)-value mean?",
+    "text": "What does a small \\(p\\)-value mean?\n\nIf the null hypothesis was true, then you’d be really unlikely to see something like what you actually did.\n\n\n\n\nSo, either the “null hypothesis” is not a good description of reality or something surprising happened.\n\n\n\n\nHow useful this is depends on the null hypothesis."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#t-test-equal-variances",
+    "href": "slides/intro_qk_slides.html#t-test-equal-variances",
+    "title": "Intro to QK2E",
+    "section": "T-test: equal variances",
+    "text": "T-test: equal variances\n\nt.test(co2 ~ anesth, var.equal = TRUE, data = low)\n\n\n    Two Sample t-test\n\ndata:  co2 by anesth\nt = 3.0927, df = 21, p-value = 0.005515\nalternative hypothesis: true difference in means between group ac and group iso is not equal to 0\n95 percent confidence interval:\n  6.849172 34.969010\nsample estimates:\n mean in group ac mean in group iso \n         70.90909          50.00000 \n\n\n\n\nInterpret this result."
+  },
+  {
+    "objectID": "slides/intro_qk_slides.html#your-turn",
+    "href": "slides/intro_qk_slides.html#your-turn",
+    "title": "Intro to QK2E",
+    "section": "Your turn",
+    "text": "Your turn\nWith a partner, go to the website, check out the source code, and work though the Chapter 2 notes together."
   }
 ]

@@ -1,0 +1,12 @@
+---
+title: "Slides"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+[Week 1: Intro to Quinn and Keough, 2nd edition](intro_qk_slides.qmd){target="_blank"}
