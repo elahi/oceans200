@@ -3,6 +3,8 @@ title: "Intro to QK2E"
 author: "Robin Elahi"
 subtitle: "Topics in Scientific and Statistical Computing"
 format: revealjs
+filters:
+  - openlinksinnewpage
 ---
 
 ```{r setup, include=FALSE}
@@ -274,7 +276,7 @@ t.test(co2 ~ anesth, var.equal = TRUE, data = low)
 
 ## Your turn
 
-With a partner, go to the [website](https://elahi.github.io/qk2e/), check out the [source code](https://github.com/elahi/qk2e), and work though the [Chapter 2 notes](chapter2.qmd) together.
+With a partner, go to the [website](https://elahi.github.io/qk2e/), check out the [source code](https://github.com/elahi/qk2e), and work though the [Chapter 2 notes](https://elahi.github.io/qk2e/chapter_notes/chapter2.html) together.
 
 <!-- ## Test variances -->
 
