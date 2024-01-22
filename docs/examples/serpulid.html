@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>qk2e - QK Box 6.7 &amp; 6.11</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qk2e</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../chapter_notes/chapter2.html" rel="" target="">
+ <span class="menu-text">Chapter notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../slides/slides.html" rel="" target="">
+ <span class="menu-text">Slides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../examples/low.html" rel="" target="">
+ <span class="menu-text">Examples</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#preliminaries" id="toc-preliminaries" class="nav-link active" data-scroll-target="#preliminaries">Preliminaries</a></li>
+  <li><a href="#fit-model-for-logserpulids" id="toc-fit-model-for-logserpulids" class="nav-link" data-scroll-target="#fit-model-for-logserpulids">Fit model for log(serpulids)</a></li>
+  <li><a href="#generate-planned-comparisons" id="toc-generate-planned-comparisons" class="nav-link" data-scroll-target="#generate-planned-comparisons">Generate planned comparisons</a>
+  <ul class="collapse">
+  <li><a href="#ul-vs-nl" id="toc-ul-vs-nl" class="nav-link" data-scroll-target="#ul-vs-nl">UL vs NL</a></li>
+  <li><a href="#f-vs-average-nl-ul" id="toc-f-vs-average-nl-ul" class="nav-link" data-scroll-target="#f-vs-average-nl-ul">F vs average (NL &amp; UL)</a></li>
+  <li><a href="#sl-vs-average-f-nl-ul" id="toc-sl-vs-average-f-nl-ul" class="nav-link" data-scroll-target="#sl-vs-average-f-nl-ul">SL vs average (F &amp; NL &amp; UL)</a></li>
+  </ul></li>
+  <li><a href="#diagnostics-for-untransformed-data" id="toc-diagnostics-for-untransformed-data" class="nav-link" data-scroll-target="#diagnostics-for-untransformed-data">Diagnostics for untransformed data</a></li>
+  <li><a href="#information-for-power-analysis-using-spirorbids-bugula" id="toc-information-for-power-analysis-using-spirorbids-bugula" class="nav-link" data-scroll-target="#information-for-power-analysis-using-spirorbids-bugula">Information for power analysis using spirorbids, <em>Bugula</em></a>
+  <ul class="collapse">
+  <li><a href="#required-information" id="toc-required-information" class="nav-link" data-scroll-target="#required-information">Required information</a></li>
+  <li><a href="#power-calculations" id="toc-power-calculations" class="nav-link" data-scroll-target="#power-calculations">Power calculations</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">QK Box 6.7 &amp; 6.11</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Keough and Raimondi (1995) set up an experiment to examine the response of serpulid (polychaete worms) larvae to four types of biofilms on hard substrata in shallow marine waters. The four treatments were: sterile substrata, biofilms developed in the field with a net (to keep invertebrates), biofilms developed in the lab, and lab biofilms with a covering net (as a control for the presence of a net). The substrata were left for one week, and then the newly settled worms identified and counted. To control for small numbers of larvae passing through the netting during the conditioning period, they used an additional treatment, which was netted, and returned to the laboratory after one week and censused. The values of this treatment were used to adjust the numbers in the treatment that started in the field.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../media/serpulid2.jpg" class="img-fluid figure-img" width="800"></p>
+<figcaption class="figure-caption">Serpulid polychaete worm. Photo M. Keough <a href="#0"><img src="images/by-03.png" class="img-fluid figure-img" width="57"></a></figcaption>
+</figure>
+</div>
+<p>The paper is here and the data file (also used in first edition) is <a href="../data/serpulid.csv">here</a></p>
+<p>Keough, M. J. &amp; Raimondi, P. T. (1995). Responses of settling invertebrate larvae to bioorganic films: effects of different types of films. <em>Journal of Experimental Marine Biology and Ecology</em>, 185, 235-53.</p>
+<section id="preliminaries" class="level3">
+<h3 class="anchored" data-anchor-id="preliminaries">Preliminaries</h3>
+<p>First, load the required packages (pwr)</p>
+<p>Import serpulid data file (serpulid.csv)</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-2_79b89b2bc67b99caffd1d2731bec9bfc">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>serpulid <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/serpulid.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(serpulid,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   film serp lserp spir bugula
+1    SL   94 1.973    0      4
+2    SL   82 1.914    2      2
+3    SL   74 1.869    2      8
+4    SL   74 1.869    0      2
+5    SL  122 2.086    2     14
+6    SL  112 2.049    2      6
+7    SL   60 1.778    0     12
+8    UL  142 2.152    2      4
+9    UL   80 1.903    0      6
+10   UL  100 2.000    0      2</code></pre>
+</div>
+</div>
+<p>Make film a factor</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-3_cefefce5d3fdd908d949cb3deed2b40a">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>serpulid<span class="sc">$</span>film <span class="ot">&lt;-</span> <span class="fu">factor</span>(serpulid<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="fit-model-for-logserpulids" class="level3">
+<h3 class="anchored" data-anchor-id="fit-model-for-logserpulids">Fit model for log(serpulids)</h3>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-4_40dc67691bf460e637c7e75c96323878">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Check diagnostics</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-5_72cdea75dce43dff542f4eff466b5ce0">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(serpulid.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Generate overall anova table</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-6_7b0cf4bc8099bc6791d880c00c88720b">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(serpulid.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+film         3 0.2458 0.08192   6.015 0.00331 **
+Residuals   24 0.3269 0.01362                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Look at the linear model summary and note the <em>F (field)</em> is the reference level (ie Intercept)</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-7_65b38d8d815f8b50734c71b6d32e2305">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.lm</span>(serpulid.aov) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+aov(formula = lserp ~ film, data = serpulid)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.22929 -0.06500  0.01843  0.07054  0.19557 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.11343    0.04411  47.912  &lt; 2e-16 ***
+filmNL       0.06843    0.06238   1.097  0.28356    
+filmSL      -0.17943    0.06238  -2.876  0.00831 ** 
+filmUL       0.01886    0.06238   0.302  0.76504    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1167 on 24 degrees of freedom
+Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3578 
+F-statistic: 6.015 on 3 and 24 DF,  p-value: 0.003314</code></pre>
+</div>
+</div>
+<p>Get treatment means and compare to the above lm summary</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-8_fc82b47c7931850ed2693e6ec167e390">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(serpulid<span class="sc">$</span>lserp, <span class="fu">list</span>(serpulid<span class="sc">$</span>film), <span class="at">FUN=</span>mean)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Group.1        x
+1       F 2.113429
+2      NL 2.181857
+3      SL 1.934000
+4      UL 2.132286</code></pre>
+</div>
+</div>
+<p>Without any thinking, get pairwise tests</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-9_967c3b82c62917ae3f12c00c3421d99f">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(serpulid.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = lserp ~ film, data = serpulid)
+
+$film
+             diff         lwr          upr     p adj
+NL-F   0.06842857 -0.10365813  0.240515270 0.6947523
+SL-F  -0.17942857 -0.35151527 -0.007341872 0.0387848
+UL-F   0.01885714 -0.15322956  0.190943842 0.9901571
+SL-NL -0.24785714 -0.41994384 -0.075770444 0.0029594
+UL-NL -0.04957143 -0.22165813  0.122515270 0.8561572
+UL-SL  0.19828571  0.02619902  0.370372413 0.0197120</code></pre>
+</div>
+</div>
+</section>
+<section id="generate-planned-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="generate-planned-comparisons">Generate planned comparisons</h2>
+<p>We’re doing this by defining contrasts and refitting the model using this contrast. The planned comparison then appears as the first effect when we look at the model fitting (i.e., film1).</p>
+<section id="ul-vs-nl" class="level3">
+<h3 class="anchored" data-anchor-id="ul-vs-nl">UL vs NL</h3>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-10_b1572d7701bfc0cf401704d20fa48964">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Default</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   NL SL UL
+F   0  0  0
+NL  1  0  0
+SL  0  1  0
+UL  0  0  1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change it</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]       [,2]       [,3]
+F     0 -0.5000000 -0.7071068
+NL    1 -0.1666667  0.4714045
+SL    0  0.8333333 -0.2357023
+UL   -1 -0.1666667  0.4714045</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Refit the model with new contrasts</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.lm</span>(serpulid.aov) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+aov(formula = lserp ~ film, data = serpulid)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.22929 -0.06500  0.01843  0.07054  0.19557 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.09039    0.02206  94.780  &lt; 2e-16 ***
+film1        0.02479    0.03119   0.795  0.43461    
+film2       -0.16407    0.04411  -3.720  0.00107 ** 
+film3        0.08344    0.04411   1.892  0.07067 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1167 on 24 degrees of freedom
+Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3578 
+F-statistic: 6.015 on 3 and 24 DF,  p-value: 0.003314</code></pre>
+</div>
+</div>
+</section>
+<section id="f-vs-average-nl-ul" class="level3">
+<h3 class="anchored" data-anchor-id="f-vs-average-nl-ul">F vs average (NL &amp; UL)</h3>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-11_e57fbecdadb5ad87659842b12b44ef8f">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]       [,2]        [,3]
+F     2 -0.2867757  0.03306064
+NL   -1 -0.3677574 -0.66939360
+SL    0  0.8603272 -0.09918192
+UL   -1 -0.2057940  0.73551488</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Refit the model with new contrasts</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.lm</span>(serpulid.aov) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+aov(formula = lserp ~ film, data = serpulid)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.22929 -0.06500  0.01843  0.07054  0.19557 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.09039    0.02206  94.780  &lt; 2e-16 ***
+film1       -0.01455    0.01801  -0.808 0.427118    
+film2       -0.18341    0.04411  -4.158 0.000353 ***
+film3       -0.01414    0.04411  -0.321 0.751322    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1167 on 24 degrees of freedom
+Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3578 
+F-statistic: 6.015 on 3 and 24 DF,  p-value: 0.003314</code></pre>
+</div>
+</div>
+</section>
+<section id="sl-vs-average-f-nl-ul" class="level3">
+<h3 class="anchored" data-anchor-id="sl-vs-average-f-nl-ul">SL vs average (F &amp; NL &amp; UL)</h3>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-12_16a3604ae61aa7837c7f7456ad4286ad">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrasts</span>(serpulid<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]        [,2]       [,3]
+F    -1 -0.67052910 -0.4658942
+NL   -1  0.73874075 -0.3477481
+SL    3  0.00000000  0.0000000
+UL   -1 -0.06821164  0.8136423</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Refit the model with new contrasts</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>serpulid.aov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+   aov(formula = lserp ~ film, data = serpulid)
+
+Terms:
+                     film Residuals
+Sum of Squares  0.2457707 0.3268840
+Deg. of Freedom         3        24
+
+Residual standard error: 0.1167055
+Estimated effects are balanced</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary.lm</span>(serpulid.aov) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+aov(formula = lserp ~ film, data = serpulid)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.22929 -0.06500  0.01843  0.07054  0.19557 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.090393   0.022055  94.780  &lt; 2e-16 ***
+film1       -0.052131   0.012734  -4.094 0.000415 ***
+film2        0.049265   0.044111   1.117 0.275117    
+film3       -0.008453   0.044111  -0.192 0.849643    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1167 on 24 degrees of freedom
+Multiple R-squared:  0.4292,    Adjusted R-squared:  0.3578 
+F-statistic: 6.015 on 3 and 24 DF,  p-value: 0.003314</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="diagnostics-for-untransformed-data" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics-for-untransformed-data">Diagnostics for untransformed data</h2>
+<p>We used log-transformed data to match the original paper, but if analysing these data from first principles, we’d look at the raw data first to decide which form of model or transformation to use.</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-13_d142b327d21df264b7f970550e989914">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>serpraw.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(serp<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(serpraw.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-13-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-13-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="information-for-power-analysis-using-spirorbids-bugula" class="level2">
+<h2 class="anchored" data-anchor-id="information-for-power-analysis-using-spirorbids-bugula">Information for power analysis using spirorbids, <em>Bugula</em></h2>
+<p>These calculations are used for Box 6.11, where we consider data for two other invertebrate groups, spirorbid polychaetes and bryozoans in the genus <em>Bugula</em>, mainly <em>B. neritina.</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../media/spirorbid.jpg" class="img-fluid figure-img" width="525"></p>
+<figcaption class="figure-caption">Spirorbid polychaete worm, c.&nbsp;2mm diameter. Mick Keough <a href="#0"><img src="images/by-03.png" class="img-fluid figure-img" width="57"></a></figcaption>
+</figure>
+</div>
+<p><img src="../media/bugula.jpg" class="img-fluid"></p>
+<p>Recently metamorphosed bryozoan, <em>Bugula</em>. Approximately 1.5 mm high. Mick Keough <a href="https://creativecommons.org/licenses/by/4.0/"><img src="images/by-03.png" class="img-fluid" width="57"></a></p>
+<section id="required-information" class="level3">
+<h3 class="anchored" data-anchor-id="required-information">Required information</h3>
+<p>We need to run the analysis on each of these groups, to get two important pieces of information. We need estimates of the variance, and we generally use the residual mean square. We also want an estimate of a baseline for calculating a hypothetical Effect Size. In the context of this question, we’ll use the means for unfilmed surfaces, as we are thinking about the potential for our treatments to increase recruitment.</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-14_5d4022457bd29cac1265479d47551cac">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(spir<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(bugula<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>spir.aov<span class="ot">&lt;-</span><span class="fu">aov</span>(spir<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(spir.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-6.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(spir.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+film         3  6.507   2.169   1.678  0.198
+Residuals   24 31.022   1.293               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>bugula.aov<span class="ot">&lt;-</span><span class="fu">aov</span>(bugula<span class="sc">~</span>film, <span class="at">data=</span>serpulid)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bugula.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-7.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-8.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-9.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="serpulid_files/figure-html/unnamed-chunk-14-10.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bugula.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+film         3   22.8   7.587   0.338  0.798
+Residuals   24  538.3  22.429               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>spirmean<span class="ot">&lt;-</span><span class="fu">summarySE</span>(<span class="at">data=</span>serpulid,<span class="at">measurevar =</span> <span class="st">"spir"</span>, <span class="at">groupvars =</span> <span class="st">"film"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>spirmean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  film N      spir        sd        se        ci
+1    F 7 0.5357143 1.0818442 0.4088987 1.0005390
+2   NL 7 0.5714286 0.9759001 0.3688556 0.9025570
+3   SL 7 1.1428571 1.0690450 0.4040610 0.9887017
+4   UL 7 1.7142857 1.3801311 0.5216405 1.2764084</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>bugmean<span class="ot">&lt;-</span><span class="fu">summarySE</span>(<span class="at">data=</span>serpulid,<span class="at">measurevar =</span> <span class="st">"bugula"</span>, <span class="at">groupvars =</span> <span class="st">"film"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>bugmean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  film N   bugula       sd       se       ci
+1    F 7 6.982143 5.520524 2.086562 5.105634
+2   NL 7 8.857143 4.740906 1.791894 4.384607
+3   SL 7 6.857143 4.740906 1.791894 4.384607
+4   UL 7 6.571429 3.779645 1.428571 3.495588</code></pre>
+</div>
+</div>
+</section>
+<section id="power-calculations" class="level3">
+<h3 class="anchored" data-anchor-id="power-calculations">Power calculations</h3>
+<p>There are two scenarios in Box 6.11. Both involve a doubling of settlement from the base treatment SL above. In the first scenario, one treatment is 6.86 and the others are 13.72. In the second scenario, treatment means are spaced evenly between 6.86 and 13.72.</p>
+<div class="cell" data-hash="serpulid_cache/html/unnamed-chunk-15_f9fa8ff3e530601f5b5feaeeb93ee81e">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>alphasq1<span class="ot">&lt;-</span><span class="dv">3</span><span class="sc">*</span><span class="fu">var</span>(<span class="fu">c</span>(<span class="fl">6.86</span>, <span class="fl">13.72</span>, <span class="fl">13.72</span>,<span class="fl">13.72</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>alphasq2<span class="ot">&lt;-</span><span class="dv">3</span><span class="sc">*</span><span class="fu">var</span>(<span class="fu">c</span>(<span class="fl">6.86</span>, <span class="fl">9.14</span>, <span class="fl">11.44</span>,<span class="fl">13.72</span>))</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>msres<span class="ot">=</span><span class="fl">22.43</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>n<span class="ot">=</span><span class="dv">7</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>p<span class="ot">=</span><span class="dv">4</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>lambda1<span class="ot">&lt;-</span>n<span class="sc">*</span>alphasq1<span class="sc">/</span>msres</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>lambda1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11.01484</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>lambda2<span class="ot">&lt;-</span>n<span class="sc">*</span>alphasq2<span class="sc">/</span>msres</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>lambda2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8.168685</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>f1<span class="ot">&lt;-</span><span class="fu">sqrt</span>(alphasq1<span class="sc">/</span>p<span class="sc">/</span>msres)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>f1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6272059</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>f2<span class="ot">&lt;-</span><span class="fu">sqrt</span>(alphasq2<span class="sc">/</span>p<span class="sc">/</span>msres)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>f2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5401285</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#For scenario 1, λ= 11.01 and Cohens *f* = 0.627</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co">#For scenario 2, λ= 8.16 and Cohens *f* = 0.54</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># scenario 1: power</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">pwr.anova.test</span>(<span class="at">k=</span>p,<span class="at">f=</span>f1,<span class="at">sig.level=</span><span class="fl">0.05</span>, <span class="at">n=</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Balanced one-way analysis of variance power calculation 
+
+              k = 4
+              n = 7
+              f = 0.6272059
+      sig.level = 0.05
+          power = 0.7298327
+
+NOTE: n is number in each group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#scenario 2: power</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pwr.anova.test</span>(<span class="at">k=</span>p,<span class="at">f=</span>f2,<span class="at">sig.level=</span><span class="fl">0.05</span>, <span class="at">n=</span>n)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Balanced one-way analysis of variance power calculation 
+
+              k = 4
+              n = 7
+              f = 0.5401285
+      sig.level = 0.05
+          power = 0.5860053
+
+NOTE: n is number in each group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co">#scenario 1: required sample size</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pwr.anova.test</span>(<span class="at">k=</span>p,<span class="at">f=</span>f1,<span class="at">sig.level=</span><span class="fl">0.05</span>, <span class="at">power=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Balanced one-way analysis of variance power calculation 
+
+              k = 4
+              n = 7.976459
+              f = 0.6272059
+      sig.level = 0.05
+          power = 0.8
+
+NOTE: n is number in each group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#scenario 2: required sample size</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pwr.anova.test</span>(<span class="at">k=</span>p,<span class="at">f=</span>f2,<span class="at">sig.level=</span><span class="fl">0.05</span>, <span class="at">power=</span><span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Balanced one-way analysis of variance power calculation 
+
+              k = 4
+              n = 10.37355
+              f = 0.5401285
+      sig.level = 0.05
+          power = 0.8
+
+NOTE: n is number in each group</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

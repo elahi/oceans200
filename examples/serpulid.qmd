@@ -1,0 +1,200 @@
+---
+title: "QK Box 6.7 & 6.11"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+
+# Set working directory
+knitr::opts_knit$set(root.dir = "../")
+```
+
+Keough and Raimondi (1995) set up an experiment to examine the response of serpulid (polychaete worms) larvae to four types of biofilms on hard substrata in shallow marine waters. The four treatments were: sterile substrata, biofilms developed in the field with a net (to keep invertebrates), biofilms developed in the lab, and lab biofilms with a covering net (as a control for the presence of a net). The substrata were left for one week, and then the newly settled worms identified and counted. To control for small numbers of larvae passing through the netting during the conditioning period, they used an additional treatment, which was netted, and returned to the laboratory after one week and censused. The values of this treatment were used to adjust the numbers in the treatment that started in the field.
+
+![Serpulid polychaete worm. Photo M. Keough [![](images/by-03.png){width="57"}](#0)](../media/serpulid2.jpg){width="800"}
+
+The paper is here and the data file (also used in first edition) is [here](../data/serpulid.csv)
+
+Keough, M. J. & Raimondi, P. T. (1995). Responses of settling invertebrate larvae to bioorganic films: effects of different types of films. *Journal of Experimental Marine Biology and Ecology*, 185, 235-53.
+
+### Preliminaries
+
+First, load the required packages
+
+```{r include=FALSE, results='hide'}
+#source("../R/libraries.R")   #This is the common library
+library(Rmisc)
+library(dplyr)
+library(pwr)
+```
+
+Import serpulid data file (serpulid.csv)
+
+```{r}
+serpulid <- read.csv("data/serpulid.csv")
+head(serpulid,10)
+```
+
+Make film a factor
+
+```{r }
+serpulid$film <- factor(serpulid$film)
+```
+
+### Fit model for log(serpulids)
+
+```{r }
+serpulid.aov <- aov(lserp~film, data=serpulid)
+```
+
+Check diagnostics
+
+```{r }
+plot(serpulid.aov)
+```
+
+Generate overall anova table
+
+```{r}
+summary(serpulid.aov)
+```
+
+Look at the linear model summary and note the **F (field)** is the reference level (ie Intercept)
+
+```{r}
+summary.lm(serpulid.aov) 
+```
+
+Get treatment means and compare to the above lm summary
+
+```{r}
+aggregate(serpulid$lserp, list(serpulid$film), FUN=mean)
+```
+
+Without any thinking, get pairwise tests
+
+```{r}
+TukeyHSD(serpulid.aov)
+```
+
+## Generate planned comparisons
+
+We're doing this by defining contrasts and refitting the model using this contrast. The planned comparison then appears as the first effect when we look at the model fitting (i.e., film1).
+
+### UL vs NL
+
+```{r}
+# Default
+contrasts(serpulid$film)
+
+# Change it
+contrasts(serpulid$film) <- c(0,1,0,-1)
+contrasts(serpulid$film)
+
+# Refit the model with new contrasts
+serpulid.aov <- aov(lserp~film, data=serpulid)
+summary(serpulid.aov)
+summary.lm(serpulid.aov) 
+```
+
+### F vs average (NL & UL)
+
+```{r}
+contrasts(serpulid$film) <- c(2,-1,0,-1)
+contrasts(serpulid$film)
+
+# Refit the model with new contrasts
+serpulid.aov <- aov(lserp~film, data=serpulid)
+summary(serpulid.aov)
+summary.lm(serpulid.aov) 
+```
+
+### SL vs average (F & NL & UL)
+
+```{r}
+contrasts(serpulid$film) <- c(-1,-1,3,-1)
+contrasts(serpulid$film)
+
+# Refit the model with new contrasts
+serpulid.aov <- aov(lserp~film, data=serpulid)
+serpulid.aov
+summary.lm(serpulid.aov) 
+```
+
+## Diagnostics for untransformed data
+
+We used log-transformed data to match the original paper, but if analysing these data from first principles, we'd look at the raw data first to decide which form of model or transformation to use.
+
+```{r}
+serpraw.aov <- aov(serp~film, data=serpulid)
+plot(serpraw.aov)
+```
+
+## Information for power analysis using spirorbids, *Bugula*
+
+These calculations are used for Box 6.11, where we consider data for two other invertebrate groups, spirorbid polychaetes and bryozoans in the genus *Bugula*, mainly *B. neritina.*
+
+![Spirorbid polychaete worm, c. 2mm diameter. Mick Keough [![](images/by-03.png){width="57"}](#0)](../media/spirorbid.jpg){width="525"}
+
+![](../media/bugula.jpg)
+
+Recently metamorphosed bryozoan, *Bugula*. Approximately 1.5 mm high. Mick Keough [![](images/by-03.png){width="57"}](https://creativecommons.org/licenses/by/4.0/)
+
+### Required information
+
+We need to run the analysis on each of these groups, to get two important pieces of information. We need estimates of the variance, and we generally use the residual mean square. We also want an estimate of a baseline for calculating a hypothetical Effect Size. In the context of this question, we'll use the means for unfilmed surfaces, as we are thinking about the potential for our treatments to increase recruitment.
+
+```{r}
+boxplot(spir~film, data=serpulid)
+boxplot(bugula~film, data=serpulid)
+spir.aov<-aov(spir~film, data=serpulid)
+plot(spir.aov)
+summary(spir.aov)
+bugula.aov<-aov(bugula~film, data=serpulid)
+plot(bugula.aov)
+summary(bugula.aov)
+
+spirmean<-summarySE(data=serpulid,measurevar = "spir", groupvars = "film")
+spirmean
+
+bugmean<-summarySE(data=serpulid,measurevar = "bugula", groupvars = "film")
+bugmean
+```
+
+### Power calculations
+
+There are two scenarios in Box 6.11. Both involve a doubling of settlement from the base treatment SL above. In the first scenario, one treatment is 6.86 and the others are 13.72. In the second scenario, treatment means are spaced evenly between 6.86 and 13.72.
+
+```{r}
+alphasq1<-3*var(c(6.86, 13.72, 13.72,13.72))
+alphasq2<-3*var(c(6.86, 9.14, 11.44,13.72))
+msres=22.43
+n=7
+p=4
+lambda1<-n*alphasq1/msres
+lambda1
+lambda2<-n*alphasq2/msres
+lambda2
+f1<-sqrt(alphasq1/p/msres)
+f1
+f2<-sqrt(alphasq2/p/msres)
+f2
+
+#For scenario 1, λ= 11.01 and Cohens *f* = 0.627
+#For scenario 2, λ= 8.16 and Cohens *f* = 0.54
+# scenario 1: power
+pwr.anova.test(k=p,f=f1,sig.level=0.05, n=n)
+#scenario 2: power
+pwr.anova.test(k=p,f=f2,sig.level=0.05, n=n)
+#scenario 1: required sample size
+pwr.anova.test(k=p,f=f1,sig.level=0.05, power=0.8)
+#scenario 2: required sample size
+pwr.anova.test(k=p,f=f2,sig.level=0.05, power=0.8)
+```
