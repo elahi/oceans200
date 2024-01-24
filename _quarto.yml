@@ -37,6 +37,7 @@ website:
         - examples/low.qmd
         - examples/lowboot.qmd
         - examples/lowbayes.qmd
+        - examples/serpulid.qmd
         
 format:
   html:

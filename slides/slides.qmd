@@ -10,3 +10,6 @@ editor_options:
 ---
 
 [Week 1: Intro to Quinn and Keough, 2nd edition](intro_qk_slides.qmd){target="_blank"}
+
+[Week 3: Linear models: one-way designs](lm_one_way.qmd){target="_blank"}
+
