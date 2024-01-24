@@ -36,13 +36,11 @@ knitr::opts_knit$set(root.dir = "../")
 
 ## Outline
 
--   Intro to linear models; 15 min (board)
+-   Intro to linear models (board)
 
--   Visualizing ANOVA; 10 min (board)
+-   Visualizing ANOVA (board)
 
--   R examples; 20 min (slides - make a game of it?)
-
--   ANOVA primer; 45 min (handout)
+-   R examples (slides)
 
 ## Examples from QK2E chapter 6
 
@@ -98,9 +96,9 @@ d %>% ggplot(aes(fitted, resids)) +
 
 ## Discussion
 
--   Thoughts on the reading
+-   Thoughts on the reading (6.1; continuous predictor)
 
--   This is foundational stuff. You've probably done a linear regression before. If you were teaching an undergrad, what is a key point you would emphasize?
+-   This material is foundational. You've probably done a linear regression before. If you were teaching an undergrad, what is a key point you would emphasize?
 
 ## Box 6.7
 
@@ -115,7 +113,8 @@ Keough and Raimondi (1995) set up an experiment to examine the response of serpu
 
 ```{r}
 #| echo: false
-d <- read_csv("data/serpulid.csv")
+d <- read.csv("data/serpulid.csv") %>% 
+  mutate(film = factor(film))
 d %>% 
   ggplot(aes(film, lserp)) + 
   geom_boxplot() + 
@@ -170,8 +169,87 @@ anova(m0, m1)
 anova(m1)
 ```
 
+## Planned contrasts
+
+Define a linear combination of the *p* means that represent the comparison of interest
+
+$$
+    c_1 \bar{y}_1 + ... + c_i \bar{y}_i + c_p \bar{y}_p
+$$
+
+where $c_i$ represent contrast coefficients and sum to zero, and $\bar{y}_i$ are group means.
+
+. . .
+
+To omit a group, give it a coefficient of zero.
+
+. . .
+
+Very cool: you can do contrasts for polynomial trends with group means! (see Box 6.4)
+
+## UL vs NL
+
+```{r}
+# Default
+contrasts(d$film)
+```
+
+. . .
+
+```{r}
+# Change it
+contrasts(d$film) <- c(0, 1, 0, -1)
+contrasts(d$film)
+```
+
+## UL vs NL
+
+```{r}
+# Refit the model with new contrasts
+serpulid.aov <- aov(lserp ~ film, data = d)
+summary(serpulid.aov)
+```
+
+> Note that the `aov` results have not changed.
+
+## UL vs NL
+
+```{r}
+tidy(summary.lm(serpulid.aov))
+```
+
+> To evaluate the contrast, look at the statistic and p-value for `film1`
+
+## F vs average (NL & UL)
+
+```{r}
+contrasts(d$film) <- c(2,-1,0,-1)
+contrasts(d$film)
+```
+
+. . .
+
+```{r}
+serpulid.aov <- aov(lserp ~ film, data = d)
+tidy(summary.lm(serpulid.aov))
+```
+
+## SL vs average (F & NL & UL)
+
+```{r}
+contrasts(d$film) <- c(-1,-1,3,-1)
+contrasts(d$film)
+```
+
+. . .
+
+```{r}
+serpulid.aov <- aov(lserp ~ film, data = d)
+tidy(summary.lm(serpulid.aov))
+```
+
 ## Discussion
 
--   Thoughts on the reading
+-   Thoughts on the reading (6.2; categorical predictor)
 
--   This is foundational stuff. You've probably done a one-way ANOVA before. If you were teaching an undergrad, what is a key point you would emphasize?
+-   This material is foundational. You've probably done a one-way ANOVA before. If you were teaching an undergrad, what is a key point you would emphasize?

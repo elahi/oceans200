@@ -405,10 +405,9 @@ Robin Elahi
 <section id="outline" class="slide level2">
 <h2>Outline</h2>
 <ul>
-<li><p>Intro to linear models; 15 min (board)</p></li>
-<li><p>Visualizing ANOVA; 10 min (board)</p></li>
-<li><p>R examples; 20 min (slides - make a game of it?)</p></li>
-<li><p>ANOVA primer; 45 min (handout)</p></li>
+<li><p>Intro to linear models (board)</p></li>
+<li><p>Visualizing ANOVA (board)</p></li>
+<li><p>R examples (slides)</p></li>
 </ul>
 </section>
 <section id="examples-from-qk2e-chapter-6" class="slide level2">
@@ -473,8 +472,8 @@ F-statistic:  24.3 on 1 and 14 DF,  p-value: 0.0002216</code></pre>
 <section id="discussion" class="slide level2">
 <h2>Discussion</h2>
 <ul>
-<li><p>Thoughts on the reading</p></li>
-<li><p>This is foundational stuff. You’ve probably done a linear regression before. If you were teaching an undergrad, what is a key point you would emphasize?</p></li>
+<li><p>Thoughts on the reading (6.1; continuous predictor)</p></li>
+<li><p>This material is foundational. You’ve probably done a linear regression before. If you were teaching an undergrad, what is a key point you would emphasize?</p></li>
 </ul>
 </section>
 <section id="box-6.7" class="slide level2">
@@ -526,7 +525,7 @@ F-statistic: 6.015 on 3 and 24 DF,  p-value: 0.003314</code></pre>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>d <span class="ot">&lt;-</span> d <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">film_ =</span> <span class="fu">fct_relevel</span>(film, <span class="st">"SL"</span>, <span class="st">"UL"</span>, <span class="st">"NL"</span>, <span class="st">"F"</span>))</span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="fu">glimpse</span>(d<span class="sc">$</span>film); <span class="fu">glimpse</span>(d<span class="sc">$</span>film_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> chr [1:28] "SL" "SL" "SL" "SL" "SL" "SL" "SL" "UL" "UL" "UL" "UL" "UL" ...</code></pre>
+<pre><code> Factor w/ 4 levels "F","NL","SL",..: 3 3 3 3 3 3 3 4 4 4 ...</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Factor w/ 4 levels "SL","UL","NL",..: 1 1 1 1 1 1 1 2 2 2 ...</code></pre>
@@ -619,11 +618,147 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
+<section id="planned-contrasts" class="slide level2">
+<h2>Planned contrasts</h2>
+<p>Define a linear combination of the <em>p</em> means that represent the comparison of interest</p>
+<p><span class="math display">\[
+    c_1 \bar{y}_1 + ... + c_i \bar{y}_i + c_p \bar{y}_p
+\]</span></p>
+<p>where <span class="math inline">\(c_i\)</span> represent contrast coefficients and sum to zero, and <span class="math inline">\(\bar{y}_i\)</span> are group means.</p>
+<div class="fragment">
+<p>To omit a group, give it a coefficient of zero.</p>
+</div>
+<div class="fragment">
+<p>Very cool: you can do contrasts for polynomial trends with group means! (see Box 6.4)</p>
+</div>
+</section>
+<section id="ul-vs-nl" class="slide level2">
+<h2>UL vs NL</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># Default</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   NL SL UL
+F   0  0  0
+NL  1  0  0
+SL  0  1  0
+UL  0  0  1</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Change it</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]       [,2]       [,3]
+F     0 -0.5000000 -0.7071068
+NL    1 -0.1666667  0.4714045
+SL    0  0.8333333 -0.2357023
+UL   -1 -0.1666667  0.4714045</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="ul-vs-nl-1" class="slide level2">
+<h2>UL vs NL</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># Refit the model with new contrasts</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp <span class="sc">~</span> film, <span class="at">data =</span> d)</span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="fu">summary</span>(serpulid.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value  Pr(&gt;F)   
+film         3 0.2458 0.08192   6.015 0.00331 **
+Residuals   24 0.3269 0.01362                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<blockquote>
+<p>Note that the <code>aov</code> results have not changed.</p>
+</blockquote>
+</section>
+<section id="ul-vs-nl-2" class="slide level2">
+<h2>UL vs NL</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">tidy</span>(<span class="fu">summary.lm</span>(serpulid.aov))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   2.09      0.0221    94.8   2.07e-32
+2 film1         0.0248    0.0312     0.795 4.35e- 1
+3 film2        -0.164     0.0441    -3.72  1.07e- 3
+4 film3         0.0834    0.0441     1.89  7.07e- 2</code></pre>
+</div>
+</div>
+<blockquote>
+<p>To evaluate the contrast, look at the statistic and p-value for <code>film1</code></p>
+</blockquote>
+</section>
+<section id="f-vs-average-nl-ul" class="slide level2">
+<h2>F vs average (NL &amp; UL)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]       [,2]        [,3]
+F     2 -0.2867757  0.03306064
+NL   -1 -0.3677574 -0.66939360
+SL    0  0.8603272 -0.09918192
+UL   -1 -0.2057940  0.73551488</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp <span class="sc">~</span> film, <span class="at">data =</span> d)</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="fu">tidy</span>(<span class="fu">summary.lm</span>(serpulid.aov))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   2.09      0.0221    94.8   2.07e-32
+2 film1        -0.0145    0.0180    -0.808 4.27e- 1
+3 film2        -0.183     0.0441    -4.16  3.53e- 4
+4 film3        -0.0141    0.0441    -0.321 7.51e- 1</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="sl-vs-average-f-nl-ul" class="slide level2">
+<h2>SL vs average (F &amp; NL &amp; UL)</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">3</span>,<span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="fu">contrasts</span>(d<span class="sc">$</span>film)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [,1]        [,2]       [,3]
+F    -1 -0.67052910 -0.4658942
+NL   -1  0.73874075 -0.3477481
+SL    3  0.00000000  0.0000000
+UL   -1 -0.06821164  0.8136423</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>serpulid.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(lserp <span class="sc">~</span> film, <span class="at">data =</span> d)</span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="fu">tidy</span>(<span class="fu">summary.lm</span>(serpulid.aov))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)  2.09       0.0221    94.8   2.07e-32
+2 film1       -0.0521     0.0127    -4.09  4.15e- 4
+3 film2        0.0493     0.0441     1.12  2.75e- 1
+4 film3       -0.00845    0.0441    -0.192 8.50e- 1</code></pre>
+</div>
+</div>
+</div>
+</section>
 <section id="discussion-1" class="slide level2">
 <h2>Discussion</h2>
 <ul>
-<li><p>Thoughts on the reading</p></li>
-<li><p>This is foundational stuff. You’ve probably done a one-way ANOVA before. If you were teaching an undergrad, what is a key point you would emphasize?</p></li>
+<li><p>Thoughts on the reading (6.2; categorical predictor)</p></li>
+<li><p>This material is foundational. You’ve probably done a one-way ANOVA before. If you were teaching an undergrad, what is a key point you would emphasize?</p></li>
 </ul>
 
 <div class="footer footer-default">
