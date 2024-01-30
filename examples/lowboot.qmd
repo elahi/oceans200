@@ -16,8 +16,9 @@ knitr:
     warning: false
 ---
 
-```{r setup}
-#| include: false
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+
 # Set working directory
 knitr::opts_knit$set(root.dir = "../")
 ```

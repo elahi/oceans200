@@ -1,0 +1,142 @@
+---
+title: "QK Box 7.1"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+
+# Set working directory
+knitr::opts_knit$set(root.dir = "../")
+```
+
+Linton et al. (2009) studied the effects of the insecticide pyriproxyfen on ovarian development in an endemic Christmas Island land crab, *Geocarcoidea natalis*. The insecticide was proposed as a means of controlling numbers of an introduced ant species that was viewed as a major threat, and it is an endocrine disruptor. The experiment was designed to test whether the insecticide might pose risks to the crabs, which have a hormone similar to the one targeted in insects, and consisted of feeding crabs a mixture of leaf litter and a bait. Half of the baits contained the insecticide, and the other half were controls (bait type factor). The baits were supplied at three rates, with two levels corresponding to levels used in field applications (2 kg ha^-1^ and 4 kg ha^-1^), with the third rate being ad libitum feeding (bait dosage factor). The experimental units in this case were large plastic tubs, each containing a single female crab, and there were 7 crabs for each combination of factors. The response variable was the dry mass of the ovaries of each crab. A two-factor linear model (7.2) including the fixed main effects of bait type and bait dosage and their interaction was fitted to these data.
+
+[![John Tann from Sydney, Australia, \[CC BY 2.0\](https://creativecommons.org/licenses/by/2.0), via Wikimedia Commons](../media/Gecarcoidea_natalis_2.jpg)](https://commons.wikimedia.org/wiki/File:Gecarcoidea_natalis_2.jpg)
+
+Here is the [paper](https://doi.org/10.1016/j.cbpa.2009.02.024) and the [data](../data/linton.csv)
+
+Linton, S., Barrow, L., Davies, C. & Harman, L. (2009). Potential endocrine disruption of ovary synthesis in the Christmas Island red crab *Gecarcoidea natalis* by the insecticide pyriproxyfen. *Comparative Biochemistry and Physiology, Part A*, 154, 289-97.
+
+### Preliminaries
+
+Load packages
+
+```{r}
+#| warning: false
+library(tidyverse)
+library(sjstats)
+library(effectsize)
+library(afex)
+library(emmeans)
+library(ggsci)
+library(patchwork)
+```
+
+Import linton data file (linton.csv)
+
+```{r}
+linton <- read.csv("data/linton.csv")
+head(linton,10)
+```
+
+### Fit model to untransformed data and check residuals
+
+Start with boxlplots. Too few reps for boxplot by cell so boxplot for each factor separately
+
+```{r }
+boxplot(drymass~type,data=linton)
+boxplot(drymass~dosage,data=linton)
+linton.aov <- aov(drymass~type*dosage, data=linton)
+plot(linton.aov)
+```
+
+No strong pattern in residuals or boxplots so examine analysis with untransformed data
+
+```{r }
+summary(linton.aov)
+```
+
+Get effect size measures (eta- and omega-squared (effectsize package)
+
+```{r }
+eta_squared(linton.aov)
+omega_squared(linton.aov)
+```
+
+Interaction plot
+
+```{r }
+afex_plot(linton.aov, "type", "dosage", dodge=0.05)+theme_light()
+```
+
+### High quality figures
+
+```{r include=FALSE, results='hide'}
+source("R/appearance.R")   #This is the common library of graphics tweaks, defining the qk theme
+```
+
+#### Residual plot
+
+```{r}
+p1 <- ggplot(linton.aov, aes(x = linton.aov$fitted.values, y = linton.aov$residuals)) +
+  geom_point(color=sc) +
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text = element_text(colour = ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac),
+        )+labs(x = "Predicted ovary mass", y = "Residuals", 
+       )
+```
+
+#### Interaction plot
+
+Use emmeans to get dataframe of means and se
+
+```{r}
+emm1<-emmeans(linton.aov, ~type|dosage)
+emm2<-as.data.frame(emm1)
+emm2
+```
+
+Means and error bars
+
+```{r}
+pd=position_dodge(width=0.05)
+
+p2<-ggplot(emm2,aes(x=dosage,y=emmean,shape=type, group=type, color=type))+
+  geom_point(position=pd,aes(shape=type), size=3,show.legend = FALSE)+
+  geom_errorbar(aes(ymin = emmean-SE, ymax = emmean+SE), width=0, position = pd,show.legend = FALSE)+
+  geom_line(aes(color=type), position=pd, linewidth=1.5)+
+  scale_color_uchicago(labels = c("Control", "Experimental"))+
+    scale_linetype_manual(values=c("solid", "solid"))+
+  labs(x = "Food level", y = "Hg (mg/g dw"
+       )+
+  theme_classic(base_size = 10)+
+  theme(
+    axis.text.x = element_text(color="black",size=10),
+    axis.text.y= element_text(color=ac),
+    axis.line = element_line(color = ac),
+    axis.ticks = element_line(color = ac),
+        )+
+  theme(
+  legend.position = c(.6, .95),
+  legend.justification = c("right", "top"),
+  legend.box.just = "right",
+  legend.margin = margin(6, 6, 6, 6),
+  legend.title = element_blank(),
+)
+```
+
+Combine figures
+
+```{r}
+p1+p2
+```

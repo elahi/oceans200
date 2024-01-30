@@ -5,6 +5,8 @@ project:
     - "*.qmd"
     - "!examples_qk/"
     - "!examples_qmd/"
+    # - "!examples_qk/lowbayes"
+    # - "!examples_qk/lowboot"
 
 website:
   title: "qk2e"
@@ -38,6 +40,7 @@ website:
         - examples/lowboot.qmd
         - examples/lowbayes.qmd
         - examples/serpulid.qmd
+        - examples/linton.qmd
         
 format:
   html:
