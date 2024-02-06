@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>qk2e - QK Box 10.6</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qk2e</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../chapter_notes/chapter2.html" rel="" target="">
+ <span class="menu-text">Chapter notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../slides/slides.html" rel="" target="">
+ <span class="menu-text">Slides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../examples/low.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Examples</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../examples/caballes.html">QK Box 10.6</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/low.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 2.2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/lowboot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 2.3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/serpulid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 6.7 &amp; 6.11</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/linton.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 7.1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/caballes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">QK Box 10.6</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#preliminaries" id="toc-preliminaries" class="nav-link active" data-scroll-target="#preliminaries">Preliminaries</a></li>
+  <li><a href="#visualize-data" id="toc-visualize-data" class="nav-link" data-scroll-target="#visualize-data">Visualize data</a></li>
+  <li><a href="#run-model" id="toc-run-model" class="nav-link" data-scroll-target="#run-model">Run model</a>
+  <ul class="collapse">
+  <li><a href="#fit-as-lm-using-ols-estimation" id="toc-fit-as-lm-using-ols-estimation" class="nav-link" data-scroll-target="#fit-as-lm-using-ols-estimation">Fit as lm using OLS estimation</a></li>
+  <li><a href="#fit-mixed-effects-model-using-remlml" id="toc-fit-mixed-effects-model-using-remlml" class="nav-link" data-scroll-target="#fit-mixed-effects-model-using-remlml">Fit mixed effects model using REML/ML</a></li>
+  </ul></li>
+  <li><a href="#simplify-dataset-by-averaging-across-larvae-within-a-jar" id="toc-simplify-dataset-by-averaging-across-larvae-within-a-jar" class="nav-link" data-scroll-target="#simplify-dataset-by-averaging-across-larvae-within-a-jar">Simplify dataset by averaging across larvae within a jar</a>
+  <ul class="collapse">
+  <li><a href="#fit-nested-anova-with-ols" id="toc-fit-nested-anova-with-ols" class="nav-link" data-scroll-target="#fit-nested-anova-with-ols">Fit nested ANOVA with OLS</a></li>
+  <li><a href="#fit-mixed-effects-model-using-remlml-1" id="toc-fit-mixed-effects-model-using-remlml-1" class="nav-link" data-scroll-target="#fit-mixed-effects-model-using-remlml-1">Fit mixed effects model using REML/ML</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">QK Box 10.6</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Caballes et al.&nbsp;(2016) examined the effects of maternal nutrition (three treatments: starved or fed one of two coral genera: <em>Acropora</em> or <em>Porites</em>) on the larval biology of crown-of-thorns seastars. There were three female seastars nested within each treatment, 50 larvae reared from each female were placed into each of three glass culture jars and the lengths of ten larvae from each jar after four days were measured after 4 days. This fully balanced design has maternal nutrition as a fixed factor with three random levels of nesting: females within nutrition treatment, jars within females and individual larvae within jars.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../media/Crown_of_thorns.jpg" class="img-fluid figure-img" width="686"></p>
+<figcaption class="figure-caption">Crown of thorns seastar, Acanthaster planci. Mick Keough, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY 4.0</a></figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../media/Larval cycle of crown-of-thorns.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Larval cycle of crown-of-thorns. <a href="www.aims.gov.au">AIMS</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY 4.0</a></figcaption>
+</figure>
+</div>
+<p>The paper is <a href="doi:10.1371/journal.pone.0158007">here</a></p>
+<p>Caballes, C. F., Pratchett, M. S., Kerr, A. M. &amp; Rivera-Posada, J. A. (2016). The role of maternal nutrition on oocyte size and quality, with respect to early larval development in the coral-eating starfish, <em>Acanthaster planci</em>. <em>PLoS One</em>, 11, e0158007.</p>
+<section id="preliminaries" class="level3">
+<h3 class="anchored" data-anchor-id="preliminaries">Preliminaries</h3>
+<p>Packages:</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-1_2e63a092c8abe39762e8da3eee71a7a0">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/set_ggplot_theme.R"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rmisc)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VCA)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(afex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Data:</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-3_0cb64fcaacb304c9e074daa164f2ae67">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/caballes_length.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>caballes_length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 270 × 4
+   diet    female   jar length
+   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+ 1 starved      1     1  0.638
+ 2 starved      1     1  0.533
+ 3 starved      1     1  0.476
+ 4 starved      1     1  0.359
+ 5 starved      1     1  0.354
+ 6 starved      1     1  0.576
+ 7 starved      1     1  0.742
+ 8 starved      1     1  0.495
+ 9 starved      1     1  0.803
+10 starved      1     1  0.493
+# ℹ 260 more rows</code></pre>
+</div>
+</div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-4_5754bf618ae22c72db79ca6561f41cbd">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_sum_contrasts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Make female and jar factors</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-5_00666bafff279180ddd406ccee3c0dfc">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>female <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>female)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>jar <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>jar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Reorder nutrition treatments so starved is first for default lm contrasts</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-6_65c9b565ec09353f737f80c91f9d63c6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>diet <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>diet, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"starved"</span>,<span class="st">"aa"</span>,<span class="st">"pr"</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(caballes_length<span class="sc">$</span>diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "starved" "aa"      "pr"     </code></pre>
+</div>
+</div>
+</section>
+<section id="visualize-data" class="level2">
+<h2 class="anchored" data-anchor-id="visualize-data">Visualize data</h2>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-7_f77b54ab105faa468db1b26b8770cbb6">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(jar, length, <span class="at">color =</span> female)) <span class="sc">+</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="caballes_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="run-model" class="level2">
+<h2 class="anchored" data-anchor-id="run-model">Run model</h2>
+<p><strong>Note:</strong> can’t get the aov commands to work for 3 level nested design</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-8_6f46c2497175375da2f8cd7b855db2d0">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>caballes.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(length<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female<span class="sc">/</span>jar), caballes_length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in qr.qty(qr.e, resp): NA/NaN/Inf in foreign function call (arg 1)</code></pre>
+</div>
+</div>
+<section id="fit-as-lm-using-ols-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="fit-as-lm-using-ols-estimation">Fit as lm using OLS estimation</h3>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-9_25be8814ad9c73be8a38667a2b8a7257">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>caballes.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> diet<span class="sc">/</span>female<span class="sc">/</span>jar, caballes_length)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: length
+                 Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+diet              2 2.5334 1.26668 72.1624 &lt; 2.2e-16 ***
+diet:female       6 0.3735 0.06224  3.5460  0.002199 ** 
+diet:female:jar  18 0.5265 0.02925  1.6664  0.045989 *  
+Residuals       243 4.2654 0.01755                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Check diagnostics and lm output (not shown):</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-10_01d7d393257ea8177fc204f54255bbc6">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(caballes.lm)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Get F and P values using correct denominators</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-11_a10ee85848863e41abe87bcb9cf1b2bf">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Diet F</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">1.26668</span><span class="sc">/</span><span class="fl">0.06224</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.002120396</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Females F</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.06224</span><span class="sc">/</span><span class="fl">0.02925</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">6</span>, <span class="at">df2 =</span> <span class="dv">18</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.100229</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Jars F</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.02925</span><span class="sc">/</span><span class="fl">0.01755</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">18</span>, <span class="at">df2 =</span> <span class="dv">243</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.04594475</code></pre>
+</div>
+</div>
+<p>Variance components from VCA</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-12_ff32bd51293e3420e7afe9a5ceadfff5">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>caballes.vca <span class="ot">&lt;-</span> <span class="fu">anovaMM</span>(length <span class="sc">~</span> diet<span class="sc">/</span>(female)<span class="sc">/</span>(jar), caballes_length)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>caballes.vca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+ANOVA-Type Estimation of Mixed Model:
+--------------------------------------
+
+    [Fixed Effects]
+
+        int      dietaa      dietpr dietstarved 
+   0.526911    0.218889    0.188744    0.000000 
+
+
+    [Variance Components]
+
+  Name            DF         SS       MS       VC       %Total    SD      
+1 total           200.914152                   0.019823 100       0.140793
+2 diet:female     6          0.37346  0.062243 0.0011   5.547827  0.033162
+3 diet:female:jar 18         0.526523 0.029251 0.00117  5.90134   0.034202
+4 error           243        4.265431 0.017553 0.017553 88.550832 0.132489
+  CV[%]    
+1 21.242557
+2 5.003435 
+3 5.160385 
+4 19.989554
+
+Mean: 0.662789 (N = 270) 
+
+Experimental Design: balanced  |  Method: ANOVA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VCAinference</span>(caballes.vca, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">VarVC =</span> <span class="cn">TRUE</span>, <span class="at">ci.method =</span> <span class="st">"satterthwaite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+Inference from Mixed Model Fit
+------------------------------
+
+&gt; VCA Result:
+-------------
+
+    [Fixed Effects]
+
+        int      dietaa      dietpr dietstarved 
+     0.5269      0.2189      0.1887      0.0000 
+
+
+    [Variance Components]
+
+  Name            DF       SS     MS     VC     %Total  SD     CV[%]   Var(VC)
+1 total           200.9142               0.0198 100     0.1408 21.2426        
+2 diet:female     6        0.3735 0.0622 0.0011 5.5478  0.0332 5.0034  0      
+3 diet:female:jar 18       0.5265 0.0293 0.0012 5.9013  0.0342 5.1604  0      
+4 error           243      4.2654 0.0176 0.0176 88.5508 0.1325 19.9896 0      
+
+Mean: 0.6628 (N = 270) 
+
+Experimental Design: balanced  |  Method: ANOVA
+
+
+&gt; VC:
+-----
+                Estimate       DF CI LCL CI UCL One-Sided LCL One-Sided UCL
+total             0.0198 200.9142 0.0165 0.0244        0.0169        0.0235
+diet:female       0.0011   1.5701 0.0003 0.1039        0.0003        0.0427
+diet:female:jar   0.0012   2.8040 0.0004 0.0188        0.0004        0.0112
+error             0.0176 243.0000 0.0148 0.0211        0.0152        0.0205
+
+&gt; SD:
+-----
+                Estimate       DF CI LCL CI UCL One-Sided LCL One-Sided UCL
+total             0.1408 200.9142 0.1283 0.1560        0.1302        0.1535
+diet:female       0.0332   1.5701 0.0164 0.3223        0.0184        0.2066
+diet:female:jar   0.0342   2.8040 0.0191 0.1371        0.0210        0.1058
+error             0.1325 243.0000 0.1217 0.1454        0.1233        0.1432
+
+&gt; CV[%]:
+--------
+                Estimate       DF  CI LCL  CI UCL One-Sided LCL One-Sided UCL
+total            21.2426 200.9142 19.3530 23.5442       19.6423       23.1536
+diet:female       5.0034   1.5701  2.4710 48.6259        2.7686       31.1672
+diet:female:jar   5.1604   2.8040  2.8837 20.6905        3.1612       15.9636
+error            19.9896 243.0000 18.3593 21.9400       18.6100       21.6107
+
+
+95% Confidence Level  
+Satterthwaite methodology used for computing CIs </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-mixed-effects-model-using-remlml" class="level3">
+<h3 class="anchored" data-anchor-id="fit-mixed-effects-model-using-remlml">Fit mixed effects model using REML/ML</h3>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-13_f23714e1f54b1516d17704411c921a73">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>caballes.lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(length <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female<span class="sc">/</span>jar), caballes_length)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: length ~ diet + (1 | female/jar)
+   Data: caballes_length
+
+REML criterion at convergence: -289.2
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.69014 -0.69659  0.01388  0.64143  2.59374 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ jar:female (Intercept) 0.00117  0.03420 
+ female     (Intercept) 0.00110  0.03316 
+ Residual               0.01755  0.13249 
+Number of obs: 270, groups:  jar:female, 27; female, 9
+
+Fixed effects:
+            Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)  0.66279    0.01518  5.99986  43.652 9.68e-09 ***
+diet1       -0.13588    0.02147  5.99986  -6.328 0.000728 ***
+diet2        0.08301    0.02147  5.99986   3.866 0.008306 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+      (Intr) diet1 
+diet1  0.000       
+diet2  0.000 -0.500</code></pre>
+</div>
+</div>
+<p>Get F-ratio for diet test using lmerTest</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-14_2995517acf609fdc4ca3086542b05924">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lmer, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Kenward-Roger's method
+      Sum Sq Mean Sq NumDF DenDF F value   Pr(&gt;F)   
+diet 0.71442 0.35721     2     6   20.35 0.002121 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>CI on variance components (remembering to square CIs from lmer which are in SD units)</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-15_9fa078af78660424b3e5ef150fa42174">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>caballes.ci <span class="ot">&lt;-</span> <span class="fu">confint.merMod</span>(caballes.lmer)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>caballes.vc <span class="ot">&lt;-</span> (caballes.ci)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(caballes.vc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  2.5 %      97.5 %
+.sig01      0.000000000 0.004051007
+.sig02      0.000000000 0.003177589
+.sigma      0.014769187 0.021083239
+(Intercept) 0.404053917 0.475997080
+diet1       0.030364676 0.009506432
+diet2       0.001992217 0.014735036</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="simplify-dataset-by-averaging-across-larvae-within-a-jar" class="level2">
+<h2 class="anchored" data-anchor-id="simplify-dataset-by-averaging-across-larvae-within-a-jar">Simplify dataset by averaging across larvae within a jar</h2>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-16_97dae70c0b7795c1e769a427983cdece">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> caballes_length <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(diet, female, jar) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(length), </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(length), </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(), </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(female, mean)) <span class="sc">+</span> </span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span> </span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Mean length (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="caballes_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="fit-nested-anova-with-ols" class="level3">
+<h3 class="anchored" data-anchor-id="fit-nested-anova-with-ols">Fit nested ANOVA with OLS</h3>
+<p>Female is nested within treatment:</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-17_4bc1cddd5e8c671d640e6bbf0837aaf2">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>d_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(mean<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female), d)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Error: female
+          Df  Sum Sq Mean Sq F value  Pr(&gt;F)   
+diet       2 0.25334 0.12667   20.35 0.00212 **
+Residuals  6 0.03735 0.00622                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Error: Within
+          Df  Sum Sq  Mean Sq F value Pr(&gt;F)
+Residuals 18 0.05265 0.002925               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mean <span class="sc">~</span> diet <span class="sc">/</span> female, d)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: mean
+            Df   Sum Sq  Mean Sq F value    Pr(&gt;F)    
+diet         2 0.253336 0.126668 43.3035 1.323e-07 ***
+diet:female  6 0.037346 0.006224  2.1279    0.1002    
+Residuals   18 0.052652 0.002925                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Get F and P values using correct denominators. Note that I’m using <code>broom:tidy</code> to tidy the <code>anova</code> output, and <code>lead()</code> to calculate the <code>new_F</code> and <code>new_P</code>. This avoids extracting <code>statistic</code> (F-value) and <code>df</code> into new objects, or hard-coding the calculations.</p>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-18_88fa8952c5d57a2d9a7e30808e5ea2cb">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">anova</span>(m1)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_F =</span> meansq <span class="sc">/</span> <span class="fu">lead</span>(meansq), </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">new_P =</span> <span class="fu">pf</span>(new_F, <span class="at">df1 =</span> df, <span class="at">df2 =</span> <span class="fu">lead</span>(df), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">term</th>
+<th style="text-align: right;">df</th>
+<th style="text-align: right;">sumsq</th>
+<th style="text-align: right;">meansq</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">new_F</th>
+<th style="text-align: right;">new_P</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">diet</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.253</td>
+<td style="text-align: right;">0.127</td>
+<td style="text-align: right;">43.303</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">20.351</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">diet:female</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.037</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">2.128</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">2.128</td>
+<td style="text-align: right;">0.100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Residuals</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">0.053</td>
+<td style="text-align: right;">0.003</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="fit-mixed-effects-model-using-remlml-1" class="level3">
+<h3 class="anchored" data-anchor-id="fit-mixed-effects-model-using-remlml-1">Fit mixed effects model using REML/ML</h3>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-19_5aa213dbb9478c316920b4b5923568b6">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mean <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female), d)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
+lmerModLmerTest]
+Formula: mean ~ diet + (1 | female)
+   Data: d
+
+REML criterion at convergence: -60.8
+
+Scaled residuals: 
+     Min       1Q   Median       3Q      Max 
+-2.05994 -0.46141  0.08908  0.48149  2.22410 
+
+Random effects:
+ Groups   Name        Variance Std.Dev.
+ female   (Intercept) 0.001100 0.03316 
+ Residual             0.002925 0.05408 
+Number of obs: 27, groups:  female, 9
+
+Fixed effects:
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)  0.52691    0.02630 6.00000  20.036    1e-06 ***
+dietaa       0.21889    0.03719 6.00000   5.886  0.00107 ** 
+dietpr       0.18874    0.03719 6.00000   5.075  0.00228 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+       (Intr) dietaa
+dietaa -0.707       
+dietpr -0.707  0.500</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Kenward-Roger's method
+      Sum Sq  Mean Sq NumDF DenDF F value   Pr(&gt;F)   
+diet 0.11906 0.059528     2     6   20.35 0.002121 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

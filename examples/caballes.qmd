@@ -10,10 +10,13 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, 
+                      warning = FALSE, message = FALSE)
 
 # Set working directory
 knitr::opts_knit$set(root.dir = "../")
+
+library(knitr)
 ```
 
 Caballes et al. (2016) examined the effects of maternal nutrition (three treatments: starved or fed one of two coral genera: *Acropora* or *Porites*) on the larval biology of crown-of-thorns seastars. There were three female seastars nested within each treatment, 50 larvae reared from each female were placed into each of three glass culture jars and the lengths of ten larvae from each jar after four days were measured after 4 days. This fully balanced design has maternal nutrition as a fixed factor with three random levels of nesting: females within nutrition treatment, jars within females and individual larvae within jars.
@@ -28,10 +31,13 @@ Caballes, C. F., Pratchett, M. S., Kerr, A. M. & Rivera-Posada, J. A. (2016). Th
 
 ### Preliminaries
 
-First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, Rmisc)
+Packages:
 
-```{r include=FALSE, results='hide'}
+```{r}
+#| results: hide
 library(tidyverse)
+source("R/set_ggplot_theme.R")
+library(broom)
 library(Rmisc)
 library(car)
 library(lme4)
@@ -41,11 +47,15 @@ library(VCA)
 library(afex)
 ```
 
-Import caballes data file (caballes_length.csv)
+```{r include=FALSE, results='hide'}
+
+```
+
+Data: 
 
 ```{r}
-caballes_length <- read.csv("data/caballes_length.csv")
-head(caballes_length,10)
+caballes_length <- read_csv("data/caballes_length.csv")
+caballes_length
 ```
 
 ```{r }
@@ -63,6 +73,16 @@ Reorder nutrition treatments so starved is first for default lm contrasts
 
 ```{r }
 caballes_length$diet <- factor(caballes_length$diet, levels = c("starved","aa","pr"))
+levels(caballes_length$diet)
+```
+
+## Visualize data
+
+```{r}
+caballes_length %>% 
+  ggplot(aes(jar, length, color = female)) + 
+  geom_point(alpha = 0.5) +
+  facet_wrap(~ diet, scales = "free_x")
 ```
 
 ## Run model
@@ -77,9 +97,14 @@ caballes.aov <- aov(length~diet+Error(female/jar), caballes_length)
 
 ```{r }
 caballes.lm <- lm(length ~ diet/female/jar, caballes_length)
+anova(caballes.lm)
+```
+
+Check diagnostics and lm output (not shown):
+```{r}
+#| eval: false
 plot(caballes.lm)
 summary(caballes.lm)
-anova(caballes.lm)
 ```
 
 Get F and P values using correct denominators
@@ -124,3 +149,53 @@ caballes.ci <- confint.merMod(caballes.lmer)
 caballes.vc <- (caballes.ci)^2
 print(caballes.vc)
 ```
+
+## Simplify dataset by averaging across larvae within a jar
+
+```{r}
+d <- caballes_length %>% 
+  group_by(diet, female, jar) %>%
+  dplyr::summarise(mean = mean(length), 
+            sd = sd(length), 
+            n = n(), 
+            se = sd / sqrt(n)) %>% 
+  ungroup()
+
+d %>% 
+  ggplot(aes(female, mean)) + 
+  geom_point(alpha = 0.5) +
+  facet_wrap(~ diet, scales = "free_x") + 
+  labs(y = "Mean length (mm)")
+```
+
+### Fit nested ANOVA with OLS
+
+Female is nested within treatment:
+
+```{r}
+d_aov <- aov(mean~diet+Error(female), d)
+summary(d_aov)
+
+m1 <- lm(mean ~ diet / female, d)
+anova(m1)
+```
+
+Get F and P values using correct denominators. Note that I'm using `broom:tidy` to tidy the `anova` output, and `lead()` to calculate the `new_F` and `new_P`. This avoids extracting `statistic` (F-value) and `df` into new objects, or hard-coding the calculations. 
+
+```{r }
+tidy(anova(m1)) %>% 
+  mutate(new_F = meansq / lead(meansq), 
+         new_P = pf(new_F, df1 = df, df2 = lead(df), lower.tail = FALSE)) %>% 
+  kable(digits = 3)
+```
+
+### Fit mixed effects model using REML/ML
+
+```{r }
+m2 <- lmer(mean ~ diet + (1|female), d)
+summary(m2)
+anova(m2, ddf = "Kenward-Roger")
+```
+ 
+ 
+ 
