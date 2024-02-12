@@ -42,6 +42,7 @@ website:
         - examples/serpulid.qmd
         - examples/linton.qmd
         - examples/caballes.qmd
+        - examples/stokes.qmd
         
 format:
   html:

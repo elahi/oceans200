@@ -47,15 +47,10 @@ library(VCA)
 library(afex)
 ```
 
-```{r include=FALSE, results='hide'}
-
-```
-
-Data: 
+Data:
 
 ```{r}
-caballes_length <- read_csv("data/caballes_length.csv")
-caballes_length
+caballes_length <- read.csv("data/caballes_length.csv")
 ```
 
 ```{r }
@@ -89,7 +84,7 @@ caballes_length %>%
 
 **Note:** can't get the aov commands to work for 3 level nested design
 
-```{r error=TRUE}
+```{r error=TRUE, eval = FALSE}
 caballes.aov <- aov(length~diet+Error(female/jar), caballes_length)
 ```
 
@@ -101,6 +96,7 @@ anova(caballes.lm)
 ```
 
 Check diagnostics and lm output (not shown):
+
 ```{r}
 #| eval: false
 plot(caballes.lm)
@@ -123,7 +119,8 @@ pf(f, df1 = 18, df2 = 243, lower.tail = FALSE)
 
 Variance components from VCA
 
-```{r }
+```{r}
+#| eval: false
 caballes.vca <- anovaMM(length ~ diet/(female)/(jar), caballes_length)
 caballes.vca
 VCAinference(caballes.vca, alpha = 0.05, VarVC = TRUE, ci.method = "satterthwaite")
@@ -180,7 +177,7 @@ m1 <- lm(mean ~ diet / female, d)
 anova(m1)
 ```
 
-Get F and P values using correct denominators. Note that I'm using `broom:tidy` to tidy the `anova` output, and `lead()` to calculate the `new_F` and `new_P`. This avoids extracting `statistic` (F-value) and `df` into new objects, or hard-coding the calculations. 
+Get F and P values using correct denominators. Note that I'm using `broom:tidy` to tidy the `anova` output, and `lead()` to calculate the `new_F` and `new_P`. This avoids extracting `statistic` (F-value) and `df` into new objects, or hard-coding the calculations.
 
 ```{r }
 tidy(anova(m1)) %>% 
@@ -196,6 +193,3 @@ m2 <- lmer(mean ~ diet + (1|female), d)
 summary(m2)
 anova(m2, ddf = "Kenward-Roger")
 ```
- 
- 
- 

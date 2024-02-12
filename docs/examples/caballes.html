@@ -184,6 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">QK Box 10.6</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/stokes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 11.1</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -260,38 +266,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(afex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Data:</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-3_0cb64fcaacb304c9e074daa164f2ae67">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/caballes_length.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>caballes_length</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 270 × 4
-   diet    female   jar length
-   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
- 1 starved      1     1  0.638
- 2 starved      1     1  0.533
- 3 starved      1     1  0.476
- 4 starved      1     1  0.359
- 5 starved      1     1  0.354
- 6 starved      1     1  0.576
- 7 starved      1     1  0.742
- 8 starved      1     1  0.495
- 9 starved      1     1  0.803
-10 starved      1     1  0.493
-# ℹ 260 more rows</code></pre>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-2_dfdc2832956ea8e185111e5099e4cfb4">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/caballes_length.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-4_5754bf618ae22c72db79ca6561f41cbd">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_sum_contrasts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-3_09cfdba166a2b9115c178cfb3822b521">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_sum_contrasts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Make female and jar factors</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-5_00666bafff279180ddd406ccee3c0dfc">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>female <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>female)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>jar <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>jar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-4_c20b77add6bdb8a0dbd4539ba432dde6">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>female <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>female)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>jar <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>jar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Reorder nutrition treatments so starved is first for default lm contrasts</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-6_65c9b565ec09353f737f80c91f9d63c6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>diet <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>diet, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"starved"</span>,<span class="st">"aa"</span>,<span class="st">"pr"</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(caballes_length<span class="sc">$</span>diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-5_aa095d95c6749833808385a0a3ec1bbd">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>caballes_length<span class="sc">$</span>diet <span class="ot">&lt;-</span> <span class="fu">factor</span>(caballes_length<span class="sc">$</span>diet, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"starved"</span>,<span class="st">"aa"</span>,<span class="st">"pr"</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(caballes_length<span class="sc">$</span>diet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "starved" "aa"      "pr"     </code></pre>
 </div>
@@ -299,30 +288,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="visualize-data" class="level2">
 <h2 class="anchored" data-anchor-id="visualize-data">Visualize data</h2>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-7_f77b54ab105faa468db1b26b8770cbb6">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(jar, length, <span class="at">color =</span> female)) <span class="sc">+</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-6_8c8b28361e6dd70f37339ea127087cd7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>caballes_length <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(jar, length, <span class="at">color =</span> female)) <span class="sc">+</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="caballes_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+<p><img src="caballes_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="run-model" class="level2">
 <h2 class="anchored" data-anchor-id="run-model">Run model</h2>
 <p><strong>Note:</strong> can’t get the aov commands to work for 3 level nested design</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-8_6f46c2497175375da2f8cd7b855db2d0">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>caballes.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(length<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female<span class="sc">/</span>jar), caballes_length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error in qr.qty(qr.e, resp): NA/NaN/Inf in foreign function call (arg 1)</code></pre>
-</div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-7_4a264032419fc45d77fb48e12d4419d8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>caballes.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(length<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female<span class="sc">/</span>jar), caballes_length)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="fit-as-lm-using-ols-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="fit-as-lm-using-ols-estimation">Fit as lm using OLS estimation</h3>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-9_25be8814ad9c73be8a38667a2b8a7257">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>caballes.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> diet<span class="sc">/</span>female<span class="sc">/</span>jar, caballes_length)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-8_476375f33121b4bec360f5122c4232ec">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>caballes.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(length <span class="sc">~</span> diet<span class="sc">/</span>female<span class="sc">/</span>jar, caballes_length)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -337,136 +323,50 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>Check diagnostics and lm output (not shown):</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-10_01d7d393257ea8177fc204f54255bbc6">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(caballes.lm)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-9_fe85fd42c4bc48557421087c3eaa673b">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(caballes.lm)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Get F and P values using correct denominators</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-11_a10ee85848863e41abe87bcb9cf1b2bf">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Diet F</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">1.26668</span><span class="sc">/</span><span class="fl">0.06224</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-10_97e4651269c803c766a7c7154e42d90e">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Diet F</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">1.26668</span><span class="sc">/</span><span class="fl">0.06224</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">6</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.002120396</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Females F</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.06224</span><span class="sc">/</span><span class="fl">0.02925</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">6</span>, <span class="at">df2 =</span> <span class="dv">18</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Females F</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.06224</span><span class="sc">/</span><span class="fl">0.02925</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">6</span>, <span class="at">df2 =</span> <span class="dv">18</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.100229</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Jars F</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.02925</span><span class="sc">/</span><span class="fl">0.01755</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">18</span>, <span class="at">df2 =</span> <span class="dv">243</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Jars F</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fl">0.02925</span><span class="sc">/</span><span class="fl">0.01755</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pf</span>(f, <span class="at">df1 =</span> <span class="dv">18</span>, <span class="at">df2 =</span> <span class="dv">243</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.04594475</code></pre>
 </div>
 </div>
 <p>Variance components from VCA</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-12_ff32bd51293e3420e7afe9a5ceadfff5">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>caballes.vca <span class="ot">&lt;-</span> <span class="fu">anovaMM</span>(length <span class="sc">~</span> diet<span class="sc">/</span>(female)<span class="sc">/</span>(jar), caballes_length)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>caballes.vca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-ANOVA-Type Estimation of Mixed Model:
---------------------------------------
-
-    [Fixed Effects]
-
-        int      dietaa      dietpr dietstarved 
-   0.526911    0.218889    0.188744    0.000000 
-
-
-    [Variance Components]
-
-  Name            DF         SS       MS       VC       %Total    SD      
-1 total           200.914152                   0.019823 100       0.140793
-2 diet:female     6          0.37346  0.062243 0.0011   5.547827  0.033162
-3 diet:female:jar 18         0.526523 0.029251 0.00117  5.90134   0.034202
-4 error           243        4.265431 0.017553 0.017553 88.550832 0.132489
-  CV[%]    
-1 21.242557
-2 5.003435 
-3 5.160385 
-4 19.989554
-
-Mean: 0.662789 (N = 270) 
-
-Experimental Design: balanced  |  Method: ANOVA</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VCAinference</span>(caballes.vca, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">VarVC =</span> <span class="cn">TRUE</span>, <span class="at">ci.method =</span> <span class="st">"satterthwaite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-
-
-Inference from Mixed Model Fit
-------------------------------
-
-&gt; VCA Result:
--------------
-
-    [Fixed Effects]
-
-        int      dietaa      dietpr dietstarved 
-     0.5269      0.2189      0.1887      0.0000 
-
-
-    [Variance Components]
-
-  Name            DF       SS     MS     VC     %Total  SD     CV[%]   Var(VC)
-1 total           200.9142               0.0198 100     0.1408 21.2426        
-2 diet:female     6        0.3735 0.0622 0.0011 5.5478  0.0332 5.0034  0      
-3 diet:female:jar 18       0.5265 0.0293 0.0012 5.9013  0.0342 5.1604  0      
-4 error           243      4.2654 0.0176 0.0176 88.5508 0.1325 19.9896 0      
-
-Mean: 0.6628 (N = 270) 
-
-Experimental Design: balanced  |  Method: ANOVA
-
-
-&gt; VC:
------
-                Estimate       DF CI LCL CI UCL One-Sided LCL One-Sided UCL
-total             0.0198 200.9142 0.0165 0.0244        0.0169        0.0235
-diet:female       0.0011   1.5701 0.0003 0.1039        0.0003        0.0427
-diet:female:jar   0.0012   2.8040 0.0004 0.0188        0.0004        0.0112
-error             0.0176 243.0000 0.0148 0.0211        0.0152        0.0205
-
-&gt; SD:
------
-                Estimate       DF CI LCL CI UCL One-Sided LCL One-Sided UCL
-total             0.1408 200.9142 0.1283 0.1560        0.1302        0.1535
-diet:female       0.0332   1.5701 0.0164 0.3223        0.0184        0.2066
-diet:female:jar   0.0342   2.8040 0.0191 0.1371        0.0210        0.1058
-error             0.1325 243.0000 0.1217 0.1454        0.1233        0.1432
-
-&gt; CV[%]:
---------
-                Estimate       DF  CI LCL  CI UCL One-Sided LCL One-Sided UCL
-total            21.2426 200.9142 19.3530 23.5442       19.6423       23.1536
-diet:female       5.0034   1.5701  2.4710 48.6259        2.7686       31.1672
-diet:female:jar   5.1604   2.8040  2.8837 20.6905        3.1612       15.9636
-error            19.9896 243.0000 18.3593 21.9400       18.6100       21.6107
-
-
-95% Confidence Level  
-Satterthwaite methodology used for computing CIs </code></pre>
-</div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-11_f5bc1f3ddd73411aefd544ff2dae6e42">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>caballes.vca <span class="ot">&lt;-</span> <span class="fu">anovaMM</span>(length <span class="sc">~</span> diet<span class="sc">/</span>(female)<span class="sc">/</span>(jar), caballes_length)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>caballes.vca</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">VCAinference</span>(caballes.vca, <span class="at">alpha =</span> <span class="fl">0.05</span>, <span class="at">VarVC =</span> <span class="cn">TRUE</span>, <span class="at">ci.method =</span> <span class="st">"satterthwaite"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="fit-mixed-effects-model-using-remlml" class="level3">
 <h3 class="anchored" data-anchor-id="fit-mixed-effects-model-using-remlml">Fit mixed effects model using REML/ML</h3>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-13_f23714e1f54b1516d17704411c921a73">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>caballes.lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(length <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female<span class="sc">/</span>jar), caballes_length)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-12_5b7ef565bffd03f9a9747844ff697703">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>caballes.lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(length <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female<span class="sc">/</span>jar), caballes_length)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(caballes.lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
 Formula: length ~ diet + (1 | female/jar)
    Data: caballes_length
 
-REML criterion at convergence: -289.2
+REML criterion at convergence: -291.4
 
 Scaled residuals: 
      Min       1Q   Median       3Q      Max 
@@ -480,22 +380,22 @@ Random effects:
 Number of obs: 270, groups:  jar:female, 27; female, 9
 
 Fixed effects:
-            Estimate Std. Error       df t value Pr(&gt;|t|)    
-(Intercept)  0.66279    0.01518  5.99986  43.652 9.68e-09 ***
-diet1       -0.13588    0.02147  5.99986  -6.328 0.000728 ***
-diet2        0.08301    0.02147  5.99986   3.866 0.008306 ** 
+            Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)  0.52691    0.02630 5.99986  20.036    1e-06 ***
+dietaa       0.21889    0.03719 5.99986   5.885  0.00107 ** 
+dietpr       0.18874    0.03719 5.99986   5.075  0.00228 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Correlation of Fixed Effects:
-      (Intr) diet1 
-diet1  0.000       
-diet2  0.000 -0.500</code></pre>
+       (Intr) dietaa
+dietaa -0.707       
+dietpr -0.707  0.500</code></pre>
 </div>
 </div>
 <p>Get F-ratio for diet test using lmerTest</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-14_2995517acf609fdc4ca3086542b05924">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lmer, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-13_0af309f4a91ba0757084a66c0b2b9e1b">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(caballes.lmer, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Kenward-Roger's method
       Sum Sq Mean Sq NumDF DenDF F value   Pr(&gt;F)   
@@ -505,48 +405,48 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>CI on variance components (remembering to square CIs from lmer which are in SD units)</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-15_9fa078af78660424b3e5ef150fa42174">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>caballes.ci <span class="ot">&lt;-</span> <span class="fu">confint.merMod</span>(caballes.lmer)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>caballes.vc <span class="ot">&lt;-</span> (caballes.ci)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(caballes.vc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-14_204ab3e95adfe85c64418cef3860a47a">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>caballes.ci <span class="ot">&lt;-</span> <span class="fu">confint.merMod</span>(caballes.lmer)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>caballes.vc <span class="ot">&lt;-</span> (caballes.ci)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(caballes.vc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                  2.5 %      97.5 %
-.sig01      0.000000000 0.004051007
-.sig02      0.000000000 0.003177589
-.sigma      0.014769187 0.021083239
-(Intercept) 0.404053917 0.475997080
-diet1       0.030364676 0.009506432
-diet2       0.001992217 0.014735036</code></pre>
+<pre><code>                 2.5 %      97.5 %
+.sig01      0.00000000 0.004050905
+.sig02      0.00000000 0.003177589
+.sigma      0.01476919 0.021083239
+(Intercept) 0.23031289 0.329376080
+dietaa      0.02323132 0.081430064
+dietpr      0.01495088 0.065134742</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="simplify-dataset-by-averaging-across-larvae-within-a-jar" class="level2">
 <h2 class="anchored" data-anchor-id="simplify-dataset-by-averaging-across-larvae-within-a-jar">Simplify dataset by averaging across larvae within a jar</h2>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-16_97dae70c0b7795c1e769a427983cdece">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> caballes_length <span class="sc">%&gt;%</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(diet, female, jar) <span class="sc">%&gt;%</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(length), </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(length), </span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(), </span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n)) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(female, mean)) <span class="sc">+</span> </span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span> </span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Mean length (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-15_ddb8b5f96e6aaf978508d8882cb99325">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> caballes_length <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(diet, female, jar) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(length), </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd =</span> <span class="fu">sd</span>(length), </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(), </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">se =</span> sd <span class="sc">/</span> <span class="fu">sqrt</span>(n)) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>d <span class="sc">%&gt;%</span> </span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(female, mean)) <span class="sc">+</span> </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> diet, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span> </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Mean length (mm)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="caballes_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+<p><img src="caballes_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <section id="fit-nested-anova-with-ols" class="level3">
 <h3 class="anchored" data-anchor-id="fit-nested-anova-with-ols">Fit nested ANOVA with OLS</h3>
 <p>Female is nested within treatment:</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-17_4bc1cddd5e8c671d640e6bbf0837aaf2">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>d_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(mean<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female), d)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-16_146a99b67ce71ccf3e258c39b0f4731f">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>d_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(mean<span class="sc">~</span>diet<span class="sc">+</span><span class="fu">Error</span>(female), d)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(d_aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Error: female
@@ -560,8 +460,8 @@ Error: Within
           Df  Sum Sq  Mean Sq F value Pr(&gt;F)
 Residuals 18 0.05265 0.002925               </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mean <span class="sc">~</span> diet <span class="sc">/</span> female, d)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mean <span class="sc">~</span> diet <span class="sc">/</span> female, d)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
@@ -575,11 +475,11 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>Get F and P values using correct denominators. Note that I’m using <code>broom:tidy</code> to tidy the <code>anova</code> output, and <code>lead()</code> to calculate the <code>new_F</code> and <code>new_P</code>. This avoids extracting <code>statistic</code> (F-value) and <code>df</code> into new objects, or hard-coding the calculations.</p>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-18_88fa8952c5d57a2d9a7e30808e5ea2cb">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">anova</span>(m1)) <span class="sc">%&gt;%</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_F =</span> meansq <span class="sc">/</span> <span class="fu">lead</span>(meansq), </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">new_P =</span> <span class="fu">pf</span>(new_F, <span class="at">df1 =</span> df, <span class="at">df2 =</span> <span class="fu">lead</span>(df), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-17_381c80f1237a80336ecb09edf9c74274">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(<span class="fu">anova</span>(m1)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">new_F =</span> meansq <span class="sc">/</span> <span class="fu">lead</span>(meansq), </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">new_P =</span> <span class="fu">pf</span>(new_F, <span class="at">df1 =</span> df, <span class="at">df2 =</span> <span class="fu">lead</span>(df), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -632,9 +532,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 <section id="fit-mixed-effects-model-using-remlml-1" class="level3">
 <h3 class="anchored" data-anchor-id="fit-mixed-effects-model-using-remlml-1">Fit mixed effects model using REML/ML</h3>
-<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-19_5aa213dbb9478c316920b4b5923568b6">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mean <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female), d)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="caballes_cache/html/unnamed-chunk-18_c7acc9d73791e4bedc112259ace02581">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(mean <span class="sc">~</span> diet <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>female), d)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -666,7 +566,7 @@ Correlation of Fixed Effects:
 dietaa -0.707       
 dietpr -0.707  0.500</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(m2, <span class="at">ddf =</span> <span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Type III Analysis of Variance Table with Kenward-Roger's method
       Sum Sq  Mean Sq NumDF DenDF F value   Pr(&gt;F)   

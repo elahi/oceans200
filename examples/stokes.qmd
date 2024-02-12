@@ -1,0 +1,158 @@
+---
+title: "QK Box 11.1"
+output:
+  html_document:
+    df_print: paged
+  html_notebook:
+    theme: flatly
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, 
+                      warning = FALSE, message = FALSE)
+
+# Set working directory
+knitr::opts_knit$set(root.dir = "../")
+
+library(knitr)
+```
+
+Stokes et al. (2014) studied the neurotoxin tetrodotoxin (TTX) in flatworms. The between-plots factor was flatworm species (fixed with two groups: *Bipalium adventitium* and *Bipalium kewense*) with individual flatworms (plots) nested within species. The within-plots factor was body segment (fixed with three groups: head, anterior body, posterior body) and each segment represented a "sub-plot". The response variable was the TTX concentration of tissue adjusted for weight. The main research questions were about the fixed effects of species, body segment and their interaction on TTX concentration, but the analyses also provide information about the variances associated with the random effects of individual within species and the random interaction between individuals within species and body segment.
+
+[![](../media/Bipalium_adventitium_(YPM_IZ_046916)_01.jpeg)](https://commons.wikimedia.org/wiki/File:Bipalium_adventitium_(YPM_IZ_046916)_01.jpeg)
+
+*Bipalium advenitium*. Yale Peabody Museum, ![](../media/cc-zero.png){width="57"}, via Wikimedia Commons
+
+[![](../media/Bipalium_kewense_Kauai.jpg)](https://commons.wikimedia.org/wiki/File:Bipalium_kewense_Kauai.jpg)
+
+*Bipalium kewense*. Don Loarie [![](../media/by.png){width="57"}](https://creativecommons.org/licenses/by/4.0), via Wikimedia Commons
+
+The data are [here](https://doi.org/10.1371/journal.pone.0100718)
+
+Stokes, A. N., Ducey, P. K., Neuman-Lee, L., Hanifin, C. T., French, S. S., Pfrender, M. E., Brodie, E. D., 3rd & Brodie, E. D., Jr. (2014). Confirmation and distribution of tetrodotoxin for the first time in terrestrial invertebrates: two terrestrial flatworm species (*Bipalium adventitium* and *Bipalium kewense*). *PLoS One*, 9, e100718.
+
+### Preliminaries
+
+Packages:
+
+```{r}
+#| results: hide
+library(tidyverse)
+source("R/set_ggplot_theme.R")
+library(broom)
+library(Rmisc)
+library(car)
+library(lme4)
+library(lmerTest)
+library(nlme)
+library(VCA)
+library(afex)
+library(ez)
+library(apaTables)
+```
+
+Import stokes data file ([stokes.csv](data/stokes.csv))
+
+```{r}
+stokes <- read.csv("data/stokes.csv")
+```
+
+Visualize data
+
+```{r}
+stokes %>% 
+  ggplot(aes(indiv, ttxweight, color = species)) + 
+  geom_point(alpha = 0.5) + 
+  facet_wrap(~ segment)
+```
+
+Set contrasts from afex make individual a factor, make sure species a factor too put segments into sensible order
+
+```{r results='hide'}
+set_sum_contrasts()
+stokes$indiv <- factor(stokes$indiv)
+stokes$species<-factor(stokes$species)
+stokes$segment <- factor(stokes$segment, levels=c("h","b","p"))
+```
+
+Check residuals by leaving out error term
+
+```{r }
+stokes1.aov <- aov(ttxweight~species*segment, stokes)
+plot(stokes1.aov)
+```
+
+Wedge-shaped with mean-variance relationship - redo after log transform
+
+```{r }
+stokes$lttxweight <- log10(stokes$ttxweight)
+stokes2.aov <- aov(lttxweight~species*segment, stokes)
+plot(stokes2.aov)
+```
+
+Visualize log data
+
+```{r}
+stokes %>% 
+  ggplot(aes(indiv, lttxweight, color = species)) + 
+  geom_point(alpha = 0.5) + 
+  facet_wrap(~ segment)
+```
+
+## Fit full model with log(ttxweight)
+
+```{r }
+stokes3.aov <- aov(lttxweight~species*segment+Error(indiv), stokes)
+summary(stokes3.aov)
+```
+
+Use ez for comparison with type 3 SS - same result as design is balanced
+
+```{r }
+ezstokes <- ezANOVA(data=stokes, dv=lttxweight, wid=indiv, within=segment, between=species, type=3)
+print(ezstokes)
+```
+
+### Get var components using OLS
+
+**Note** that these estimates treat B(A)\*C as the residual for B(A) vc
+
+```{r}
+stokes2 <- as.data.frame(stokes)
+stokes.vca <- anovaMM(lttxweight~species/(indiv)+segment+species*segment, NegVC=TRUE, stokes2)
+stokes.vca
+VCAinference(stokes.vca, alpha=0.05, ci.method="satterthwaite")
+```
+
+## Fit mixed effects models with lmer
+
+```{r }
+stokes.lmer <- lmer(lttxweight~species+segment+species*segment+(1|indiv), REML=TRUE, stokes)
+```
+
+Check residuals from lmer plot
+
+```{r }
+plot(stokes.lmer)
+summary(stokes.lmer, ddf="Kenward-Roger")
+anova(stokes.lmer, ddf="Kenward-Roger")
+```
+
+### Contrast head vs anterior and anterior vs posterior segments
+
+```{r }
+library(emmeans)
+stokes.emm <- emmeans(stokes.lmer, ~segment)
+stokes.con <- contrast(stokes.emm, "consec")
+summary(stokes.con, adjust="none")
+```
+
+### Get variance components with CIs
+
+```{r }
+stokes.ci <- confint.merMod(stokes.lmer)
+stokes.vc <- (stokes.ci)^2
+print(stokes.vc)
+```
