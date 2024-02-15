@@ -108,6 +108,15 @@ stokes3.aov <- aov(lttxweight~species*segment+Error(indiv), stokes)
 summary(stokes3.aov)
 ```
 
+```{r}
+#| include: false
+pf(q = 6.17, df1 = 1, df2 = 10, lower.tail = FALSE)
+
+new_f <- 0.8087 / 0.183
+pf(new_f, df1 = 1, df2 = 20, lower.tail = FALSE)
+```
+
+
 Use ez for comparison with type 3 SS - same result as design is balanced
 
 ```{r }
