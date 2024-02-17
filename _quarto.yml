@@ -43,6 +43,7 @@ website:
         - examples/linton.qmd
         - examples/caballes.qmd
         - examples/stokes.qmd
+        - examples/steiger.qmd
         
 format:
   html:

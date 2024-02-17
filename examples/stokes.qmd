@@ -116,7 +116,6 @@ new_f <- 0.8087 / 0.183
 pf(new_f, df1 = 1, df2 = 20, lower.tail = FALSE)
 ```
 
-
 Use ez for comparison with type 3 SS - same result as design is balanced
 
 ```{r }

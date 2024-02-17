@@ -190,6 +190,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">QK Box 11.1</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/steiger.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 12.1</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -356,7 +362,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>Use ez for comparison with type 3 SS - same result as design is balanced</p>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-9_236ed822a3e5813b91d77892e9c77418">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-10_edc387b5022fc934525df32816a8d65e">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ezstokes <span class="ot">&lt;-</span> <span class="fu">ezANOVA</span>(<span class="at">data=</span>stokes, <span class="at">dv=</span>lttxweight, <span class="at">wid=</span>indiv, <span class="at">within=</span>segment, <span class="at">between=</span>species, <span class="at">type=</span><span class="dv">3</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ezstokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -383,7 +389,7 @@ $`Sphericity Corrections`
 <section id="get-var-components-using-ols" class="level3">
 <h3 class="anchored" data-anchor-id="get-var-components-using-ols">Get var components using OLS</h3>
 <p><strong>Note</strong> that these estimates treat B(A)*C as the residual for B(A) vc</p>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-10_30de6fe02d2c7d72a9ceec927c6902ba">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-11_9c8ebd4be096726f052512420fd1e4f9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stokes2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(stokes)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>stokes.vca <span class="ot">&lt;-</span> <span class="fu">anovaMM</span>(lttxweight<span class="sc">~</span>species<span class="sc">/</span>(indiv)<span class="sc">+</span>segment<span class="sc">+</span>species<span class="sc">*</span>segment, <span class="at">NegVC=</span><span class="cn">TRUE</span>, stokes2)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>stokes.vca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -493,14 +499,14 @@ Satterthwaite methodology used for computing CIs </code></pre>
 </section>
 <section id="fit-mixed-effects-models-with-lmer" class="level2">
 <h2 class="anchored" data-anchor-id="fit-mixed-effects-models-with-lmer">Fit mixed effects models with lmer</h2>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-11_da84c8d79e1b60f340a1501895e1dcc7">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-12_44e732be08dca13f99c3c072e0b64be9">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>stokes.lmer <span class="ot">&lt;-</span> <span class="fu">lmer</span>(lttxweight<span class="sc">~</span>species<span class="sc">+</span>segment<span class="sc">+</span>species<span class="sc">*</span>segment<span class="sc">+</span>(<span class="dv">1</span><span class="sc">|</span>indiv), <span class="at">REML=</span><span class="cn">TRUE</span>, stokes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check residuals from lmer plot</p>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-12_f93bd7efd5ca3ff2d66a35be99e15f59">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-13_f9c9305915535630c56f70ad5563b766">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(stokes.lmer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="stokes_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<p><img src="stokes_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stokes.lmer, <span class="at">ddf=</span><span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -509,7 +515,7 @@ lmerModLmerTest]
 Formula: lttxweight ~ species + segment + species * segment + (1 | indiv)
    Data: stokes
 
-REML criterion at convergence: 50.5
+REML criterion at convergence: 41.9
 
 Scaled residuals: 
      Min       1Q   Median       3Q      Max 
@@ -522,23 +528,23 @@ Random effects:
 Number of obs: 36, groups:  indiv, 12
 
 Fixed effects:
-                  Estimate Std. Error       df t value Pr(&gt;|t|)    
-(Intercept)        0.41117    0.06778 10.00000   6.066 0.000121 ***
-species1           0.14988    0.06778 10.00000   2.211 0.051464 .  
-segment1           0.95985    0.09586 20.00000  10.013  3.1e-09 ***
-segment2          -0.32636    0.09586 20.00000  -3.405 0.002812 ** 
-species1:segment1 -0.06088    0.09586 20.00000  -0.635 0.532568    
-species1:segment2  0.04766    0.09586 20.00000   0.497 0.624467    
+                         Estimate Std. Error      df t value Pr(&gt;|t|)    
+(Intercept)                1.4600     0.1660 30.0000   8.793 8.36e-10 ***
+speciesBkewense           -0.1780     0.2348 30.0000  -0.758    0.454    
+segmentb                  -1.1777     0.2348 20.0000  -5.015 6.63e-05 ***
+segmentp                  -1.5192     0.2348 20.0000  -6.470 2.62e-06 ***
+speciesBkewense:segmentb  -0.2171     0.3321 20.0000  -0.654    0.521    
+speciesBkewense:segmentp  -0.1482     0.3321 20.0000  -0.446    0.660    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Correlation of Fixed Effects:
-            (Intr) specs1 sgmnt1 sgmnt2 spc1:1
-species1     0.000                            
-segment1     0.000  0.000                     
-segment2     0.000  0.000 -0.500              
-spcs1:sgmn1  0.000  0.000  0.000  0.000       
-spcs1:sgmn2  0.000  0.000  0.000  0.000 -0.500
+                 (Intr) spcsBk sgmntb sgmntp spcsBkwns:sgmntb
+specisBkwns      -0.707                                      
+segmentb         -0.707  0.500                               
+segmentp         -0.707  0.500  0.500                        
+spcsBkwns:sgmntb  0.500 -0.707 -0.707 -0.354                 
+spcsBkwns:sgmntp  0.500 -0.707 -0.354 -0.707  0.500          
 optimizer (nloptwrap) convergence code: 0 (OK)
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
@@ -555,7 +561,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <section id="contrast-head-vs-anterior-and-anterior-vs-posterior-segments" class="level3">
 <h3 class="anchored" data-anchor-id="contrast-head-vs-anterior-and-anterior-vs-posterior-segments">Contrast head vs anterior and anterior vs posterior segments</h3>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-13_743edb68da3e9e5aa1b1950f7edc1a48">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-14_792008e9220b90255cf02ffead2119df">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>stokes.emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(stokes.lmer, <span class="sc">~</span>segment)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>stokes.con <span class="ot">&lt;-</span> <span class="fu">contrast</span>(stokes.emm, <span class="st">"consec"</span>)</span>
@@ -572,20 +578,20 @@ Degrees-of-freedom method: kenward-roger </code></pre>
 </section>
 <section id="get-variance-components-with-cis" class="level3">
 <h3 class="anchored" data-anchor-id="get-variance-components-with-cis">Get variance components with CIs</h3>
-<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-14_bfe359a9bd43b69b779d6fe88522544f">
+<div class="cell" data-hash="stokes_cache/html/unnamed-chunk-15_a56f540681e2e8b40e564873735387f1">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>stokes.ci <span class="ot">&lt;-</span> <span class="fu">confint.merMod</span>(stokes.lmer)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>stokes.vc <span class="ot">&lt;-</span> (stokes.ci)<span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(stokes.vc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                         2.5 %     97.5 %
-.sig01            0.0000000000 0.04989851
-.sigma            0.0897577507 0.22735990
-(Intercept)       0.0821288275 0.28703247
-species1          0.0006396067 0.07533009
-segment1          0.6141142602 1.29058241
-segment2          0.2525582467 0.02255047
-species1:segment1 0.0562032225 0.01329672
-species1:segment2 0.0165198438 0.05011064</code></pre>
+<pre><code>                              2.5 %     97.5 %
+.sig01                   0.00000000 0.04989851
+.sigma                   0.08975775 0.22735990
+(Intercept)              1.33364907 3.11587298
+speciesBkewense          0.37157920 0.06430639
+segmentb                 2.58966474 0.55664060
+segmentp                 3.80567534 1.18299122
+speciesBkewense:segmentb 0.68464304 0.15465423
+speciesBkewense:segmentp 0.57538799 0.21358195</code></pre>
 </div>
 </div>
 

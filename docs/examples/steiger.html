@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>qk2e - QK Box 12.1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">qk2e</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../chapter_notes/chapter2.html" rel="" target="">
+ <span class="menu-text">Chapter notes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../slides/slides.html" rel="" target="">
+ <span class="menu-text">Slides</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../examples/low.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Examples</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../examples/steiger.html">QK Box 12.1</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/low.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 2.2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/lowboot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 2.3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/serpulid.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 6.7 &amp; 6.11</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/linton.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 7.1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/caballes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 10.6</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/stokes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">QK Box 11.1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../examples/steiger.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">QK Box 12.1</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#preliminaries" id="toc-preliminaries" class="nav-link active" data-scroll-target="#preliminaries">Preliminaries</a></li>
+  <li><a href="#fit-ols-model-with-default-aov-ss" id="toc-fit-ols-model-with-default-aov-ss" class="nav-link" data-scroll-target="#fit-ols-model-with-default-aov-ss">Fit OLS model with default aov SS</a></li>
+  <li><a href="#do-interaction-plot" id="toc-do-interaction-plot" class="nav-link" data-scroll-target="#do-interaction-plot">Do interaction plot</a></li>
+  <li><a href="#transform-to-logs-due-to-variance-heterogeneity-and-to-minimise-interaction" id="toc-transform-to-logs-due-to-variance-heterogeneity-and-to-minimise-interaction" class="nav-link" data-scroll-target="#transform-to-logs-due-to-variance-heterogeneity-and-to-minimise-interaction">Transform to logs due to variance heterogeneity and to minimise interaction</a></li>
+  <li><a href="#fit-ols-model-with-default-aov-ss-1" id="toc-fit-ols-model-with-default-aov-ss-1" class="nav-link" data-scroll-target="#fit-ols-model-with-default-aov-ss-1">Fit OLS model with default aov SS</a></li>
+  <li><a href="#examine-results" id="toc-examine-results" class="nav-link" data-scroll-target="#examine-results">Examine results</a></li>
+  <li><a href="#fit-random-intercept-model-using-lme4-and-reml" id="toc-fit-random-intercept-model-using-lme4-and-reml" class="nav-link" data-scroll-target="#fit-random-intercept-model-using-lme4-and-reml">Fit random intercept model using lme4 and REML</a>
+  <ul class="collapse">
+  <li><a href="#bar-graph-for-time-main-effect" id="toc-bar-graph-for-time-main-effect" class="nav-link" data-scroll-target="#bar-graph-for-time-main-effect">Bar graph for time main effect</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">QK Box 12.1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Steiger et al.&nbsp;(2008) studied the Coolidge effect, the decline in males’ interest in mating with the same female compared to novel females, using the burying beetle <em>Nicrophorus vespilloides</em>. Eighteen male beetles were presented with the same female beetle four times, and then a novel female on the fifth occasion. This was a repeated measures design as the same individual males were repeatedly presented with females. There was no evidence that physical exhaustion affected time to mating as a separate control group of males were presented with novel, unmated females five times in succession, and there was no change in time to mating. The within-subjects factor was the order of presented females, and while this could have been treated as a continuous covariate, we treated it as a fixed factor with five groups. The response variable recorded on each occasion was time to mating.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../media/Nicrophorus-vespilloides-04-fws.jpg" class="img-fluid figure-img" width="392"></p>
+<figcaption class="figure-caption">Adult burying beetle. Francisco Welter-Schultes. Wikimedia Commons Creative Commons CC0 1.0 Universal Public Domain Dedication</figcaption>
+</figure>
+</div>
+<p>Francisco Welter-Schultes, <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a>, via Wikimedia Commons</p>
+<p>Steiger, S., Franz, R., Eggert, A. K. &amp; Muller, J. K. (2008). The Coolidge effect, individual recognition and selection for distinctive cuticular signatures in a burying beetle. <em>Proceedings of the Royal Society B</em>, 275, 1831-8.</p>
+<p>Link to the paper: doi: <a href="https://doi.org/10.1098/rspb.2008.0375">10.1098/rspb.2008.0375</a> and <a href="http://rspb.royalsocietypublishing.org/content/suppl/2009/02/20/275.1645.1831.DC1.ht%20ml">data</a></p>
+<section id="preliminaries" class="level3">
+<h3 class="anchored" data-anchor-id="preliminaries">Preliminaries</h3>
+<p>First, load the required packages (afex, car, lattice, lme4, lmerTest, nlme, VCA, ez, emmeans, Rmisc, MuMIn)</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-1_2cabea5f7cb1603f537ddec20513fefd">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/set_ggplot_theme.R"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rmisc)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VCA)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(afex)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ez)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(apaTables)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MuMIn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Import steiger data file (steiger.csv)</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-2_7aa659dfd389c46dc005b3baca90f2c5">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>steiger <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/steiger.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>steiger</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   matingnumber individual time
+1         first          1  250
+2         first          2   96
+3         first          3  162
+4         first          4  245
+5         first          5   11
+6         first          6    6
+7         first          7   17
+8         first          8   38
+9         first          9   16
+10        first         10   59
+11        first         11   24
+12        first         12   18
+13        first         13    5
+14        first         14    5
+15        first         15    5
+16        first         16   10
+17        first         17  189
+18        first         18   62
+19       second          1  220
+20       second          2  300
+21       second          3  300
+22       second          4   22
+23       second          5    6
+24       second          6   35
+25       second          7  300
+26       second          8    7
+27       second          9  145
+28       second         10    6
+29       second         11   34
+30       second         12  300
+31       second         13  300
+32       second         14    6
+33       second         15   85
+34       second         16   36
+35       second         17  300
+36       second         18  300
+37        third          1  300
+38        third          2   16
+39        third          3    8
+40        third          4  300
+41        third          5  300
+42        third          6   10
+43        third          7   47
+44        third          8   85
+45        third          9  300
+46        third         10   80
+47        third         11  250
+48        third         12  190
+49        third         13   11
+50        third         14  300
+51        third         15  300
+52        third         16  300
+53        third         17  300
+54        third         18  105
+55       fourth          1  147
+56       fourth          2  300
+57       fourth          3  300
+58       fourth          4   12
+59       fourth          5   31
+60       fourth          6  300
+61       fourth          7  298
+62       fourth          8  300
+63       fourth          9  114
+64       fourth         10  115
+65       fourth         11  300
+66       fourth         12  300
+67       fourth         13  300
+68       fourth         14   24
+69       fourth         15   11
+70       fourth         16  300
+71       fourth         17  300
+72       fourth         18  300
+73        fifth          1   54
+74        fifth          2   30
+75        fifth          3    5
+76        fifth          4   93
+77        fifth          5   20
+78        fifth          6    6
+79        fifth          7   20
+80        fifth          8  300
+81        fifth          9    6
+82        fifth         10    6
+83        fifth         11   16
+84        fifth         12    6
+85        fifth         13    7
+86        fifth         14   50
+87        fifth         15   32
+88        fifth         16   25
+89        fifth         17   65
+90        fifth         18   63</code></pre>
+</div>
+</div>
+<p>Set contrasts from afex. Make individual a factor. Rearrange matingnumber order to override default alphabetical order</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-3_272e850e21987fa2247d6db63838e09f">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_sum_contrasts</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>steiger<span class="sc">$</span>individual <span class="ot">&lt;-</span> <span class="fu">factor</span>(steiger<span class="sc">$</span>individual)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>steiger<span class="sc">$</span>matingnumber <span class="ot">&lt;-</span> <span class="fu">factor</span>(steiger<span class="sc">$</span>matingnumber, <span class="at">levels=</span><span class="fu">c</span>(<span class="st">"first"</span>,<span class="st">"second"</span>,<span class="st">"third"</span>,<span class="st">"fourth"</span>,<span class="st">"fifth"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Quick boxplot to look at variances for different mating numbers</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-4_786ee67e4fe7929b6b22983cb84fbcfd">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(time<span class="sc">~</span>matingnumber, <span class="at">data=</span>steiger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="fit-ols-model-with-default-aov-ss" class="level3">
+<h3 class="anchored" data-anchor-id="fit-ols-model-with-default-aov-ss">Fit OLS model with default aov SS</h3>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-5_6b21fbe9a9df298677367de3a28eaa9a">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>steiger.aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(time<span class="sc">~</span>matingnumber<span class="sc">+</span>individual, <span class="at">data=</span>steiger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Check residuals - some evidence for interaction</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-6_e092f917140e2303406d265aed518c47">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(steiger.aov)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="do-interaction-plot" class="level3">
+<h3 class="anchored" data-anchor-id="do-interaction-plot">Do interaction plot</h3>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-7_7678e87de576487d785c24b0d6595749">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>null device 
+          1 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interaction.plot</span>(steiger<span class="sc">$</span>matingnumber, steiger<span class="sc">$</span>individual, steiger<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The rank order of treatments consistent but the sizes of the differences vary greatly between individuals. Quickly try boxplot with log-transformed data to see if any improvement</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-8_b98e41e120ee3b09fd9ed6f294f7f20a">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(<span class="fu">log10</span>(time)<span class="sc">~</span>matingnumber, <span class="at">data=</span>steiger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="transform-to-logs-due-to-variance-heterogeneity-and-to-minimise-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="transform-to-logs-due-to-variance-heterogeneity-and-to-minimise-interaction">Transform to logs due to variance heterogeneity and to minimise interaction</h3>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-9_18683c33b3cf9ad65ce14bffef0933fe">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>steiger<span class="sc">$</span>ltime <span class="ot">&lt;-</span> <span class="fu">log10</span>(steiger<span class="sc">$</span>time)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Recheck diagnostics - much better with less interaction</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-10_98ff37fa78246c8aba8395073ca9b81b">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(ltime<span class="sc">~</span>matingnumber, <span class="at">data=</span>steiger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interaction.plot</span>(steiger<span class="sc">$</span>matingnumber, steiger<span class="sc">$</span>individual, steiger<span class="sc">$</span>ltime)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="fit-ols-model-with-default-aov-ss-1" class="level3">
+<h3 class="anchored" data-anchor-id="fit-ols-model-with-default-aov-ss-1">Fit OLS model with default aov SS</h3>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-11_9a5a4f16b30d0b9faf678a202282b8cc">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>steiger.aov1 <span class="ot">&lt;-</span> <span class="fu">aov</span>(ltime<span class="sc">~</span>matingnumber<span class="sc">+</span>individual, <span class="at">data=</span>steiger)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>check residuals - look OK</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-12_8ae37ba44948cea753579329b558a4a4">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(steiger.aov1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="examine-results" class="level3">
+<h3 class="anchored" data-anchor-id="examine-results">Examine results</h3>
+<p>Once we’re happy with the model that we’re fitting, we can look at the results.</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-13_b6a9768cf1273b9c39a635dc9626a3c5">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(steiger.aov1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  term            df sumsq meansq statistic   p.value
+  &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 matingnumber     4  8.36  2.09       6.32  0.000220
+2 individual      17  6.72  0.395      1.19  0.293   
+3 Residuals       68 22.5   0.331     NA    NA       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(steiger.aov1, <span class="st">"matingnumber"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> matingnumber emmean    SE df lower.CL upper.CL
+ first          1.47 0.136 68     1.20     1.74
+ second         1.83 0.136 68     1.56     2.10
+ third          2.01 0.136 68     1.74     2.28
+ fourth         2.14 0.136 68     1.87     2.41
+ fifth          1.35 0.136 68     1.08     1.62
+
+Results are averaged over the levels of: individual 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>Get Greenhouse Geiser adjusted results</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-14_281ae1285949a1b6dc5df60a2fc96708">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ezsteiger1 <span class="ot">&lt;-</span> <span class="fu">ezANOVA</span>(<span class="at">data=</span>steiger, <span class="at">dv=</span>ltime, <span class="at">wid=</span>individual, <span class="at">within=</span>matingnumber, <span class="at">type=</span><span class="dv">3</span>, <span class="at">detailed=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ezsteiger1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$ANOVA
+        Effect DFn DFd        SSn       SSd          F            p p&lt;.05
+1  (Intercept)   1  17 278.553891  6.721791 704.487281 2.810816e-15     *
+2 matingnumber   4  68   8.363523 22.503779   6.318045 2.202193e-04     *
+        ges
+1 0.9050438
+2 0.2224987
+
+$`Mauchly's Test for Sphericity`
+        Effect         W         p p&lt;.05
+2 matingnumber 0.4311659 0.1662601      
+
+$`Sphericity Corrections`
+        Effect       GGe       p[GG] p[GG]&lt;.05       HFe        p[HF] p[HF]&lt;.05
+2 matingnumber 0.6778482 0.001551317         * 0.8189228 0.0006568278         *</code></pre>
+</div>
+</div>
+<p>Use VCA package to get anova var comps (with CIs that can be -ve)</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-15_c939310851877c875e7732607c8f3d31">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>steiger.vca <span class="ot">&lt;-</span> <span class="fu">anovaMM</span>(ltime<span class="sc">~</span>matingnumber<span class="sc">+</span>(individual), steiger)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>steiger.vca</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+ANOVA-Type Estimation of Mixed Model:
+--------------------------------------
+
+    [Fixed Effects]
+
+               int  matingnumberfifth  matingnumberfirst matingnumberfourth 
+          2.009337          -0.657543          -0.543510           0.130802 
+matingnumbersecond  matingnumberthird 
+         -0.180066           0.000000 
+
+
+    [Variance Components]
+
+  Name       DF        SS        MS       VC       %Total    SD       CV[%]    
+1 total      84.524647                    0.34383  100       0.58637  33.330258
+2 individual 17        6.721791  0.395399 0.012892 3.749614  0.113544 6.454044 
+3 error      68        22.503779 0.330938 0.330938 96.250386 0.575272 32.69941 
+
+Mean: 1.759273 (N = 90) 
+
+Experimental Design: balanced  |  Method: ANOVA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VCAinference</span>(steiger.vca, <span class="at">alpha=</span><span class="fl">0.05</span>, <span class="at">VarVC=</span><span class="cn">TRUE</span>, <span class="at">excludeNeg=</span><span class="cn">FALSE</span>, <span class="at">constrainCI=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+
+Inference from Mixed Model Fit
+------------------------------
+
+&gt; VCA Result:
+-------------
+
+    [Fixed Effects]
+
+               int  matingnumberfifth  matingnumberfirst matingnumberfourth 
+            2.0093            -0.6575            -0.5435             0.1308 
+matingnumbersecond  matingnumberthird 
+           -0.1801             0.0000 
+
+
+    [Variance Components]
+
+  Name       DF      SS      MS     VC     %Total  SD     CV[%]   Var(VC)
+1 total      84.5246                0.3438 100     0.5864 33.3303        
+2 individual 17      6.7218  0.3954 0.0129 3.7496  0.1135 6.454   9e-04  
+3 error      68      22.5038 0.3309 0.3309 96.2504 0.5753 32.6994 0.0032 
+
+Mean: 1.7593 (N = 90) 
+
+Experimental Design: balanced  |  Method: ANOVA
+
+
+&gt; VC:
+-----
+           Estimate  CI LCL CI UCL One-Sided LCL One-Sided UCL
+total        0.3438  0.2598 0.4765        0.2716        0.4517
+individual   0.0129 -0.0447 0.0705       -0.0355        0.0613
+error        0.3309  0.2428 0.4779        0.2550        0.4499
+
+&gt; SD:
+-----
+           Estimate  CI LCL CI UCL One-Sided LCL One-Sided UCL
+total        0.5864  0.5097 0.6903        0.5212        0.6721
+individual   0.1135 -0.2115 0.2656       -0.1883        0.2475
+error        0.5753  0.4927 0.6913        0.5050        0.6707
+
+&gt; CV[%]:
+--------
+           Estimate   CI LCL  CI UCL One-Sided LCL One-Sided UCL
+total       33.3303  28.9747 39.2390       29.6256       38.2040
+individual   6.4540 -12.0227 15.0949      -10.7056       14.0684
+error       32.6994  28.0080 39.2935       28.7036       38.1260
+
+
+95% Confidence Level  
+SAS PROC MIXED method used for computing CIs </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-random-intercept-model-using-lme4-and-reml" class="level2">
+<h2 class="anchored" data-anchor-id="fit-random-intercept-model-using-lme4-and-reml">Fit random intercept model using lme4 and REML</h2>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-16_5c1cce31c3bdc78172ed5f007f32b719">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>steiger.lmer1 <span class="ot">&lt;-</span> <span class="fu">lmer</span>(ltime<span class="sc">~</span>matingnumber <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>individual), <span class="at">REML=</span><span class="cn">TRUE</span>, steiger)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(steiger.lmer1, <span class="at">ddf=</span><span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML. t-tests use Kenward-Roger's method [
+lmerModLmerTest]
+Formula: ltime ~ matingnumber + (1 | individual)
+   Data: steiger
+
+REML criterion at convergence: 167.9
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.9213 -0.8145  0.2051  0.6980  1.9271 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ individual (Intercept) 0.01289  0.1135  
+ Residual               0.33094  0.5753  
+Number of obs: 90, groups:  individual, 18
+
+Fixed effects:
+              Estimate Std. Error       df t value Pr(&gt;|t|)    
+(Intercept)    1.75927    0.06628 17.00000  26.542 2.81e-15 ***
+matingnumber1 -0.29345    0.12128 68.00000  -2.420   0.0182 *  
+matingnumber2  0.07000    0.12128 68.00000   0.577   0.5657    
+matingnumber3  0.25006    0.12128 68.00000   2.062   0.0430 *  
+matingnumber4  0.38087    0.12128 68.00000   3.140   0.0025 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr) mtngn1 mtngn2 mtngn3
+matingnmbr1  0.000                     
+matingnmbr2  0.000 -0.250              
+matingnmbr3  0.000 -0.250 -0.250       
+matingnmbr4  0.000 -0.250 -0.250 -0.250</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(steiger.lmer1, <span class="at">type=</span><span class="dv">3</span>, <span class="at">ddf=</span><span class="st">"Kenward-Roger"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Kenward-Roger's method
+             Sum Sq Mean Sq NumDF DenDF F value    Pr(&gt;F)    
+matingnumber 8.3635  2.0909     4    68   6.318 0.0002202 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(steiger.lmer1, <span class="sc">~</span>matingnumber)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> matingnumber emmean    SE   df lower.CL upper.CL
+ first          1.47 0.138 84.5     1.19     1.74
+ second         1.83 0.138 84.5     1.55     2.10
+ third          2.01 0.138 84.5     1.73     2.28
+ fourth         2.14 0.138 84.5     1.87     2.41
+ fifth          1.35 0.138 84.5     1.08     1.63
+
+Degrees-of-freedom method: kenward-roger 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>Note different CIs compared to OLS model fitting due to K-R adjustment</p>
+<p>CI on variance components (remembering to square CIs from lmer which are in SD units)</p>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-17_adf6239dd7b77b47f949c5681881f39a">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>steiger.ci1 <span class="ot">&lt;-</span> <span class="fu">confint.merMod</span>(steiger.lmer1, <span class="at">oldNames=</span><span class="cn">FALSE</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>steiger.vc1 <span class="ot">&lt;-</span> (steiger.ci1)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(steiger.vc1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                 2.5 %     97.5 %
+sd_(Intercept)|individual 0.0000000000 0.09444955
+sigma                     0.2292861943 0.43705072
+(Intercept)               2.6438048318 3.58181697
+matingnumber1             0.2783247753 0.00351979
+matingnumber2             0.0269356442 0.09248673
+matingnumber3             0.0002542346 0.23443208
+matingnumber4             0.0215345611 0.37820498</code></pre>
+</div>
+</div>
+<section id="bar-graph-for-time-main-effect" class="level3">
+<h3 class="anchored" data-anchor-id="bar-graph-for-time-main-effect">Bar graph for time main effect</h3>
+<div class="cell" data-hash="steiger_cache/html/unnamed-chunk-18_8e97972e96c89a7fd3e556edd07401fb">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>steiger_sum <span class="ot">&lt;-</span> <span class="fu">summarySE</span>(steiger, <span class="at">measurevar=</span> <span class="st">'ltime'</span>, <span class="at">groupvars=</span> <span class="st">'matingnumber'</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(steiger_sum, <span class="fu">aes</span>(<span class="at">x=</span>matingnumber, <span class="at">y=</span>ltime))<span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>, <span class="at">position=</span><span class="st">"dodge"</span>, <span class="at">fill=</span><span class="st">"lightblue"</span>)<span class="sc">+</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin=</span>ltime<span class="sc">-</span>se, <span class="at">ymax=</span>ltime<span class="sc">+</span>se), <span class="at">width=</span><span class="fl">0.3</span>, <span class="at">color=</span><span class="st">"darkblue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="steiger_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
