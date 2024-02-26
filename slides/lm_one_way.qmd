@@ -3,6 +3,7 @@ title: "Linear models: one-way designs"
 author: "Robin Elahi"
 subtitle: "Topics in Scientific and Statistical Computing"
 format: revealjs
+embed-resources: true
 filters:
   - openlinksinnewpage
 ---
