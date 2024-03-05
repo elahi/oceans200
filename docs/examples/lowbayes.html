@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -79,7 +79,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -88,6 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -102,9 +109,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">qk2e</span>
     </a>
@@ -116,25 +123,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../chapter_notes/chapter2.html" rel="" target="">
- <span class="menu-text">Chapter notes</span></a>
+    <a class="nav-link" href="../chapter_notes/chapter2.html"> 
+<span class="menu-text">Chapter notes</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../slides/slides.html" rel="" target="">
- <span class="menu-text">Slides</span></a>
+    <a class="nav-link" href="../slides/slides.html"> 
+<span class="menu-text">Slides</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../examples/low.html" rel="" target="">
- <span class="menu-text">Examples</span></a>
+    <a class="nav-link" href="../examples/low.html"> 
+<span class="menu-text">Examples</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -172,7 +179,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <p>This box continues with the Low et al.&nbsp;example starting in Box 2.2</p>
 <section id="preliminaries" class="level3">
@@ -184,12 +193,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="uninformative-priors" class="level3">
 <h3 class="anchored" data-anchor-id="uninformative-priors">Uninformative priors</h3>
-<div class="cell" data-hash="lowbayes_cache/html/unnamed-chunk-3_9fe8381203332d0edfa7a4d968ae96db">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>low <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/lowco2.csv"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>low1 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(co2<span class="sc">~</span>anesth,<span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),<span class="at">data=</span>low)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>posteriors1 <span class="ot">&lt;-</span> <span class="fu">describe_posterior</span>(low1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="lowbayes_cache/html/unnamed-chunk-4_34b1537cfa253233d7379e74d2f0c2ca">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print_md</span>(posteriors1, <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
@@ -219,23 +228,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">70.89</td>
-<td style="text-align: left;">[ 61.17, 81.00]</td>
+<td style="text-align: right;">70.69</td>
+<td style="text-align: left;">[ 60.24, 81.14]</td>
 <td style="text-align: right;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
-<td style="text-align: left;">1.000</td>
-<td style="text-align: left;">3887.00</td>
+<td style="text-align: left;">0.999</td>
+<td style="text-align: left;">3374.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">anesthiso</td>
-<td style="text-align: right;">-20.83</td>
-<td style="text-align: left;">[-34.65, -7.01]</td>
-<td style="text-align: right;">99.72%</td>
+<td style="text-align: right;">-20.53</td>
+<td style="text-align: left;">[-34.82, -6.54]</td>
+<td style="text-align: right;">99.65%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
-<td style="text-align: left;">1.000</td>
-<td style="text-align: left;">3795.00</td>
+<td style="text-align: left;">0.999</td>
+<td style="text-align: left;">3404.00</td>
 </tr>
 </tbody>
 </table>
@@ -244,7 +253,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(low1,<span class="at">plotfun=</span><span class="st">"mcmc_hist"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="do">## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="lowbayes_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lowbayes_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get Bayes factor for mean diff</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lowx <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(low)</span>
@@ -262,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="informative-priors" class="level3">
 <h3 class="anchored" data-anchor-id="informative-priors">Informative priors</h3>
 <p>Run three options, mean difference with high and low precision, and a bigger mean difference with high precision</p>
-<div class="cell" data-hash="lowbayes_cache/html/unnamed-chunk-5_cd11dbd6362c931f0fdbbce612a5146c">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#for mean difference with high precision</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>low2 <span class="ot">&lt;-</span> <span class="fu">stan_glm</span>(co2<span class="sc">~</span>anesth,<span class="at">family =</span> <span class="fu">gaussian</span>(<span class="at">link =</span> <span class="st">"identity"</span>),<span class="at">prior=</span><span class="fu">normal</span>(<span class="sc">-</span><span class="dv">25</span>,<span class="dv">5</span>),<span class="at">data=</span>low)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
@@ -286,15 +299,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.015 seconds (Warm-up)</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.013 seconds (Sampling)</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.028 seconds (Total)</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.011 seconds (Sampling)</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.025 seconds (Total)</span></span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 2).</span></span>
 <span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Gradient evaluation took 3e-06 seconds</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Gradient evaluation took 4e-06 seconds</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.04 seconds.</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Adjust your expectations accordingly!</span></span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
 <span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
@@ -311,15 +324,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.016 seconds (Warm-up)</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.013 seconds (Sampling)</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.029 seconds (Total)</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.015 seconds (Warm-up)</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.012 seconds (Sampling)</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.027 seconds (Total)</span></span>
 <span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
 <span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 3).</span></span>
 <span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Gradient evaluation took 2e-06 seconds</span></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Gradient evaluation took 5e-06 seconds</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.05 seconds.</span></span>
 <span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Adjust your expectations accordingly!</span></span>
 <span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
 <span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
@@ -336,15 +349,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.019 seconds (Warm-up)</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
 <span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.012 seconds (Sampling)</span></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.031 seconds (Total)</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.026 seconds (Total)</span></span>
 <span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
 <span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 4).</span></span>
 <span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Gradient evaluation took 2e-06 seconds</span></span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Gradient evaluation took 3e-06 seconds</span></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.</span></span>
 <span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Adjust your expectations accordingly!</span></span>
 <span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
 <span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
@@ -361,9 +374,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:  Elapsed Time: 0.015 seconds (Warm-up)</span></span>
-<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.012 seconds (Sampling)</span></span>
-<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.027 seconds (Total)</span></span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.011 seconds (Sampling)</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.025 seconds (Total)</span></span>
 <span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:</span></span>
 <span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>posteriors2 <span class="ot">&lt;-</span> <span class="fu">describe_posterior</span>(low2)</span>
 <span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a><span class="fu">print_md</span>(posteriors2, <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -395,23 +408,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">72.30</td>
-<td style="text-align: left;">[ 64.37, 80.50]</td>
+<td style="text-align: right;">72.26</td>
+<td style="text-align: left;">[ 64.18, 80.39]</td>
 <td style="text-align: left;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
-<td style="text-align: left;">1.002</td>
-<td style="text-align: left;">3239.00</td>
+<td style="text-align: left;">1.001</td>
+<td style="text-align: left;">3603.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">anesthiso</td>
-<td style="text-align: right;">-23.53</td>
-<td style="text-align: left;">[-31.62, -15.78]</td>
+<td style="text-align: right;">-23.62</td>
+<td style="text-align: left;">[-31.88, -15.51]</td>
 <td style="text-align: left;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
-<td style="text-align: left;">1.000</td>
-<td style="text-align: left;">3925.00</td>
+<td style="text-align: left;">1.001</td>
+<td style="text-align: left;">3990.00</td>
 </tr>
 </tbody>
 </table>
@@ -439,9 +452,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.013 seconds (Warm-up)</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.012 seconds (Sampling)</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.025 seconds (Total)</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.015 seconds (Warm-up)</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.011 seconds (Sampling)</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.026 seconds (Total)</span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 2).</span></span>
@@ -464,9 +477,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.019 seconds (Warm-up)</span></span>
 <span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.012 seconds (Sampling)</span></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.026 seconds (Total)</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.031 seconds (Total)</span></span>
 <span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
 <span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 3).</span></span>
@@ -489,9 +502,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.013 seconds (Warm-up)</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
 <span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.012 seconds (Sampling)</span></span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.025 seconds (Total)</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.026 seconds (Total)</span></span>
 <span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
 <span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 4).</span></span>
@@ -515,8 +528,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
 <span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.014 seconds (Sampling)</span></span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.028 seconds (Total)</span></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.011 seconds (Sampling)</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.025 seconds (Total)</span></span>
 <span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:</span></span>
 <span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>posteriors3 <span class="ot">&lt;-</span> <span class="fu">describe_posterior</span>(low3)</span>
 <span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="fu">print_md</span>(posteriors3, <span class="at">digits =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -548,23 +561,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">71.22</td>
-<td style="text-align: left;">[ 61.15, 80.74]</td>
+<td style="text-align: right;">71.17</td>
+<td style="text-align: left;">[ 61.16, 81.20]</td>
 <td style="text-align: right;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
-<td style="text-align: left;">1.001</td>
-<td style="text-align: left;">2991.00</td>
+<td style="text-align: left;">1.000</td>
+<td style="text-align: left;">3504.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">anesthiso</td>
-<td style="text-align: right;">-21.26</td>
-<td style="text-align: left;">[-34.56, -8.84]</td>
-<td style="text-align: right;">99.98%</td>
+<td style="text-align: right;">-21.44</td>
+<td style="text-align: left;">[-34.89, -8.30]</td>
+<td style="text-align: right;">99.78%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
 <td style="text-align: left;">1.000</td>
-<td style="text-align: left;">3137.00</td>
+<td style="text-align: left;">3517.00</td>
 </tr>
 </tbody>
 </table>
@@ -592,9 +605,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.017 seconds (Warm-up)</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.014 seconds (Sampling)</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.031 seconds (Total)</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:  Elapsed Time: 0.015 seconds (Warm-up)</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.011 seconds (Sampling)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1:                0.026 seconds (Total)</span></span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 1: </span></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 2).</span></span>
@@ -617,15 +630,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
-<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.018 seconds (Warm-up)</span></span>
-<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.012 seconds (Sampling)</span></span>
-<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.03 seconds (Total)</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:  Elapsed Time: 0.017 seconds (Warm-up)</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.011 seconds (Sampling)</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2:                0.028 seconds (Total)</span></span>
 <span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 2: </span></span>
 <span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 3).</span></span>
 <span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Gradient evaluation took 2e-06 seconds</span></span>
-<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Gradient evaluation took 3e-06 seconds</span></span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.</span></span>
 <span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Adjust your expectations accordingly!</span></span>
 <span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
 <span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
@@ -642,15 +655,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.013 seconds (Warm-up)</span></span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:  Elapsed Time: 0.016 seconds (Warm-up)</span></span>
 <span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.012 seconds (Sampling)</span></span>
-<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.025 seconds (Total)</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3:                0.028 seconds (Total)</span></span>
 <span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 3: </span></span>
 <span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
 <span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="do">## SAMPLING FOR MODEL 'continuous' NOW (CHAIN 4).</span></span>
 <span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Gradient evaluation took 2e-06 seconds</span></span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.02 seconds.</span></span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Gradient evaluation took 1e-06 seconds</span></span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.01 seconds.</span></span>
 <span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Adjust your expectations accordingly!</span></span>
 <span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
 <span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
@@ -667,8 +680,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)</span></span>
 <span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)</span></span>
 <span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4: </span></span>
-<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:  Elapsed Time: 0.016 seconds (Warm-up)</span></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.012 seconds (Sampling)</span></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:  Elapsed Time: 0.014 seconds (Warm-up)</span></span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.014 seconds (Sampling)</span></span>
 <span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:                0.028 seconds (Total)</span></span>
 <span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="do">## Chain 4:</span></span>
 <span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>posteriors4 <span class="ot">&lt;-</span> <span class="fu">describe_posterior</span>(low4)</span>
@@ -701,23 +714,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">81.90</td>
-<td style="text-align: left;">[ 72.65, 91.97]</td>
+<td style="text-align: right;">81.88</td>
+<td style="text-align: left;">[ 72.55, 92.10]</td>
 <td style="text-align: left;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
 <td style="text-align: left;">1.001</td>
-<td style="text-align: left;">2681.00</td>
+<td style="text-align: left;">2611.00</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">anesthiso</td>
-<td style="text-align: right;">-42.05</td>
-<td style="text-align: left;">[-51.37, -33.29]</td>
+<td style="text-align: right;">-41.97</td>
+<td style="text-align: left;">[-51.25, -33.12]</td>
 <td style="text-align: left;">100%</td>
 <td style="text-align: left;">[-1.91, 1.91]</td>
 <td style="text-align: right;">0%</td>
 <td style="text-align: left;">1.000</td>
-<td style="text-align: left;">3075.00</td>
+<td style="text-align: left;">2972.00</td>
 </tr>
 </tbody>
 </table>
@@ -726,7 +739,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="generate-ggplot-compatible-figure-for-mean-difference-posterior-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="generate-ggplot-compatible-figure-for-mean-difference-posterior-distribution">Generate ggplot-compatible figure for mean difference posterior distribution</h3>
-<div class="cell" data-hash="lowbayes_cache/html/unnamed-chunk-6_eb6923150ade726ab115b954203a3bee">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>posterior<span class="ot">&lt;-</span><span class="fu">as.array</span>(low1)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">color_scheme_set</span>(<span class="st">"gray"</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>p<span class="ot">&lt;-</span><span class="fu">mcmc_hist</span>(posterior, <span class="at">pars =</span> <span class="fu">c</span>(<span class="st">"anesthiso"</span>))<span class="sc">+</span></span>
@@ -734,7 +747,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>p</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="do">## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="lowbayes_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div>
+<figure class="figure">
+<p><img src="lowbayes_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave ("QK F2_07.pdf", plot = p, height = ph, width = pw, units='cm')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -822,10 +839,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -835,8 +851,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -849,6 +874,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -892,6 +1036,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -917,6 +1062,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -977,6 +1148,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 

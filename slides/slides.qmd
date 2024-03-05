@@ -13,3 +13,4 @@ editor_options:
 
 [Week 3: Linear models: one-way designs](lm_one_way.qmd){target="_blank"}
 
+[Week 9: Maximum likelihood](maximum_likelihood.qmd){target="_blank"}

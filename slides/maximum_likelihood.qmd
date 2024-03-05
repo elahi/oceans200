@@ -35,15 +35,151 @@ theme_set(theme_bw(base_size = 12) + theme(panel.grid = element_blank()))
 knitr::opts_knit$set(root.dir = "../")
 ```
 
+## What is likelihood?
+
+\
+\
+
+. . .
+
+Likelihood: (relative) measure of how well our observations fit a specific hypothesis / model
+
+## Probability distribution functions vs likelihood functions
+
+-   parameters
+-   data
+-   summation / integration of probabilities
+
+## Probability distribution function
+
+**known parameter, variable data**
+
+. . .
+
+We **know** that the oceans cover 70% of the earth's surface. If we were to take 10 random GPS coordinates of the earth, what's the probability of getting 5 ocean points?
+
+```{r}
+p <- 0.7
+```
+
+What probability distribution should we use? Which function in R?
+
+. . .
+
+```{r}
+dbinom(x = 5, size = 10, p = p)
+```
+
+## 
+
+If we repeat this calculation for every possible outcome of ocean points (out of 10), we can visualize the probability distribution, for a *known* parameter ($p$).
+
+```{r}
+ocean_grid <- seq(0, 10, by = 1)
+ocean_p <- dbinom(x = ocean_grid, size = 10, p = p)
+```
+
+. . .
+
+If we sum the `ocean_p` vector, what value should we get?\
+Reminder: this is a probability mass function.
+
+. . .
+
+```{r}
+sum(ocean_p)
+```
+
+## 
+
+```{r}
+#| echo: false
+plot(ocean_grid, ocean_p, type = "b", 
+     xlab = "# of ocean points (out of 10)",
+     ylab = "Pr(x | p = 0.7)", main = "Binomial PMF, p = 0.7")
+```
+
+## Likelihood function
+
+**unknown parameter, fixed data**
+
+(the usual case)
+
+. . .
+
+Imagine you are martian observing Earth for the first time and you want to estimate the proportion of ocean on the planet using a bunch of random landings with your space probe.
+
+```{r}
+#| echo: false
+set.seed(11)
+d <- rbinom(n = 1, size = 20, prob = 0.55)
+```
+
+Out of 20 trials, you made `r d` ocean landings.
+
+## 
+
+What is $\text{Pr}(p = 0.7 | \text{ocean} = 12, \text{trials} = 20)$?
+
+. . .
+
+```{r}
+dbinom(x = 12, size = 20, prob = 0.7)
+```
+
+. . .
+
+   
+
+Repeat for many values of $p$:
+
+```{r}
+#| output: false
+p_grid <- seq(0, 1, by = 0.01)
+p_lik <- dbinom(x = 12, size = 20, prob = p_grid)
+plot(p_grid, p_lik, type = "b", 
+     xlab = "Proportion of ocean (hypothesis)", 
+     ylab = "Pr(data | hypothesis)", 
+     main = "Likelihood function")
+```
+
+## 
+
+```{r}
+#| echo: false
+plot(p_grid, p_lik, type = "b", 
+     xlab = "Proportion of ocean (hypothesis)", 
+     ylab = "Pr(data | hypothesis)", 
+     main = "Likelihood function")
+```
+
+Will these probabilities sum to 1? 
+
+. . .
+
+```{r}
+sum(p_lik)
+```
+
+## 
+
+Which value of $p$ corresponds to the maximum likelihood?
+
+```{r}
+df <- tibble(p_grid, p_lik)
+summary(df)
+df[which.max(df$p_lik), ]
+```
+
 ## Maximum likelihood
 
-These slides are based on a [lab](https://github.com/mcgoodman/quant-eco-course/tree/master/Part%201%20-%20Maximum%20Likelihood/lab%201%20-%20linear%20regression) by Maurice Goodman.
+Following slides are based on a [lab](https://github.com/mcgoodman/quant-eco-course/tree/master/Part%201%20-%20Maximum%20Likelihood/lab%201%20-%20linear%20regression) by Maurice Goodman.
 
 ## Outline
 
-- simulate data from a linear model using a known intercept and slope
-- **write a function** to fit a linear regression using **maximum-likelihood estimation**, 
-- compare estimated intercept and slope compare to the known values
+-   simulate data from a linear model using a known intercept and slope
+-   **write a function** to fit a linear regression using **maximum-likelihood estimation**,
+-   compare estimated intercept and slope compare to the known values
 
 ## Linear regression
 
@@ -63,9 +199,9 @@ $$
 
 **Three** parameters:
 
-- $\alpha$, the intercept
-- $\beta$, the slope
-- $\sigma$, the standard deviation of the residuals
+-   $\alpha$, the intercept
+-   $\beta$, the slope
+-   $\sigma$, the standard deviation of the residuals
 
 ## Simulate data
 
@@ -83,6 +219,7 @@ head(sim_data)
 ```
 
 ## 
+
 ```{r}
 #| echo: false
 sim_data %>% # start with the data
@@ -99,15 +236,17 @@ $$
 \mathcal{L}(\theta) = f_X(x|\theta) = \prod_{i = 1}^n f_X(x_i )
 $$
 
+. . . 
+
 **Log-likelihood function**:
 
 $$
 l(\theta) = \ln (\mathcal{L}(\theta)) = \sum_{i = 1}^n \ln [f_X(x_i)]
 $$
 
-We want to maximize the log-likelihood of this function, which is equivalent to **minimizing the negative log-likelihood**. 
+We want to maximize the log-likelihood of this function, which is equivalent to **minimizing the negative log-likelihood**.
 
-##
+## 
 
 $$
 \begin{aligned}
@@ -125,7 +264,6 @@ $$
 We can express the negative log-likelihood function in R as:
 
 `-sum(dnorm(y, mean = ..., sd = ..., log = TRUE))`
-
 
 ## R function
 
@@ -151,7 +289,7 @@ fit <- optim(
 )
 ```
 
-##
+## 
 
 ```{r}
 fit
@@ -159,7 +297,7 @@ fit
 coef(lm(y ~ x, data = sim_data))
 ```
 
-##
+## 
 
 ```{r plot_fit}
 sim_data %>% ggplot(aes(x, y)) + geom_point() + 
@@ -168,7 +306,6 @@ sim_data %>% ggplot(aes(x, y)) + geom_point() +
   geom_abline(intercept = fit$par[1], slope = fit$par[2], 
               color = "blue") # fit
 ```
-
 
 ## Likelihood slice
 
@@ -189,7 +326,7 @@ for (i in 1:nrow(par_grid)) {
 }
 ```
 
-##
+## 
 
 ```{r contour_plot}
 #| echo: false
@@ -204,7 +341,7 @@ par_grid %>%
 
 ## Likelihood profile for the slope
 
-Modify our `lm_log_lik` function so that the slope is a separate argument. 
+Modify our `lm_log_lik` function so that the slope is a separate argument.
 
 ```{r slope_profile}
 slope_proflik <- function(pars, b, x, y) {
@@ -217,7 +354,7 @@ b_profile <- data.frame(
 )
 ```
 
-##
+## 
 
 We'll pass this to `optim` to just find the values of the intercept and sd
 
@@ -235,8 +372,7 @@ for (i in 1:nrow(b_profile)) {
 }
 ```
 
-
-##
+## 
 
 ```{r}
 ## plot slope profile
@@ -256,6 +392,7 @@ $$
 $$
 
 ## 
+
 ```{r fisher_var}
 var_cov <- solve(fit$hessian)
 var_cov
@@ -264,6 +401,7 @@ var_cov
 The variances are on the diagonal, and we can get the standard errors by taking their square root:
 
 ## 
+
 ```{r fisher_se}
 fisher_se <- sqrt(diag(var_cov))
 fisher_se
@@ -284,19 +422,20 @@ $$
 \text{CI} = (\hat{\theta} - \phi^{-1}(\gamma / 2) \times \text{SE}(\hat{\theta}), \; \hat{\theta} + \phi^{-1}(1 - \gamma / 2) \times \text{SE}(\hat{\theta}))
 $$
 
-Where $\phi^{-1}$ is the inverse cumulative distribution function of the standard Normal distribution. 
+Where $\phi^{-1}$ is the inverse cumulative distribution function of the standard Normal distribution.
 
-##
+## 
 
 Equivalently:
 
 $$
 \text{CI} = (\phi^{-1}_{\hat{\theta}, \text{SE}(\theta)}(\gamma / 2), \; \phi^{-1}_{\hat{\theta}, \text{SE}(\theta)} (1-\gamma/2))
-$$ 
+$$
 
 Where $\phi^{-1}_{\hat{\theta}, \text{SE}(\theta)}$ is the inverse cumulative distribution function for a Normal distribution with mean $\hat{\theta}$ and standard deviation $\text{SE}(\theta)$.
 
 ## 
+
 The Normal inverse CDF is returned by the `qnorm` function. We can obtain a confidence interval for our intercept $\alpha$ and slope $\beta$:
 
 ```{r normal_CI_fisher}

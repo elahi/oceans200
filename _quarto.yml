@@ -5,7 +5,7 @@ project:
     - "*.qmd"
     - "!examples_qk/"
     - "!examples_qmd/"
-    - "!examples_qk/lowbayes"
+    # - "!examples_qk/lowbayes"
     # - "!examples_qk/lowboot"
 
 website:
