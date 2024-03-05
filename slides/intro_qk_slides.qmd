@@ -3,6 +3,7 @@ title: "Intro to QK2E"
 author: "Robin Elahi"
 subtitle: "Topics in Scientific and Statistical Computing"
 format: revealjs
+embed-resources: true
 filters:
   - openlinksinnewpage
 ---
